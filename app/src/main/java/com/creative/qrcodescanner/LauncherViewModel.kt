@@ -15,6 +15,9 @@ class LauncherViewModel : ViewModel(), AppNavigation {
     private val _isScanQRSuccessState: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isScanQRSuccessState = _isScanQRSuccessState.asStateFlow()
 
+    private val _qrCodeResultState: MutableStateFlow<String> = MutableStateFlow("")
+    val qrCodeResultState = _qrCodeResultState.asStateFlow()
+
     fun toggleTorch() {
         _enableTorchState.value = !_enableTorchState.value
     }

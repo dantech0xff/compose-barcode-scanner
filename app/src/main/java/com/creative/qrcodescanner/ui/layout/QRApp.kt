@@ -1,12 +1,6 @@
 package com.creative.qrcodescanner.ui.layout
 
 import android.Manifest
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageFormat
-import android.graphics.Rect
-import android.graphics.YuvImage
-import android.media.Image
 import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
@@ -43,7 +37,6 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
-import java.io.ByteArrayOutputStream
 
 @androidx.annotation.OptIn(ExperimentalGetImage::class)
 @OptIn(ExperimentalPermissionsApi::class)
@@ -129,7 +122,8 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
                     .padding(16.dp)
                     .background(color = Color(0x901c1c1c), shape = RoundedCornerShape(32.dp))
                     .padding(24.dp, 6.dp)
-                    .animateContentSize(), appNav, vm)
+                    .animateContentSize(), appNav, vm
+            )
 
             FooterTools(appNav)
         }
@@ -143,25 +137,7 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
         // Gallery Screen Here
 
         // History Screen Here
+
+        // Result Screen Here
     }
-}
-
-
-fun Image.toBitmap(): Bitmap {
-    val yBuffer = planes[0].buffer // Y
-    val vuBuffer = planes[2].buffer // VU
-
-    val ySize = yBuffer.remaining()
-    val vuSize = vuBuffer.remaining()
-
-    val nv21 = ByteArray(ySize + vuSize)
-
-    yBuffer.get(nv21, 0, ySize)
-    vuBuffer.get(nv21, ySize, vuSize)
-
-    val yuvImage = YuvImage(nv21, ImageFormat.NV21, this.width, this.height, null)
-    val out = ByteArrayOutputStream()
-    yuvImage.compressToJpeg(Rect(0, 0, yuvImage.width, yuvImage.height), 50, out)
-    val imageBytes = out.toByteArray()
-    return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
 }

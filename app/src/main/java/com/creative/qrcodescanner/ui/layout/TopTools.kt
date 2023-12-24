@@ -1,7 +1,5 @@
 package com.creative.qrcodescanner.ui.layout
 
-import androidx.camera.core.CameraSelector
-import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
