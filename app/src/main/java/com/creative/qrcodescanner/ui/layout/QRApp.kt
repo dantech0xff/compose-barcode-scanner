@@ -1,157 +1,145 @@
 package com.creative.qrcodescanner.ui.layout
 
 import android.Manifest
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageFormat
+import android.graphics.Rect
+import android.graphics.YuvImage
+import android.media.Image
+import android.util.Log
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.view.LifecycleCameraController
-import androidx.compose.foundation.Image
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
+import androidx.core.content.ContextCompat
 import com.creative.qrcodescanner.AppNavigation
 import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.common.InputImage
+import java.io.ByteArrayOutputStream
 
+@androidx.annotation.OptIn(ExperimentalGetImage::class)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
+
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     val context = LocalContext.current
-    val cameraController: LifecycleCameraController = remember { LifecycleCameraController(context) }
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
-    cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-    var isCameraSwitched = remember {
-        false
+
+    val isFrontCamera = remember {
+        mutableStateOf(false)
     }
-    Box(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)) {
-            if (cameraPermissionState.status.isGranted) {
-                CameraView(cameraController, lifecycleOwner)
-            } else {
-                Text(text = "Permission Not Granted")
+    val isEnableTorch = remember {
+        mutableStateOf(false)
+    }
+    val isScanQRSuccess = remember {
+        mutableStateOf(false)
+    }
+    val cameraController: LifecycleCameraController = remember { LifecycleCameraController(context) }.apply {
+        bindToLifecycle(LocalLifecycleOwner.current)
+        cameraSelector = if (isFrontCamera.value) {
+            CameraSelector.DEFAULT_FRONT_CAMERA
+        } else {
+            CameraSelector.DEFAULT_BACK_CAMERA
+        }
+        enableTorch(isEnableTorch.value)
+        clearImageAnalysisAnalyzer()
+        setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
+            imageProxy.image?.let {
+                InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
+                    .let { image ->
+                        val scanner = BarcodeScanning.getClient()
+                        scanner.process(image)
+                            .addOnSuccessListener { barcodes ->
+                                barcodes.forEach { barcode ->
+                                    if (barcode.rawValue != null) {
+                                        Log.d("QRAppResult", "${barcode.rawValue}")
+                                        isScanQRSuccess.value = true
+                                        clearImageAnalysisAnalyzer()
+                                    }
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                exception.printStackTrace()
+                            }
+                            .addOnCompleteListener {
+                                imageProxy.close()
+                            }
+                    }
             }
         }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        ) {
+            if (cameraPermissionState.status.isGranted) {
+                CameraView(cameraController)
+            } else {
+                Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(text = stringResource(R.string.camera_permission_is_not_granted))
+                    Button(onClick = {
+                        cameraPermissionState.launchPermissionRequest()
+                    }) {
+                        Text(text = stringResource(R.string.click_to_grant_camera_permission))
+                    }
+                }
+            }
+        }
+
         Box(
             Modifier
                 .safeDrawingPadding()
                 .fillMaxSize()
-                .background(Color.Transparent)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
+                .background(Color.Transparent)
+        ) {
+
+            TopTools(
+                Modifier
+                    .wrapContentWidth()
                     .wrapContentHeight()
                     .align(Alignment.TopCenter)
                     .padding(16.dp)
-                    .background(color = Color(0x901c1c1c), shape = RoundedCornerShape(24.dp))
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.home),
-                    contentDescription = "Home Button",
-                    contentScale = ContentScale.Inside,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            appNav.openHome()
-                        }
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.flash_off),
-                    contentDescription = "Flash Light Button",
-                    contentScale = ContentScale.Inside,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            appNav.openFlashLight()
-                        }
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.widgets),
-                    contentDescription = "Setting Button",
-                    contentScale = ContentScale.Inside,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            appNav.openSetting()
-                        }
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.cameraswitch),
-                    contentDescription = "Switch Button",
-                    contentScale = ContentScale.Inside,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            if (isCameraSwitched) {
-                                cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-                            } else {
-                                cameraController.cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
-                            }
-                            isCameraSwitched = !isCameraSwitched
-                        }
-                )
-            }
-
-            Image(
-                painter = painterResource(id = R.drawable.add_photo_alternate),
-                contentDescription = "Gallery Picker",
-                contentScale = ContentScale.Inside,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(16.dp)
-                    .size(64.dp)
-                    .background(color = Color(0x901c1c1c), shape = CircleShape)
-                    .padding(12.dp)
-                    .clickable {
-                        appNav.openGallery()
-                    }
+                    .background(color = Color(0x901c1c1c), shape = RoundedCornerShape(32.dp))
+                    .padding(24.dp, 6.dp)
+                    .animateContentSize(), appNav, isFrontCamera, isEnableTorch, cameraController
             )
 
-            Image(
-                painter = painterResource(id = R.drawable.history),
-                contentDescription = "History Picker",
-                contentScale = ContentScale.Inside,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-                    .size(64.dp)
-                    .background(color = Color(0x901c1c1c), shape = CircleShape)
-                    .padding(12.dp)
-                    .clickable {
-                        appNav.openHistory()
-                    }
-            )
+            FooterTools(appNav)
         }
 
         // Home Screen Here
@@ -164,4 +152,24 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
 
         // History Screen Here
     }
+}
+
+
+fun Image.toBitmap(): Bitmap {
+    val yBuffer = planes[0].buffer // Y
+    val vuBuffer = planes[2].buffer // VU
+
+    val ySize = yBuffer.remaining()
+    val vuSize = vuBuffer.remaining()
+
+    val nv21 = ByteArray(ySize + vuSize)
+
+    yBuffer.get(nv21, 0, ySize)
+    vuBuffer.get(nv21, ySize, vuSize)
+
+    val yuvImage = YuvImage(nv21, ImageFormat.NV21, this.width, this.height, null)
+    val out = ByteArrayOutputStream()
+    yuvImage.compressToJpeg(Rect(0, 0, yuvImage.width, yuvImage.height), 50, out)
+    val imageBytes = out.toByteArray()
+    return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
 }

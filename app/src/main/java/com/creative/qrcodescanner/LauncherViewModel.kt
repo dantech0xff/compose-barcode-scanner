@@ -3,6 +3,7 @@ package com.creative.qrcodescanner
 import androidx.lifecycle.ViewModel
 
 class LauncherViewModel : ViewModel(), AppNavigation {
+
     override fun openHome() {}
 
     override fun openFlashLight() {}

@@ -65,7 +65,7 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.extensions)
     implementation(libs.androidx.camera.video)
-    implementation(libs.androidx.camera.mlkit)
+    implementation(libs.google.mlkit.barcode.scanning)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

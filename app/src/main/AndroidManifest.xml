@@ -15,6 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QRCodeScanner"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="barcode" />
+
         <activity
             android:name=".LauncherActivity"
             android:exported="true"

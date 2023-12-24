@@ -8,10 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.LifecycleOwner
 
 @Composable
-fun CameraView(lifecycleCameraController: LifecycleCameraController, lifecycleOwner: LifecycleOwner) {
+fun CameraView(lifecycleCameraController: LifecycleCameraController) {
     AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx ->
         PreviewView(ctx).apply {
             layoutParams = ViewGroup.LayoutParams(
@@ -23,7 +22,6 @@ fun CameraView(lifecycleCameraController: LifecycleCameraController, lifecycleOw
             implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         }.also {
             it.controller = lifecycleCameraController
-            lifecycleCameraController.bindToLifecycle(lifecycleOwner)
         }
     })
 }
