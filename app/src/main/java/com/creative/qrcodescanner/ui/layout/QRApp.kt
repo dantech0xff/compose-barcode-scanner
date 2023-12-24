@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +34,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creative.qrcodescanner.AppNavigation
 import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
@@ -50,18 +50,12 @@ import java.io.ByteArrayOutputStream
 @Composable
 fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
 
-    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     val context = LocalContext.current
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
 
-    val isFrontCamera = remember {
-        mutableStateOf(false)
-    }
-    val isEnableTorch = remember {
-        mutableStateOf(false)
-    }
-    val isScanQRSuccess = remember {
-        mutableStateOf(false)
-    }
+    val isFrontCamera = vm.isFrontCameraState.collectAsStateWithLifecycle()
+    val enableTorch = vm.enableTorchState.collectAsStateWithLifecycle()
+
     val cameraController: LifecycleCameraController = remember { LifecycleCameraController(context) }.apply {
         bindToLifecycle(LocalLifecycleOwner.current)
         cameraSelector = if (isFrontCamera.value) {
@@ -69,8 +63,7 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
         } else {
             CameraSelector.DEFAULT_BACK_CAMERA
         }
-        enableTorch(isEnableTorch.value)
-        clearImageAnalysisAnalyzer()
+        enableTorch(enableTorch.value)
         setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
             imageProxy.image?.let {
                 InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
@@ -81,7 +74,7 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
                                 barcodes.forEach { barcode ->
                                     if (barcode.rawValue != null) {
                                         Log.d("QRAppResult", "${barcode.rawValue}")
-                                        isScanQRSuccess.value = true
+                                        vm.scanQRSuccess()
                                         clearImageAnalysisAnalyzer()
                                     }
                                 }
@@ -136,8 +129,7 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
                     .padding(16.dp)
                     .background(color = Color(0x901c1c1c), shape = RoundedCornerShape(32.dp))
                     .padding(24.dp, 6.dp)
-                    .animateContentSize(), appNav, isFrontCamera, isEnableTorch, cameraController
-            )
+                    .animateContentSize(), appNav, vm)
 
             FooterTools(appNav)
         }

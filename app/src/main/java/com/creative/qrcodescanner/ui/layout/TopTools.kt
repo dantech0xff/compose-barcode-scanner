@@ -11,24 +11,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creative.qrcodescanner.AppNavigation
+import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
 
 val topIconSize = 32.dp
 val topIconPadding = 4.dp
 
 @Composable
-fun TopTools(modifier: Modifier, appNav: AppNavigation,
-             isFrontCamera: MutableState<Boolean>,
-             isEnableTorch: MutableState<Boolean>,
-             cameraController: LifecycleCameraController) {
+fun TopTools(modifier: Modifier, appNav: AppNavigation, vm: LauncherViewModel) {
+
+    val isFrontCamera = vm.isFrontCameraState.collectAsStateWithLifecycle()
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -47,24 +48,22 @@ fun TopTools(modifier: Modifier, appNav: AppNavigation,
                 }
         )
 
-        if (!isFrontCamera.value) {
-            Image(
-                painter = painterResource(id = R.drawable.flash_off),
-                contentDescription = "Flash Light Button",
-                contentScale = ContentScale.Inside,
-                modifier = Modifier
-                    .background(color = Color.Transparent, shape = CircleShape)
-                    .size(topIconSize)
-                    .padding(topIconPadding)
-                    .clickable {
-                        if (isFrontCamera.value) {
-                            return@clickable
-                        }
-                        isEnableTorch.value = !isEnableTorch.value
-                        cameraController.enableTorch(isEnableTorch.value)
+        Image(
+            painter = painterResource(id = R.drawable.flash_off),
+            contentDescription = "Flash Light Button",
+            contentScale = ContentScale.Inside,
+            modifier = Modifier
+                .background(color = Color.Transparent, shape = CircleShape)
+                .size(topIconSize)
+                .padding(topIconPadding)
+                .clickable(!isFrontCamera.value) {
+                    if (isFrontCamera.value) {
+                        return@clickable
                     }
-            )
-        }
+                    vm.toggleTorch()
+                },
+            alpha = if (isFrontCamera.value) 0.5f else 1f
+        )
 
         Image(
             painter = painterResource(id = R.drawable.cameraswitch),
@@ -75,12 +74,7 @@ fun TopTools(modifier: Modifier, appNav: AppNavigation,
                 .size(topIconSize)
                 .padding(topIconPadding)
                 .clickable {
-                    if (isFrontCamera.value) {
-                        cameraController.cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-                    } else {
-                        cameraController.cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
-                    }
-                    isFrontCamera.value = !isFrontCamera.value
+                    vm.toggleCamera()
                 }
         )
 
