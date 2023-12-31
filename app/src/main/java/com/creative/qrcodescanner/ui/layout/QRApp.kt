@@ -48,6 +48,7 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
 
     val isFrontCamera = vm.isFrontCameraState.collectAsStateWithLifecycle()
     val enableTorch = vm.enableTorchState.collectAsStateWithLifecycle()
+    val qrCodeResult = vm.qrCodeResultState.collectAsStateWithLifecycle()
 
     val cameraController: LifecycleCameraController = remember { LifecycleCameraController(context) }.apply {
         bindToLifecycle(LocalLifecycleOwner.current)
@@ -57,28 +58,31 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
             CameraSelector.DEFAULT_BACK_CAMERA
         }
         enableTorch(enableTorch.value)
-        setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
-            imageProxy.image?.let {
-                InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
-                    .let { image ->
-                        val scanner = BarcodeScanning.getClient()
-                        scanner.process(image)
-                            .addOnSuccessListener { barcodes ->
-                                barcodes.forEach { barcode ->
-                                    if (barcode.rawValue != null) {
-                                        Log.d("QRAppResult", "${barcode.rawValue}")
-                                        vm.scanQRSuccess()
-                                        clearImageAnalysisAnalyzer()
+        if (qrCodeResult.value != null) {
+            clearImageAnalysisAnalyzer()
+        } else {
+            setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
+                imageProxy.image?.let {
+                    InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
+                        .let { image ->
+                            val scanner = BarcodeScanning.getClient()
+                            scanner.process(image)
+                                .addOnSuccessListener { barcodes ->
+                                    barcodes.forEach { barcode ->
+                                        if (barcode.rawValue != null) {
+                                            Log.d("QRAppResult", "${barcode.rawValue}")
+                                            vm.scanQRSuccess(barcode)
+                                        }
                                     }
                                 }
-                            }
-                            .addOnFailureListener { exception ->
-                                exception.printStackTrace()
-                            }
-                            .addOnCompleteListener {
-                                imageProxy.close()
-                            }
-                    }
+                                .addOnFailureListener { exception ->
+                                    exception.printStackTrace()
+                                }
+                                .addOnCompleteListener {
+                                    imageProxy.close()
+                                }
+                        }
+                }
             }
         }
     }
@@ -113,7 +117,6 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
                 .fillMaxSize()
                 .background(Color.Transparent)
         ) {
-
             TopTools(
                 Modifier
                     .wrapContentWidth()

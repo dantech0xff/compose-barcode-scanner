@@ -1,6 +1,7 @@
 package com.creative.qrcodescanner
 
 import androidx.lifecycle.ViewModel
+import com.google.mlkit.vision.barcode.common.Barcode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -12,22 +13,19 @@ class LauncherViewModel : ViewModel(), AppNavigation {
     private val _isFrontCameraState: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isFrontCameraState = _isFrontCameraState.asStateFlow()
 
-    private val _isScanQRSuccessState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isScanQRSuccessState = _isScanQRSuccessState.asStateFlow()
-
-    private val _qrCodeResultState: MutableStateFlow<String> = MutableStateFlow("")
+    private val _qrCodeResultState: MutableStateFlow<Barcode?> = MutableStateFlow(null)
     val qrCodeResultState = _qrCodeResultState.asStateFlow()
 
     fun toggleTorch() {
         _enableTorchState.value = !_enableTorchState.value
     }
 
-    fun scanQRSuccess() {
-        _isScanQRSuccessState.value = true
+    fun scanQRSuccess(result: Barcode) {
+        _qrCodeResultState.value = result
     }
 
     fun resetScanQR() {
-        _isScanQRSuccessState.value = false
+        _qrCodeResultState.value = null
     }
 
     fun toggleCamera() {
