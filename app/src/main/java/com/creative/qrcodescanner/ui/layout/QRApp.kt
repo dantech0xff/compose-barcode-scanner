@@ -100,9 +100,9 @@ fun QRApp(vm: LauncherViewModel, appNav: AppNavigation) {
                 .fillMaxSize()
                 .background(Color.Black)
         ) {
-            if (cameraPermissionState.status.isGranted) {
+            if (cameraPermissionState.status.isGranted && qrCodeResult == null) {
                 CameraView(cameraController)
-            } else {
+            } else if(!cameraPermissionState.status.isGranted) {
                 Column(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalAlignment = Alignment.CenterHorizontally,
