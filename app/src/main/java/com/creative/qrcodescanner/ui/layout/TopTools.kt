@@ -16,7 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.creative.qrcodescanner.AppNavigation
+import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
 
@@ -24,7 +24,7 @@ val topIconSize = 32.dp
 val topIconPadding = 4.dp
 
 @Composable
-fun TopTools(modifier: Modifier, appNav: AppNavigation, vm: LauncherViewModel) {
+fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewModel) {
 
     val isFrontCamera = vm.isFrontCameraState.collectAsStateWithLifecycle()
 
@@ -42,7 +42,7 @@ fun TopTools(modifier: Modifier, appNav: AppNavigation, vm: LauncherViewModel) {
                 .size(topIconSize)
                 .padding(topIconPadding)
                 .clickable {
-                    appNav.openHome()
+                    appNav.navigate(AppScreen.MAIN.value)
                 }
         )
 
@@ -85,7 +85,7 @@ fun TopTools(modifier: Modifier, appNav: AppNavigation, vm: LauncherViewModel) {
                 .size(topIconSize)
                 .padding(topIconPadding)
                 .clickable {
-                    appNav.openSetting()
+                    appNav.navigate(AppScreen.SETTING.value)
                 }
         )
     }

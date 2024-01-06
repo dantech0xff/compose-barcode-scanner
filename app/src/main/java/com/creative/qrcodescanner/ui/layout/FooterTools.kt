@@ -14,11 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.AppNavigation
 import com.creative.qrcodescanner.R
 
 @Composable
-fun BoxScope.FooterTools(appNav: AppNavigation) {
+fun BoxScope.FooterTools(appNav: NavHostController) {
     Image(
         painter = painterResource(id = R.drawable.add_photo_alternate),
         contentDescription = "Gallery Picker",
@@ -30,7 +31,7 @@ fun BoxScope.FooterTools(appNav: AppNavigation) {
             .background(color = Color(0x901c1c1c), shape = CircleShape)
             .padding(12.dp)
             .clickable {
-                appNav.openGallery()
+                appNav.navigate(AppScreen.GALLERY.value)
             }
     )
 
@@ -45,7 +46,7 @@ fun BoxScope.FooterTools(appNav: AppNavigation) {
             .background(color = Color(0x901c1c1c), shape = CircleShape)
             .padding(12.dp)
             .clickable {
-                appNav.openHistory()
+                appNav.navigate(AppScreen.HISTORY.value)
             }
     )
 }
