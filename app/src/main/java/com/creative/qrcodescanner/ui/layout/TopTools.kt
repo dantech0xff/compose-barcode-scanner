@@ -33,7 +33,7 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Image(
+        /*Image(
             painter = painterResource(id = R.drawable.home),
             contentDescription = "Home Button",
             contentScale = ContentScale.Inside,
@@ -44,7 +44,7 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
                 .clickable {
                     appNav.navigate(AppScreen.MAIN.value)
                 }
-        )
+        )*/
 
         Image(
             painter = painterResource(id = R.drawable.flash_off),

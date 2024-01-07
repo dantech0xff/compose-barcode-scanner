@@ -1,7 +1,6 @@
-package com.creative.qrcodescanner.ui.layout
+package com.creative.qrcodescanner.ui.result
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.icu.util.Calendar
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -33,12 +32,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.creative.qrcodescanner.AppNavigation
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.creative.qrcodescanner.R
 import com.google.mlkit.vision.barcode.common.Barcode
 
 @Composable
-fun QRCodeResults(data: QRCodeRawData?, dismiss: (() -> Unit)) {
+fun QRCodeResults(data: QRCodeRawData?, appNav: NavHostController, dismiss: (() -> Unit) = {}) {
     Scaffold(
         topBar = {
             Box(
@@ -58,8 +58,10 @@ fun QRCodeResults(data: QRCodeRawData?, dismiss: (() -> Unit)) {
                     .wrapContentHeight()
                     .padding(8.dp)
                     .background(Color.Blue, shape = RoundedCornerShape(8.dp))
-                    .padding(24.dp, 18.dp).clickable {
-                        dismiss()
+                    .padding(24.dp, 18.dp)
+                    .clickable {
+                        appNav.popBackStack()
+                        dismiss.invoke()
                     }
             ) {
                 Text(text = "Continue to Scan", modifier = Modifier.align(Alignment.Center), color = Color.White)
@@ -170,7 +172,10 @@ fun QRCodeResults(data: QRCodeRawData?, dismiss: (() -> Unit)) {
                     bitmap = (data?.qrCodeBitmap ?: Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888)).asImageBitmap(),
                     contentDescription = "QR",
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier.padding(vertical = 8.dp).size(256.dp).clip(RoundedCornerShape(8.dp))
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .size(256.dp)
+                        .clip(RoundedCornerShape(8.dp))
                 )
 
                 Box(
@@ -198,7 +203,7 @@ fun QRCodeResultsPreview() {
         scanDate = "2023/12/31 12:00",
         rawData = "https://www.google.com",
         qrCodeBitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888)
-    ), dismiss = {})
+    ), rememberNavController())
 }
 
 data class QRCodeRawData(

@@ -38,9 +38,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.layout.AppScreen
 import com.creative.qrcodescanner.ui.layout.CameraView
 import com.creative.qrcodescanner.ui.layout.FooterTools
-import com.creative.qrcodescanner.ui.layout.QRCodeResults
+import com.creative.qrcodescanner.ui.result.QRCodeResults
 import com.creative.qrcodescanner.ui.layout.TopTools
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -84,10 +85,14 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
                             val scanner = BarcodeScanning.getClient()
                             scanner.process(image)
                                 .addOnSuccessListener { barcodes ->
+                                    if (barcodes.isEmpty()) {
+                                        return@addOnSuccessListener
+                                    }
                                     barcodes.forEach { barcode ->
-                                        if (barcode.rawValue != null) {
+                                        if (barcode.rawValue != null && vm.qrCodeResultState.value == null) {
                                             Log.d("QRAppResult", "${barcode.rawValue}")
                                             vm.scanQRSuccess(barcode)
+                                            appNavHost.navigate(AppScreen.RESULT.value)
                                         }
                                     }
                                 }
@@ -146,23 +151,6 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
             )
 
             FooterTools(appNavHost)
-        }
-
-        AnimatedVisibility(
-            visible = qrCodeResult != null,
-            enter = fadeIn(animationSpec = tween(500)),
-            exit = fadeOut(animationSpec = tween(500))
-        ) {
-            Box(
-                modifier = Modifier
-                    .safeDrawingPadding()
-                    .padding(12.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            ) {
-                QRCodeResults(data = qrCodeResult, dismiss = {
-                    vm.resetScanQR()
-                })
-            }
         }
     }
 }
