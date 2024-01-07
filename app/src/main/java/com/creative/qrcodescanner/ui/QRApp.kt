@@ -30,7 +30,7 @@ import com.creative.qrcodescanner.ui.setting.SettingScreenLayout
 @Composable
 fun QRApp(vm: LauncherViewModel = viewModel(),
           appNavHost: NavHostController = rememberNavController()) {
-    val qrCodeResult by vm.qrCodeResultState.collectAsStateWithLifecycle()
+    val qrCodeResult by vm.qrCodeResultState.collectAsStateWithLifecycle(null)
 
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle

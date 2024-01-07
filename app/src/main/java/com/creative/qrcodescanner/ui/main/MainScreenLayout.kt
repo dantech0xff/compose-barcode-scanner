@@ -1,6 +1,11 @@
 package com.creative.qrcodescanner.ui.main
 
 import android.Manifest
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
@@ -19,7 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +34,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
@@ -39,6 +44,8 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.flow.collectLatest
+
 
 /**
  * Created by dan on 07/01/2024
@@ -53,51 +60,65 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
     val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
 
-    val isFrontCamera by vm.isFrontCameraState.collectAsStateWithLifecycle()
-    val enableTorch by vm.enableTorchState.collectAsStateWithLifecycle()
-    val qrCodeResult by vm.qrCodeResultState.collectAsStateWithLifecycle()
-
     val cameraController: LifecycleCameraController = remember { LifecycleCameraController(context) }.apply {
         bindToLifecycle(LocalLifecycleOwner.current)
-        cameraSelector = if (isFrontCamera) {
-            CameraSelector.DEFAULT_FRONT_CAMERA
-        } else {
-            CameraSelector.DEFAULT_BACK_CAMERA
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.isFrontCameraState.collectLatest {
+            cameraController.cameraSelector = if (it) {
+                CameraSelector.DEFAULT_FRONT_CAMERA
+            } else {
+                CameraSelector.DEFAULT_BACK_CAMERA
+            }
         }
-        enableTorch(enableTorch)
-        if (qrCodeResult != null) {
-            Log.d("QRAppResult", "clearImageAnalysisAnalyzer")
-            clearImageAnalysisAnalyzer()
-        } else {
-            setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
-                imageProxy.image?.let {
-                    InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
-                        .let { image ->
-                            val scanner = BarcodeScanning.getClient()
-                            scanner.process(image)
-                                .addOnSuccessListener { barcodes ->
-                                    if (barcodes.isEmpty()) {
-                                        return@addOnSuccessListener
-                                    }
-                                    barcodes.forEach { barcode ->
-                                        if (barcode.rawValue != null && vm.qrCodeResultState.value == null) {
-                                            Log.d("QRAppResult", "${barcode.rawValue}")
-                                            vm.scanQRSuccess(barcode)
-                                            appNavHost.navigate(AppScreen.RESULT.value)
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.enableTorchState.collectLatest {
+            cameraController.enableTorch(it)
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.qrCodeResultState.collectLatest { qrCodeResult ->
+            Log.d("QRAppResult", "CollectQRCodeResult: $qrCodeResult")
+            if (qrCodeResult != null) {
+                cameraController.clearImageAnalysisAnalyzer()
+                appNavHost.navigate(AppScreen.RESULT.value)
+                if (vm.isEnableVibrate()) {
+                    context.vibrate(200L)
+                }
+            } else {
+                cameraController.setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
+                    imageProxy.image?.let {
+                        InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
+                            .let { image ->
+                                val scanner = BarcodeScanning.getClient()
+                                scanner.process(image)
+                                    .addOnSuccessListener { barcodes ->
+                                        if (barcodes.isEmpty()) {
+                                            return@addOnSuccessListener
+                                        }
+                                        barcodes.forEach { barcode ->
+                                            if (barcode.rawValue != null) {
+                                                vm.scanQRSuccess(barcode)
+                                            }
                                         }
                                     }
-                                }
-                                .addOnFailureListener { exception ->
-                                    exception.printStackTrace()
-                                }
-                                .addOnCompleteListener {
-                                    imageProxy.close()
-                                }
-                        }
+                                    .addOnFailureListener { exception ->
+                                        exception.printStackTrace()
+                                    }
+                                    .addOnCompleteListener {
+                                        imageProxy.close()
+                                    }
+                            }
+                    }
                 }
             }
         }
     }
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -105,9 +126,9 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
                 .fillMaxSize()
                 .background(Color.Black)
         ) {
-            if (cameraPermissionState.status.isGranted && qrCodeResult == null) {
+            if (cameraPermissionState.status.isGranted) {
                 CameraView(cameraController)
-            } else if (!cameraPermissionState.status.isGranted) {
+            } else {
                 Column(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -143,5 +164,14 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
 
             FooterTools(appNavHost)
         }
+    }
+}
+
+fun Context.vibrate(milliseconds: Long) {
+    val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        v?.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE))
+    } else {
+        v?.vibrate(milliseconds)
     }
 }

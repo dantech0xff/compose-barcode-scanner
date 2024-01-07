@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.shareIn
 
 class LauncherViewModel : ViewModel() {
@@ -20,7 +21,9 @@ class LauncherViewModel : ViewModel() {
     val isFrontCameraState = _isFrontCameraState.asStateFlow()
 
     private val _qrCodeResultState: MutableStateFlow<QRCodeRawData?> = MutableStateFlow(null)
-    val qrCodeResultState = _qrCodeResultState.asStateFlow()
+    val qrCodeResultState = _qrCodeResultState.asStateFlow().distinctUntilChanged { old, new ->
+        old?.rawData == new?.rawData
+    }
 
     private val _openUrlSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
     val openUrlState = _openUrlSharedFlow.asSharedFlow()
@@ -101,4 +104,6 @@ class LauncherViewModel : ViewModel() {
             }
         }
     }
+
+    fun isEnableVibrate() = true
 }
