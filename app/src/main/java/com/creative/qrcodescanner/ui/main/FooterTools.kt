@@ -25,14 +25,13 @@ fun BoxScope.FooterTools(appNav: NavHostController) {
         contentDescription = "Gallery Picker",
         contentScale = ContentScale.Inside,
         modifier = Modifier
+            .clickable {}
             .align(Alignment.BottomStart)
             .padding(16.dp)
             .size(64.dp)
             .background(color = Color(0x901c1c1c), shape = CircleShape)
             .padding(12.dp)
-            .clickable {
-                appNav.navigate(AppScreen.GALLERY.value)
-            }
+
     )
 
     Image(
@@ -40,13 +39,14 @@ fun BoxScope.FooterTools(appNav: NavHostController) {
         contentDescription = "History Picker",
         contentScale = ContentScale.Inside,
         modifier = Modifier
+            .clickable {
+                appNav.navigate(AppScreen.HISTORY.value)
+            }
             .align(Alignment.BottomEnd)
             .padding(16.dp)
             .size(64.dp)
             .background(color = Color(0x901c1c1c), shape = CircleShape)
             .padding(12.dp)
-            .clickable {
-                appNav.navigate(AppScreen.HISTORY.value)
-            }
+
     )
 }

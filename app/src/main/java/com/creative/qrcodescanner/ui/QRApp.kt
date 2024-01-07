@@ -21,8 +21,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.history.HistoryScreenLayout
 import com.creative.qrcodescanner.ui.main.MainScreenLayout
+import com.creative.qrcodescanner.ui.premium.PremiumScreenLayout
 import com.creative.qrcodescanner.ui.result.QRCodeResultLayout
+import com.creative.qrcodescanner.ui.setting.SettingScreenLayout
 
 @Composable
 fun QRApp(vm: LauncherViewModel = viewModel(),
@@ -95,6 +98,15 @@ fun QRApp(vm: LauncherViewModel = viewModel(),
                 barCode?.let { vm.handleBarcodeResult(it) }
             })
         }
+        composable(route = AppScreen.SETTING.value) {
+            SettingScreenLayout()
+        }
+        composable(route = AppScreen.HISTORY.value) {
+            HistoryScreenLayout()
+        }
+        composable(route = AppScreen.PREMIUM.value) {
+            PremiumScreenLayout()
+        }
     }
 }
 
@@ -102,7 +114,6 @@ enum class AppScreen(val value: String) {
     MAIN("main"),
     SETTING("setting"),
     PREMIUM("premium"),
-    GALLERY("gallery"),
     HISTORY("history"),
     RESULT("result")
 }

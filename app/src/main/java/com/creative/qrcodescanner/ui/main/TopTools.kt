@@ -34,33 +34,20 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        /*Image(
-            painter = painterResource(id = R.drawable.home),
-            contentDescription = "Home Button",
-            contentScale = ContentScale.Inside,
-            modifier = Modifier
-                .background(color = Color.Transparent, shape = CircleShape)
-                .size(topIconSize)
-                .padding(topIconPadding)
-                .clickable {
-                    appNav.navigate(AppScreen.MAIN.value)
-                }
-        )*/
-
         Image(
             painter = painterResource(id = R.drawable.flash_off),
             contentDescription = "Flash Light Button",
             contentScale = ContentScale.Inside,
             modifier = Modifier
                 .background(color = Color.Transparent, shape = CircleShape)
-                .size(topIconSize)
-                .padding(topIconPadding)
                 .clickable(!isFrontCamera.value) {
                     if (isFrontCamera.value) {
                         return@clickable
                     }
                     vm.toggleTorch()
-                },
+                }
+                .size(topIconSize)
+                .padding(topIconPadding),
             alpha = if (isFrontCamera.value) 0.5f else 1f
         )
 
@@ -70,11 +57,11 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
             contentScale = ContentScale.Inside,
             modifier = Modifier
                 .background(color = Color.Transparent, shape = CircleShape)
-                .size(topIconSize)
-                .padding(topIconPadding)
                 .clickable {
                     vm.toggleCamera()
                 }
+                .size(topIconSize)
+                .padding(topIconPadding)
         )
 
         Image(
@@ -83,11 +70,12 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
             contentScale = ContentScale.Inside,
             modifier = Modifier
                 .background(color = Color.Transparent, shape = CircleShape)
-                .size(topIconSize)
-                .padding(topIconPadding)
                 .clickable {
                     appNav.navigate(AppScreen.SETTING.value)
                 }
+                .size(topIconSize)
+                .padding(topIconPadding)
+
         )
     }
 }
