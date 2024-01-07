@@ -33,10 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
-import com.creative.qrcodescanner.ui.layout.AppScreen
-import com.creative.qrcodescanner.ui.layout.CameraView
-import com.creative.qrcodescanner.ui.layout.FooterTools
-import com.creative.qrcodescanner.ui.layout.TopTools
+import com.creative.qrcodescanner.ui.AppScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState

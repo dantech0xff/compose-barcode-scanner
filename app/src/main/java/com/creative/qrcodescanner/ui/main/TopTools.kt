@@ -1,4 +1,4 @@
-package com.creative.qrcodescanner.ui.layout
+package com.creative.qrcodescanner.ui.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.AppScreen
 
 val topIconSize = 32.dp
 val topIconPadding = 4.dp

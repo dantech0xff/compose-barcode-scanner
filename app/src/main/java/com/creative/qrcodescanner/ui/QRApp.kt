@@ -1,4 +1,4 @@
-package com.creative.qrcodescanner.ui.layout
+package com.creative.qrcodescanner.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -29,7 +29,9 @@ fun QRApp(vm: LauncherViewModel = viewModel(),
         composable(route = AppScreen.RESULT.value) {
             QRCodeResultLayout(qrCodeResult, appNavHost, {
                 vm.resetScanQR()
-            }, {})
+            }, {
+                
+            })
         }
     }
 }

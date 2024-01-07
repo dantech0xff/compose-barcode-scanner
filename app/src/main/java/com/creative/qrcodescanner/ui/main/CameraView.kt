@@ -1,4 +1,4 @@
-package com.creative.qrcodescanner.ui.layout
+package com.creative.qrcodescanner.ui.main
 
 import android.graphics.Color
 import android.view.ViewGroup

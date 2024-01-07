@@ -1,4 +1,4 @@
-package com.creative.qrcodescanner.ui.layout
+package com.creative.qrcodescanner.ui.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,8 +15,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.creative.qrcodescanner.AppNavigation
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.AppScreen
 
 @Composable
 fun BoxScope.FooterTools(appNav: NavHostController) {
