@@ -27,5 +27,10 @@
     <string name="call">Call</string>
     <string name="send_sms">Send SMS</string>
     <string name="search_product">Search Product</string>
+    <string name="search">Search Google</string>
     <string name="qr_code_type">QR Code Type</string>
+    <string name="copied_to_clipboard">%1$s Copied to Clipboard!</string>
+    <string name="share">Share</string>
+    <string name="share_text">Share Text</string>
+    <string name="copy_text">Copy Text</string>
 </resources>

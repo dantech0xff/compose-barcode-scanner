@@ -2,6 +2,7 @@ package com.creative.qrcodescanner.ui.result
 
 import android.graphics.Bitmap
 import android.icu.util.Calendar
+import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -42,7 +43,17 @@ import com.creative.qrcodescanner.R
 import com.google.mlkit.vision.barcode.common.Barcode
 
 @Composable
-fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController, dismiss: (() -> Unit) = {}, callbackHandleQR: ((Barcode?) -> Unit)? = null) {
+fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
+                       dismiss: (() -> Unit) = {},
+                       callbackHandleQR: ((Barcode?) -> Unit) = {},
+                       callbackCopyRawValue: ((String) -> Unit) = {},
+                       callbackShareRawValue: ((String) -> Unit) = {}
+) {
+    BackHandler {
+        appNav.popBackStack()
+        dismiss.invoke()
+    }
+
     Scaffold(
         topBar = {
             Box(
@@ -146,13 +157,13 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController, dismiss:
                     .fillMaxWidth()
                     .background(Color.Blue, shape = RoundedCornerShape(8.dp))
                     .clickable {
-                        callbackHandleQR?.invoke(data?.barcode)
+                        callbackHandleQR.invoke(data?.barcode)
                     }
                     .padding(12.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = stringResource(id = data?.ctaHandleStringRes ?: R.string.copy), modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = data?.ctaHandleStringRes ?: R.string.copy).uppercase(), modifier = Modifier.align(Alignment.Center),
                     textAlign = TextAlign.Center, color = Color.White
                 )
             }
@@ -167,12 +178,14 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController, dismiss:
                     modifier = Modifier
                         .wrapContentHeight()
                         .background(Color.Blue, shape = RoundedCornerShape(8.dp))
-                        .clickable {  }
+                        .clickable {
+                            callbackCopyRawValue.invoke(data?.rawData.orEmpty())
+                        }
                         .padding(12.dp)
                         .weight(1f)
                 ) {
                     Text(
-                        text = "COPY", modifier = Modifier.align(Alignment.Center),
+                        text = stringResource(R.string.copy_text).uppercase(), modifier = Modifier.align(Alignment.Center),
                         textAlign = TextAlign.Center, color = Color.White
                     )
                 }
@@ -180,12 +193,14 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController, dismiss:
                     modifier = Modifier
                         .wrapContentHeight()
                         .background(Color.Blue, shape = RoundedCornerShape(8.dp))
-                        .clickable {  }
+                        .clickable {
+                            callbackShareRawValue.invoke(data?.rawData.orEmpty())
+                        }
                         .padding(12.dp)
                         .weight(1f)
                 ) {
                     Text(
-                        text = "SHARE", modifier = Modifier.align(Alignment.Center),
+                        text = stringResource(R.string.share_text).uppercase(), modifier = Modifier.align(Alignment.Center),
                         textAlign = TextAlign.Center, color = Color.White
                     )
                 }
@@ -259,15 +274,15 @@ fun Barcode.toQRCodeRawData(): QRCodeRawData {
             Barcode.TYPE_CONTACT_INFO -> R.string.add_contact
             Barcode.TYPE_CALENDAR_EVENT -> R.string.add_calendar
             Barcode.TYPE_EMAIL -> R.string.send_email
-            Barcode.TYPE_GEO -> R.string.copy
+            Barcode.TYPE_GEO -> R.string.search
             Barcode.TYPE_PHONE -> R.string.call
             Barcode.TYPE_SMS -> R.string.send_sms
-            Barcode.TYPE_TEXT -> R.string.copy
-            Barcode.TYPE_DRIVER_LICENSE -> R.string.copy
-            Barcode.TYPE_PRODUCT -> R.string.search_product
-            Barcode.TYPE_ISBN -> R.string.search_product
-            Barcode.TYPE_UNKNOWN -> R.string.copy
-            else -> R.string.copy
+            Barcode.TYPE_TEXT -> R.string.search
+            Barcode.TYPE_DRIVER_LICENSE -> R.string.search
+            Barcode.TYPE_PRODUCT -> R.string.search
+            Barcode.TYPE_ISBN -> R.string.search
+            Barcode.TYPE_UNKNOWN -> R.string.search
+            else -> R.string.search
         },
         barcode = this
     )
