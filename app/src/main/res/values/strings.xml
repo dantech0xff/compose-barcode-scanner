@@ -1,5 +1,31 @@
 <resources>
-    <string name="app_name">QR Code Scanner</string>
+    <string name="app_name" translatable="false">QR Code Scanner</string>
     <string name="camera_permission_is_not_granted">Camera Permission Is Not Granted</string>
     <string name="click_to_grant_camera_permission">Click To Grant Camera Permission</string>
+    <string name="qr_code_result">QR Code Result</string>
+    <string name="continue_to_scan">Continue to Scan</string>
+    <string name="wifi">WIFI</string>
+    <string name="url">URL</string>
+    <string name="text">TEXT</string>
+    <string name="email">EMAIL</string>
+    <string name="phone">PHONE</string>
+    <string name="sms">SMS</string>
+    <string name="geo">GEO</string>
+    <string name="contact">CONTACT</string>
+    <string name="calendar">CALENDAR</string>
+    <string name="isbn">ISBN</string>
+    <string name="product">PRODUCT</string>
+    <string name="driver_license">DRIVER LICENSE</string>
+    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="scan_bar_code">Scan Bar Code</string>
+    <string name="open_in_browser">Open in Browser</string>
+    <string name="copy_password">Copy Wifi Password</string>
+    <string name="add_contact">Add Contact</string>
+    <string name="add_calendar">Add Calendar</string>
+    <string name="send_email">Send Email</string>
+    <string name="copy">Copy</string>
+    <string name="call">Call</string>
+    <string name="send_sms">Send SMS</string>
+    <string name="search_product">Search Product</string>
+    <string name="qr_code_type">QR Code Type</string>
 </resources>

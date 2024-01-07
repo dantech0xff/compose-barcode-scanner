@@ -5,11 +5,7 @@ import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.view.LifecycleCameraController
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -41,7 +36,6 @@ import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.layout.AppScreen
 import com.creative.qrcodescanner.ui.layout.CameraView
 import com.creative.qrcodescanner.ui.layout.FooterTools
-import com.creative.qrcodescanner.ui.result.QRCodeResults
 import com.creative.qrcodescanner.ui.layout.TopTools
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
