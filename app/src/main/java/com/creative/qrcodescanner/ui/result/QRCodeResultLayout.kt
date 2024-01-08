@@ -80,9 +80,9 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                     .clickable {
                         appNav.popBackStack()
                         dismiss.invoke()
-                    }
+                    }.padding(horizontal = 16.dp, vertical = 12.dp)
                     .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 0.dp, vertical = 12.dp)
+                    .padding(12.dp)
             ) {
                 Row(
                     modifier = Modifier
