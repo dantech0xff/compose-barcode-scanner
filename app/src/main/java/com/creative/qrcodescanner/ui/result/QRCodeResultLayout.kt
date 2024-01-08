@@ -150,14 +150,6 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
-            ) {
-                Text(text = "Ad Region")
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                     .clickable {
                         callbackHandleQR.invoke(data?.barcode)

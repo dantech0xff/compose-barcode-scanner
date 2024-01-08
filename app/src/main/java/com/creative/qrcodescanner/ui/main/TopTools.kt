@@ -21,7 +21,7 @@ import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.AppScreen
 
-val topIconSize = 32.dp
+val topIconSize = 38.dp
 val topIconPadding = 4.dp
 
 @Composable
