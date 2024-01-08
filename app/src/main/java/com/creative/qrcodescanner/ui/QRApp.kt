@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.withResumed
@@ -83,6 +84,17 @@ fun QRApp(vm: LauncherViewModel = viewModel(),
         }
     })
 
+    LaunchedEffect(key1 = Unit) {
+        vm.textShareActionState.collect {
+            Log.d("QRApp", "textShareActionState: $it")
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, it)
+            }
+            context.startActivity(Intent.createChooser(intent, context.getString(R.string.share)))
+        }
+    }
+
     NavHost(
         navController = appNavHost,
         modifier = Modifier.fillMaxSize(),
@@ -96,6 +108,12 @@ fun QRApp(vm: LauncherViewModel = viewModel(),
                 vm.resetScanQR()
             }, { barCode ->
                 barCode?.let { vm.handleBarcodeResult(it) }
+            }, {
+                // handle copy
+               vm.handleCopyText(it)
+            }, {
+                // handle share
+                vm.handleShareText(it)
             })
         }
         composable(route = AppScreen.SETTING.value) {

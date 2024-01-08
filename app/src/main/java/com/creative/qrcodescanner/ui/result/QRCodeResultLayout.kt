@@ -12,15 +12,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,12 +38,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.theme.fontSize
 import com.google.mlkit.vision.barcode.common.Barcode
 
 @Composable
@@ -56,16 +59,16 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
 
     Scaffold(
         topBar = {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(Color.Blue, shape = RectangleShape)
-                    .safeDrawingPadding()
+                    .background(MaterialTheme.colorScheme.primary, shape = RectangleShape)
             ) {
+                Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+
                 Text(text = stringResource(R.string.qr_code_result),
-                    modifier = Modifier.align(Alignment.Center),
-                    color = Color.White)
+                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(12.dp),
+                    color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.bodyLarge)
             }
         },
         bottomBar = {
@@ -78,7 +81,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                         appNav.popBackStack()
                         dismiss.invoke()
                     }
-                    .background(Color.Blue, shape = RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 0.dp, vertical = 12.dp)
             ) {
                 Row(
@@ -93,7 +96,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                         painter = painterResource(id = R.drawable.icon_qr_white),
                         contentDescription = stringResource(id = R.string.continue_to_scan),
                         modifier = Modifier.size(28.dp))
-                    Text(text = stringResource(R.string.continue_to_scan), color = Color.White)
+                    Text(text = stringResource(R.string.continue_to_scan), color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.titleLarge)
                 }
             }
         }
@@ -119,7 +122,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                     contentDescription = stringResource(R.string.qr_code_type),
                     modifier = Modifier
                         .size(64.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(8.dp)).padding(6.dp)
                 )
 
                 Column(
@@ -127,10 +130,10 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                         .fillMaxWidth()
                         .wrapContentHeight(),
                     horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
-                    Text(text = data?.typeStringRes?.let { stringResource(it) }.orEmpty())
-                    Text(text = data?.scanDate.orEmpty(), fontSize = TextUnit(14F, TextUnitType.Sp), color = Color.Gray)
+                    Text(text = data?.typeStringRes?.let { stringResource(it) }.orEmpty(), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                    Text(text = data?.scanDate.orEmpty(), fontSize = fontSize.heading8, color = Color.Gray)
                 }
             }
 
@@ -155,7 +158,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Blue, shape = RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                     .clickable {
                         callbackHandleQR.invoke(data?.barcode)
                     }
@@ -164,7 +167,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
             ) {
                 Text(
                     text = stringResource(id = data?.ctaHandleStringRes ?: R.string.copy).uppercase(), modifier = Modifier.align(Alignment.Center),
-                    textAlign = TextAlign.Center, color = Color.White
+                    textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
@@ -177,7 +180,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                 Box(
                     modifier = Modifier
                         .wrapContentHeight()
-                        .background(Color.Blue, shape = RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                         .clickable {
                             callbackCopyRawValue.invoke(data?.rawData.orEmpty())
                         }
@@ -186,13 +189,13 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                 ) {
                     Text(
                         text = stringResource(R.string.copy_text).uppercase(), modifier = Modifier.align(Alignment.Center),
-                        textAlign = TextAlign.Center, color = Color.White
+                        textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
                 Box(
                     modifier = Modifier
                         .wrapContentHeight()
-                        .background(Color.Blue, shape = RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                         .clickable {
                             callbackShareRawValue.invoke(data?.rawData.orEmpty())
                         }
@@ -201,7 +204,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                 ) {
                     Text(
                         text = stringResource(R.string.share_text).uppercase(), modifier = Modifier.align(Alignment.Center),
-                        textAlign = TextAlign.Center, color = Color.White
+                        textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }

@@ -33,4 +33,5 @@
     <string name="share">Share</string>
     <string name="share_text">Share Text</string>
     <string name="copy_text">Copy Text</string>
+    <string name="share_with_param">Share %1$s</string>
 </resources>

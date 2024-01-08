@@ -37,6 +37,9 @@ class LauncherViewModel : ViewModel() {
     private val _textSearchGoogleSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
     val textSearchGoogleState = _textSearchGoogleSharedFlow.asSharedFlow()
 
+    private val _textShareActionSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
+    val textShareActionState = _textShareActionSharedFlow.asSharedFlow()
+
     fun toggleTorch() {
         _enableTorchState.value = !_enableTorchState.value
     }
@@ -103,6 +106,16 @@ class LauncherViewModel : ViewModel() {
                 // Handle Search Text in Google
             }
         }
+    }
+
+    fun handleCopyText(text: String) {
+        val tryEmit = _copyTextSharedFlow.tryEmit(text)
+        Log.d("QRApp", "copyTextState: tryEmit $tryEmit")
+    }
+
+    fun handleShareText(text: String) {
+        val tryEmit = _textShareActionSharedFlow.tryEmit(text)
+        Log.d("QRApp", "_textShareActionSharedFlow: tryEmit $tryEmit")
     }
 
     fun isEnableVibrate() = true
