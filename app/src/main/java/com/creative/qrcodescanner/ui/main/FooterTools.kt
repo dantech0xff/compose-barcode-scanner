@@ -19,7 +19,7 @@ import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.AppScreen
 
 @Composable
-fun BoxScope.FooterTools(appNav: NavHostController) {
+fun BoxScope.FooterTools(appNav: NavHostController, pickGallery: () -> Unit) {
     Image(
         painter = painterResource(id = R.drawable.add_photo_alternate),
         contentDescription = "Gallery Picker",
@@ -28,8 +28,10 @@ fun BoxScope.FooterTools(appNav: NavHostController) {
             .align(Alignment.BottomStart)
             .padding(16.dp)
             .size(64.dp)
+            .clickable {
+                pickGallery.invoke()
+            }
             .background(color = Color(0x901c1c1c), shape = CircleShape)
-            .clickable {}
             .padding(18.dp)
 
     )

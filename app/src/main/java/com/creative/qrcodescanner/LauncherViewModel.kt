@@ -1,5 +1,6 @@
 package com.creative.qrcodescanner
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.creative.qrcodescanner.ui.result.QRCodeRawData
@@ -25,6 +26,9 @@ class LauncherViewModel : ViewModel() {
         old?.rawData == new?.rawData
     }
 
+    private val _loadingState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val loadingState = _loadingState.asStateFlow()
+
     private val _openUrlSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
     val openUrlState = _openUrlSharedFlow.asSharedFlow()
 
@@ -39,6 +43,9 @@ class LauncherViewModel : ViewModel() {
 
     private val _textShareActionSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
     val textShareActionState = _textShareActionSharedFlow.asSharedFlow()
+
+    private val _galleryUriSharedFlow: MutableSharedFlow<Uri?> = MutableSharedFlow(extraBufferCapacity = 1)
+    val galleryUriState = _galleryUriSharedFlow.asSharedFlow()
 
     fun toggleTorch() {
         _enableTorchState.value = !_enableTorchState.value
@@ -116,6 +123,18 @@ class LauncherViewModel : ViewModel() {
     fun handleShareText(text: String) {
         val tryEmit = _textShareActionSharedFlow.tryEmit(text)
         Log.d("QRApp", "_textShareActionSharedFlow: tryEmit $tryEmit")
+    }
+
+    fun handleGalleryUri(uri: Uri?) {
+        val tryEmit = _galleryUriSharedFlow.tryEmit(uri)
+        Log.d("QRApp", "_galleryUriSharedFlow: tryEmit $tryEmit")
+    }
+
+    fun showLoading() {
+        _loadingState.value = true
+    }
+    fun hideLoading() {
+        _loadingState.value = false
     }
 
     fun isEnableVibrate() = true

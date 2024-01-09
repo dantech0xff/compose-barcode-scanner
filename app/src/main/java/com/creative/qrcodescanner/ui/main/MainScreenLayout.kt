@@ -6,11 +6,18 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.view.LifecycleCameraController
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +40,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
@@ -61,6 +69,34 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
 
     val cameraController: LifecycleCameraController = remember { LifecycleCameraController(context) }.apply {
         bindToLifecycle(LocalLifecycleOwner.current)
+    }
+
+    val galleryPicker = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia(), onResult = {
+        vm.handleGalleryUri(it)
+    })
+
+    LaunchedEffect(key1 = Unit) {
+        vm.galleryUriState.collectLatest { uri ->
+            if (uri != null) {
+                vm.showLoading()
+                BarcodeScanning.getClient().process(InputImage.fromFilePath(context, uri))
+                    .addOnSuccessListener { barcodes ->
+                        vm.hideLoading()
+                        if (barcodes.isEmpty()) {
+                            return@addOnSuccessListener
+                        }
+                        barcodes.forEach { barcode ->
+                            if (barcode.rawValue != null) {
+                                vm.scanQRSuccess(barcode)
+                            }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        vm.hideLoading()
+                        exception.printStackTrace()
+                    }
+            }
+        }
     }
 
     LaunchedEffect(key1 = Unit) {
@@ -161,7 +197,24 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
                 appNavHost, vm
             )
 
-            FooterTools(appNavHost)
+            FooterTools(appNavHost, pickGallery = {
+                galleryPicker.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            })
+        }
+
+        AnimatedVisibility(visible = vm.loadingState.collectAsStateWithLifecycle().value, enter = fadeIn(), exit = fadeOut()) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x901c1c1c))
+                .clickable { }) {
+                Text(
+                    text = stringResource(R.string.loading_qr_code_scanner_engine),
+                    modifier = Modifier.align(Alignment.Center),
+                    color = Color.White
+                )
+            }
         }
     }
 }
