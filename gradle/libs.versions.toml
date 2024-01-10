@@ -50,6 +50,7 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
 androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room_version" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -3,6 +3,7 @@ package com.creative.qrcodescanner
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.creative.qrcodescanner.data.QRAppDatabase
 import com.creative.qrcodescanner.ui.result.QRCodeRawData
 import com.creative.qrcodescanner.ui.result.toQRCodeRawData
 import com.google.mlkit.vision.barcode.common.Barcode
