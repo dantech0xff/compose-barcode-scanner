@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.devtools.ksp")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -81,6 +83,9 @@ dependencies {
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
 
+    implementation(libs.google.dagger.hilt.android)
+    kapt(libs.google.dagger.hilt.android.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -88,4 +93,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+kapt {
+    correctErrorTypes = true
 }

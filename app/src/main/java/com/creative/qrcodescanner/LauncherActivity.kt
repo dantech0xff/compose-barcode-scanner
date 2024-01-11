@@ -9,7 +9,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.creative.qrcodescanner.ui.QRApp
 import com.creative.qrcodescanner.ui.theme.QRCodeScannerTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LauncherActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
