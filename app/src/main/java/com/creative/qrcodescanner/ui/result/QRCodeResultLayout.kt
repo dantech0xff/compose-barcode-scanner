@@ -77,11 +77,12 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                     .safeContentPadding()
                     .fillMaxWidth()
                     .wrapContentHeight()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                     .clickable {
                         appNav.popBackStack()
                         dismiss.invoke()
-                    }.padding(horizontal = 16.dp, vertical = 12.dp)
-                    .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+                    }
                     .padding(12.dp)
             ) {
                 Row(

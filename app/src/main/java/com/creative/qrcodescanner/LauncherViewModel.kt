@@ -3,7 +3,6 @@ package com.creative.qrcodescanner
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.creative.qrcodescanner.data.QRAppDatabase
 import com.creative.qrcodescanner.ui.result.QRCodeRawData
 import com.creative.qrcodescanner.ui.result.toQRCodeRawData
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -13,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.shareIn
 import javax.inject.Inject
 
 @HiltViewModel

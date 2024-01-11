@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
 import com.creative.qrcodescanner.data.entity.QRCodeEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by dan on 10/01/2024
@@ -21,6 +22,9 @@ interface QRCodeEntityDAO {
 
     @Query("SELECT * FROM QRCodeEntity ORDER BY scan_date_time_millis DESC")
     suspend fun getAllQRCodeEntity(): List<QRCodeEntity>
+
+    @Query("SELECT * FROM QRCodeEntity ORDER BY scan_date_time_millis DESC")
+    fun getAllQRCodeEntityFlow(): Flow<List<QRCodeEntity>>
 
     @Query("SELECT * FROM QRCodeEntity WHERE id = :id")
     suspend fun getQRCodeEntityById(id: Int): QRCodeEntity

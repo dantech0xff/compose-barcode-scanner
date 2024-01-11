@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.withResumed
@@ -29,7 +29,7 @@ import com.creative.qrcodescanner.ui.result.QRCodeResultLayout
 import com.creative.qrcodescanner.ui.setting.SettingScreenLayout
 
 @Composable
-fun QRApp(vm: LauncherViewModel = viewModel(),
+fun QRApp(vm: LauncherViewModel = hiltViewModel(),
           appNavHost: NavHostController = rememberNavController()) {
     val qrCodeResult by vm.qrCodeResultState.collectAsStateWithLifecycle(null)
 
@@ -120,7 +120,7 @@ fun QRApp(vm: LauncherViewModel = viewModel(),
             SettingScreenLayout()
         }
         composable(route = AppScreen.HISTORY.value) {
-            HistoryScreenLayout()
+            HistoryScreenLayout(appNav = appNavHost)
         }
         composable(route = AppScreen.PREMIUM.value) {
             PremiumScreenLayout()

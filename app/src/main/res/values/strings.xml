@@ -36,4 +36,5 @@
     <string name="share_with_param">Share %1$s</string>
     <string name="again_to_exit">Again to exit!</string>
     <string name="loading_qr_code_scanner_engine">Loading QR Code Scanner Engine...</string>
+    <string name="qr_code_history">QR Code History</string>
 </resources>
