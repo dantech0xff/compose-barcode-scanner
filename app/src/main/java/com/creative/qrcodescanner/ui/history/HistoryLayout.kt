@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,9 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.theme.fontSize
+import com.creative.qrcodescanner.usecase.QRCodeHistoryUIState
 
 /**
  * Created by dan on 07/01/2024
@@ -48,6 +51,9 @@ import com.creative.qrcodescanner.ui.theme.fontSize
 @Composable
 fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                         appNav: NavHostController) {
+
+    val qrCodeHistoryUIState by viewModel.qrCodeHistoryUIState.collectAsStateWithLifecycle()
+
     BackHandler {
         appNav.popBackStack()
     }
@@ -107,7 +113,11 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                 .fillMaxWidth()
                 .padding(paddingValues)
         ) {
-
+            if (qrCodeHistoryUIState is QRCodeHistoryUIState.Success) {
+                Text(text = (qrCodeHistoryUIState as QRCodeHistoryUIState.Success).data.size.toString(), textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.Center))
+            } else {
+                Text(text = "No data", textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.Center))
+            }
         }
     }
 }
