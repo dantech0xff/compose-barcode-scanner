@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -83,6 +84,7 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
                     .addOnSuccessListener { barcodes ->
                         vm.hideLoading()
                         if (barcodes.isEmpty()) {
+                            Toast.makeText(context, context.getString(R.string.no_qr_code_detected), Toast.LENGTH_SHORT).show()
                             return@addOnSuccessListener
                         }
                         barcodes.forEach { barcode ->
@@ -93,6 +95,7 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
                     }
                     .addOnFailureListener {
                         vm.hideLoading()
+                        Toast.makeText(context, context.getString(R.string.failed_to_scan_qr_code), Toast.LENGTH_SHORT).show()
                     }
             }
         }

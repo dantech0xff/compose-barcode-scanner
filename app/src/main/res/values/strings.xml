@@ -37,4 +37,6 @@
     <string name="again_to_exit">Again to exit!</string>
     <string name="loading_qr_code_scanner_engine">Loading QR Code Scanner Engine...</string>
     <string name="qr_code_history">QR Code History</string>
+    <string name="failed_to_scan_qr_code">Failed to scan QR code</string>
+    <string name="no_qr_code_detected">No QR Code detected!</string>
 </resources>
