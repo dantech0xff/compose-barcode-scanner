@@ -15,6 +15,7 @@ nav_compose_version = "2.7.6"
 room_version = "2.6.1"
 hilt_version = "2.48.1"
 hilt_nav_compose_version = "1.1.0"
+moshi_version = "1.14.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -57,6 +58,9 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 google-dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt_version" }
 google-dagger-hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt_version" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt_nav_compose_version" }
+
+squareup-moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi_version" }
+squareup-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi_version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
