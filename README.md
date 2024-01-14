@@ -8,7 +8,7 @@ Feel free to use it in your project.
 
 - [x] Scanning multiple types of QR Code, Bar Code, ... with the power of Google MLKit
 - [x] Pick image from gallery and scan QR Code from it
-- [ ] Historize your QR Codes
+- [x] Historize your QR Codes
 - [ ] Generate QR Code from your content
 - [ ] Beautify your QR Code
 
@@ -20,8 +20,8 @@ Feel free to use it in your project.
 - [x] ML Kit
 - [x] SharedFlow
 - [x] StateFlow
-- [ ] Hilt
-- [ ] Coroutines
+- [x] Hilt
+- [x] Coroutines
 - [ ] Coil
 - [ ] Unit Test
 - [ ] UI Test
