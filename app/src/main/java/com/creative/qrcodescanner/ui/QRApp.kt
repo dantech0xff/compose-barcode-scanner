@@ -61,12 +61,12 @@ fun QRApp(vm: LauncherViewModel = hiltViewModel(),
             Log.d("QRApp", "contactInfoState: $it")
             val intent = Intent(Intent.ACTION_INSERT).apply {
                 type = ContactsContract.Contacts.CONTENT_TYPE
-                putExtra(ContactsContract.Intents.Insert.NAME, it.name?.formattedName)
-                putExtra(ContactsContract.Intents.Insert.EMAIL, it.emails.firstOrNull()?.address)
-                putExtra(ContactsContract.Intents.Insert.PHONE, it.phones.firstOrNull()?.number)
+                putExtra(ContactsContract.Intents.Insert.NAME, it.name)
+                putExtra(ContactsContract.Intents.Insert.EMAIL, it.email?.firstOrNull())
+                putExtra(ContactsContract.Intents.Insert.PHONE, it.phone?.firstOrNull())
                 putExtra(ContactsContract.Intents.Insert.COMPANY, it.organization)
                 putExtra(ContactsContract.Intents.Insert.JOB_TITLE, it.title)
-                putExtra(ContactsContract.Intents.Insert.NOTES, it.urls.firstOrNull())
+                putExtra(ContactsContract.Intents.Insert.NOTES, it.urls?.firstOrNull())
             }
             context.startActivity(intent)
         }
@@ -88,6 +88,23 @@ fun QRApp(vm: LauncherViewModel = hiltViewModel(),
                 putExtra(Intent.EXTRA_TEXT, it)
             }
             context.startActivity(Intent.createChooser(intent, context.getString(R.string.share)))
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.callPhoneActionState.collect {
+            Log.d("QRApp", "callPhoneActionState: $it")
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$it"))
+            context.startActivity(intent)
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.sendSMSActionState.collect {
+            Log.d("QRApp", "sendSMSActionState: $it")
+            val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:${it.number}"))
+            intent.putExtra("sms_body", it.message)
+            context.startActivity(intent)
         }
     }
 

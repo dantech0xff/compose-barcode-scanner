@@ -3,7 +3,9 @@ package com.creative.qrcodescanner.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
 
 @Entity
 data class QRCodeEntity(
@@ -75,3 +77,72 @@ data class QRCodeSMS(
     val number: String? = null,
     val message: String? = null
 )
+
+fun Barcode.toQRCodeEntity(): QRCodeEntity {
+    val moshi = Moshi.Builder().build()
+    return QRCodeEntity(
+        rawData = rawValue,
+        qrType = if (rawValue?.matches(Regex("[a-zA-Z]+://.*")) == true) Barcode.TYPE_URL else valueType,
+        qrDetails = when (valueType) {
+            Barcode.TYPE_TEXT, Barcode.TYPE_UNKNOWN -> {
+                if (rawValue?.matches(Regex("[a-zA-Z]+://.*")) == true) {
+                    moshi.adapter(QRCodeURL::class.java).toJson(QRCodeURL(url = rawValue))
+                } else {
+                    "{}"
+                }
+            }
+
+            Barcode.TYPE_URL -> {
+                moshi.adapter(QRCodeURL::class.java).toJson(QRCodeURL(url = url?.url))
+            }
+
+            Barcode.TYPE_WIFI -> {
+                moshi.adapter(QRCodeWifi::class.java).toJson(
+                    QRCodeWifi(
+                        pass = wifi?.password,
+                        ssid = wifi?.ssid,
+                        encryptionType = wifi?.encryptionType
+                    )
+                )
+            }
+
+            Barcode.TYPE_CONTACT_INFO -> {
+                moshi.adapter(QRCodeContact::class.java).toJson(
+                    QRCodeContact(
+                        name = contactInfo?.name?.formattedName,
+                        organization = contactInfo?.organization,
+                        title = contactInfo?.title,
+                        email = contactInfo?.emails?.map { it.address },
+                        address = contactInfo?.addresses?.map { it.addressLines.joinToString() },
+                        phone = contactInfo?.phones?.map { it.number },
+                        urls = contactInfo?.urls
+                    )
+                )
+            }
+
+            Barcode.TYPE_PHONE -> {
+                moshi.adapter(QRCodePhone::class.java).toJson(
+                    QRCodePhone(
+                        number = phone?.number
+                    )
+                )
+            }
+
+            Barcode.TYPE_SMS -> {
+                moshi.adapter(QRCodeSMS::class.java).toJson(
+                    QRCodeSMS(
+                        number = sms?.phoneNumber,
+                        message = sms?.message
+                    )
+                )
+            }
+
+            else -> {
+                "{}"
+            }
+        },
+        scanDateTimeMillis = System.currentTimeMillis(),
+        isFavorite = false,
+        isScanned = true
+    )
+}

@@ -18,7 +18,7 @@
     <string name="driver_license">DRIVER LICENSE</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="scan_bar_code">Scan Bar Code</string>
-    <string name="open_in_browser">Open in Browser</string>
+    <string name="open_in_browser">Open the link</string>
     <string name="copy_password">Copy Wifi Password</string>
     <string name="add_contact">Add Contact</string>
     <string name="add_calendar">Add Calendar</string>
