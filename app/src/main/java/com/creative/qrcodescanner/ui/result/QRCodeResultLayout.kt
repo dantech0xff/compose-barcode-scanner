@@ -28,6 +28,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,19 +41,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.ui.theme.fontSize
 import com.google.mlkit.vision.barcode.common.Barcode
+import java.util.Date
 
 @Composable
-fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
+fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
+                       qrCodeResultViewModel: QRCodeResultViewModel,
                        dismiss: (() -> Unit) = {},
-                       callbackHandleQR: ((Barcode?) -> Unit) = {},
+                       callbackHandleQR: ((QRCodeRawData?) -> Unit) = {},
                        callbackCopyRawValue: ((String) -> Unit) = {},
                        callbackShareRawValue: ((String) -> Unit) = {}
 ) {
+    val uiState by qrCodeResultViewModel.qrCodeResultUIState.collectAsStateWithLifecycle(null)
+    val qrCodeRawData = (uiState as? QRCodeResultUIState.Success)?.qrCodeResult?.toQRCodeRawData()
+
+    LaunchedEffect(key1 = Unit) {
+        qrCodeResultViewModel.getQRCodeByRowId(dbRowId)
+    }
+
     BackHandler {
         appNav.popBackStack()
         dismiss.invoke()
@@ -67,7 +81,9 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                 Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
 
                 Text(text = stringResource(R.string.qr_code_result),
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(12.dp),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(12.dp),
                     color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.bodyLarge)
             }
         },
@@ -102,6 +118,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
             }
         }
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -119,11 +136,12 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = data?.typeIcon ?: R.drawable.icon_qr),
+                    painter = painterResource(id = qrCodeRawData?.typeIcon ?: R.drawable.icon_qr),
                     contentDescription = stringResource(R.string.qr_code_type),
                     modifier = Modifier
                         .size(64.dp)
-                        .clip(RoundedCornerShape(8.dp)).padding(6.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .padding(6.dp)
                 )
 
                 Column(
@@ -133,13 +151,13 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
-                    Text(text = data?.typeStringRes?.let { stringResource(it) }.orEmpty(), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
-                    Text(text = data?.scanDate.orEmpty(), fontSize = fontSize.heading8, color = Color.Gray)
+                    Text(text = qrCodeRawData?.typeStringRes?.let { stringResource(it) }.orEmpty(), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                    Text(text = qrCodeRawData?.scanDate.orEmpty(), fontSize = fontSize.heading8, color = Color.Gray)
                 }
             }
 
             Text(
-                text = data?.rawData.orEmpty(),
+                text = qrCodeRawData?.rawData.orEmpty(),
                 modifier = Modifier
                     .align(Alignment.Start)
                     .fillMaxWidth()
@@ -153,13 +171,13 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                     .clickable {
-                        callbackHandleQR.invoke(data?.barcode)
+                        callbackHandleQR.invoke(qrCodeRawData)
                     }
                     .padding(12.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = stringResource(id = data?.ctaHandleStringRes ?: R.string.copy).uppercase(), modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = qrCodeRawData?.ctaHandleStringRes ?: R.string.copy).uppercase(), modifier = Modifier.align(Alignment.Center),
                     textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -175,7 +193,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                         .wrapContentHeight()
                         .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                         .clickable {
-                            callbackCopyRawValue.invoke(data?.rawData.orEmpty())
+                            callbackCopyRawValue.invoke(qrCodeRawData?.rawData.orEmpty())
                         }
                         .padding(12.dp)
                         .weight(1f)
@@ -190,7 +208,7 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
                         .wrapContentHeight()
                         .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                         .clickable {
-                            callbackShareRawValue.invoke(data?.rawData.orEmpty())
+                            callbackShareRawValue.invoke(qrCodeRawData?.rawData.orEmpty())
                         }
                         .padding(12.dp)
                         .weight(1f)
@@ -208,28 +226,24 @@ fun QRCodeResultLayout(data: QRCodeRawData?, appNav: NavHostController,
 @Preview
 @Composable
 fun QRCodeResultsPreview() {
-    QRCodeResultLayout(data = QRCodeRawData(
-        typeStringRes = R.string.text,
-        scanDate = "2023/12/31 12:00",
-        rawData = "https://www.google.com",
-        qrCodeBitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888),
-        ctaHandleStringRes = R.string.text
-    ), rememberNavController())
+    QRCodeResultLayout(0, rememberNavController(), hiltViewModel())
 }
 
 data class QRCodeRawData(
+    val type: Int = 0,
     @DrawableRes val typeIcon: Int = 0,
     val qrCodeBitmap: Bitmap,
     @StringRes val typeStringRes: Int = 0,
     val scanDate: String,
     val rawData: String,
     @StringRes val ctaHandleStringRes: Int,
-    val barcode: Barcode? = null
+    val jsonDetails: String? = null,
 )
 
-fun Barcode.toQRCodeRawData(): QRCodeRawData {
+fun QRCodeEntity.toQRCodeRawData(): QRCodeRawData {
     return QRCodeRawData(
-        typeIcon = when (valueType) {
+        type = qrType,
+        typeIcon = when (qrType) {
             Barcode.TYPE_URL -> R.drawable.icon_link
             Barcode.TYPE_WIFI -> R.drawable.icon_wifi
             Barcode.TYPE_CONTACT_INFO -> R.drawable.icon_contact
@@ -246,7 +260,7 @@ fun Barcode.toQRCodeRawData(): QRCodeRawData {
             else -> R.drawable.icon_qr
         },
         qrCodeBitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888),
-        typeStringRes = when (valueType) {
+        typeStringRes = when (qrType) {
             Barcode.TYPE_URL -> R.string.url
             Barcode.TYPE_WIFI -> R.string.wifi
             Barcode.TYPE_CONTACT_INFO -> R.string.contact
@@ -262,9 +276,9 @@ fun Barcode.toQRCodeRawData(): QRCodeRawData {
             Barcode.TYPE_UNKNOWN -> R.string.text
             else -> R.string.text
         },
-        scanDate = Calendar.getInstance().time.toString(),
-        rawData = this.rawValue.orEmpty(),
-        ctaHandleStringRes = when (valueType) {
+        scanDate = Date(scanDateTimeMillis).toString(),
+        rawData = rawData.orEmpty(),
+        ctaHandleStringRes = when (qrType) {
             Barcode.TYPE_URL -> R.string.open_in_browser
             Barcode.TYPE_WIFI -> R.string.copy_password
             Barcode.TYPE_CONTACT_INFO -> R.string.add_contact
@@ -280,6 +294,6 @@ fun Barcode.toQRCodeRawData(): QRCodeRawData {
             Barcode.TYPE_UNKNOWN -> R.string.search
             else -> R.string.search
         },
-        barcode = this
+        jsonDetails = qrDetails,
     )
 }

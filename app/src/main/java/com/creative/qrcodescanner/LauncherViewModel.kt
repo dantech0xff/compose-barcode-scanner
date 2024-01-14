@@ -3,19 +3,29 @@ package com.creative.qrcodescanner
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.ui.result.QRCodeRawData
-import com.creative.qrcodescanner.ui.result.toQRCodeRawData
+import com.creative.qrcodescanner.usecase.InsertQRCodeHistoryUseCase
 import com.google.mlkit.vision.barcode.common.Barcode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
-class LauncherViewModel @Inject constructor() : ViewModel() {
+class LauncherViewModel @Inject constructor(
+    private val insertQRCodeHistoryUseCase: InsertQRCodeHistoryUseCase
+) : ViewModel() {
+
+    companion object {
+        const val INVALID_DB_ROW_ID = 0
+    }
 
     private val _enableTorchState: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val enableTorchState = _enableTorchState.asStateFlow()
@@ -23,10 +33,11 @@ class LauncherViewModel @Inject constructor() : ViewModel() {
     private val _isFrontCameraState: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isFrontCameraState = _isFrontCameraState.asStateFlow()
 
-    private val _qrCodeResultState: MutableStateFlow<QRCodeRawData?> = MutableStateFlow(null)
-    val qrCodeResultState = _qrCodeResultState.asStateFlow().distinctUntilChanged { old, new ->
-        old?.rawData == new?.rawData
-    }
+    private val _qrCodeResultFoundState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val qrCodeResultFoundState = _qrCodeResultFoundState.asStateFlow()
+
+    private val _databaseIdOfQRCodeState: MutableStateFlow<Int> = MutableStateFlow(INVALID_DB_ROW_ID)
+    val databaseIdOfQRCodeState = _databaseIdOfQRCodeState.asStateFlow()
 
     private val _loadingState: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val loadingState = _loadingState.asStateFlow()
@@ -54,67 +65,85 @@ class LauncherViewModel @Inject constructor() : ViewModel() {
     }
 
     fun scanQRSuccess(result: Barcode) {
-        _qrCodeResultState.value = result.toQRCodeRawData()
+        if(_qrCodeResultFoundState.value) {
+            return
+        }
+        _qrCodeResultFoundState.value = true
+        viewModelScope.launch {
+            insertQRCodeHistoryUseCase.execute(
+                input = QRCodeEntity(
+                    rawData = result.displayValue.orEmpty(),
+                    qrType = result.valueType,
+                    scanDateTimeMillis = Calendar.getInstance().timeInMillis,
+                    qrDetails = "{}",
+                    isFavorite = false,
+                    isScanned = true
+                )
+            ).collectLatest {
+                _databaseIdOfQRCodeState.value = it.toInt()
+            }
+        }
     }
 
     fun resetScanQR() {
-        _qrCodeResultState.value = null
+        _qrCodeResultFoundState.value = false
+        _databaseIdOfQRCodeState.value = INVALID_DB_ROW_ID
     }
 
     fun toggleCamera() {
         _isFrontCameraState.value = !_isFrontCameraState.value
     }
 
-    fun handleBarcodeResult(barcode: Barcode) {
-        when (barcode.valueType) {
-            Barcode.TYPE_URL -> {
-                val url = barcode.url?.url.orEmpty()
-                val tryEmit = _openUrlSharedFlow.tryEmit(url)
-                Log.d("QRApp", "openUrlState: tryEmit $tryEmit")
-            }
-
-            Barcode.TYPE_WIFI -> {
-                val pass = barcode.wifi?.password.orEmpty()
-                val tryEmit = _copyTextSharedFlow.tryEmit(pass)
-                Log.d("QRApp", "copyTextState: tryEmit $tryEmit")
-            }
-
-            Barcode.TYPE_CONTACT_INFO -> {
-                // Handle add contact info
-                val contact = barcode.contactInfo
-                if(contact != null) {
-                    val tryEmit = _contactInfoSharedFlow.tryEmit(contact)
-                    Log.d("QRApp", "contactInfoState: tryEmit $tryEmit")
-                }
-            }
-
-            Barcode.TYPE_CALENDAR_EVENT -> {
-                // Handle add calendar event
-            }
-
-            Barcode.TYPE_EMAIL -> {
-                // handle send email
-            }
-
-            Barcode.TYPE_GEO, Barcode.TYPE_TEXT, Barcode.TYPE_DRIVER_LICENSE, Barcode.TYPE_PRODUCT, Barcode.TYPE_ISBN, Barcode.TYPE_UNKNOWN -> {
-                // Handle Search Text in Google
-                val text = barcode.displayValue.orEmpty()
-                val tryEmit = _textSearchGoogleSharedFlow.tryEmit(text)
-                Log.d("QRApp", "textSearchGoogleState: tryEmit $tryEmit")
-            }
-
-            Barcode.TYPE_PHONE -> {
-                // Handle call phone
-            }
-
-            Barcode.TYPE_SMS -> {
-                // Handle send sms
-            }
-
-            else -> {
-                // Handle Search Text in Google
-            }
-        }
+    fun handleBarcodeResult(barcode: QRCodeRawData) {
+//        when (barcode.type) {
+//            Barcode.TYPE_URL -> {
+//                val url = barcode.url?.url.orEmpty()
+//                val tryEmit = _openUrlSharedFlow.tryEmit(url)
+//                Log.d("QRApp", "openUrlState: tryEmit $tryEmit")
+//            }
+//
+//            Barcode.TYPE_WIFI -> {
+//                val pass = barcode.wifi?.password.orEmpty()
+//                val tryEmit = _copyTextSharedFlow.tryEmit(pass)
+//                Log.d("QRApp", "copyTextState: tryEmit $tryEmit")
+//            }
+//
+//            Barcode.TYPE_CONTACT_INFO -> {
+//                // Handle add contact info
+//                val contact = barcode.contactInfo
+//                if(contact != null) {
+//                    val tryEmit = _contactInfoSharedFlow.tryEmit(contact)
+//                    Log.d("QRApp", "contactInfoState: tryEmit $tryEmit")
+//                }
+//            }
+//
+//            Barcode.TYPE_CALENDAR_EVENT -> {
+//                // Handle add calendar event
+//            }
+//
+//            Barcode.TYPE_EMAIL -> {
+//                // handle send email
+//            }
+//
+//            Barcode.TYPE_GEO, Barcode.TYPE_TEXT, Barcode.TYPE_DRIVER_LICENSE, Barcode.TYPE_PRODUCT, Barcode.TYPE_ISBN, Barcode.TYPE_UNKNOWN -> {
+//                // Handle Search Text in Google
+//                val text = barcode.displayValue.orEmpty()
+//                val tryEmit = _textSearchGoogleSharedFlow.tryEmit(text)
+//                Log.d("QRApp", "textSearchGoogleState: tryEmit $tryEmit")
+//            }
+//
+//            Barcode.TYPE_PHONE -> {
+//                // Handle call phone
+//            }
+//
+//            Barcode.TYPE_SMS -> {
+//                // Handle send sms
+//            }
+//
+//            else -> {
+//                // Handle Search Text in Google
+//            }
+//        }
     }
 
     fun handleCopyText(text: String) {

@@ -91,9 +91,8 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
                             }
                         }
                     }
-                    .addOnFailureListener { exception ->
+                    .addOnFailureListener {
                         vm.hideLoading()
-                        exception.printStackTrace()
                     }
             }
         }
@@ -116,14 +115,25 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
     }
 
     LaunchedEffect(key1 = Unit) {
-        vm.qrCodeResultState.collectLatest { qrCodeResult ->
-            Log.d("QRAppResult", "CollectQRCodeResult: $qrCodeResult")
-            if (qrCodeResult != null) {
-                cameraController.clearImageAnalysisAnalyzer()
-                appNavHost.navigate(AppScreen.RESULT.value)
+        vm.databaseIdOfQRCodeState.collectLatest {
+            if (it != LauncherViewModel.INVALID_DB_ROW_ID) {
                 if (vm.isEnableVibrate()) {
                     context.vibrate(200L)
                 }
+                appNavHost.navigate(
+                    AppScreen.RESULT.value.replace(
+                        "{id}",
+                        it.toString()
+                    )
+                )
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.qrCodeResultFoundState.collectLatest { qrCodeResult ->
+            if (qrCodeResult) {
+                cameraController.clearImageAnalysisAnalyzer()
             } else {
                 cameraController.setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
                     imageProxy.image?.let {

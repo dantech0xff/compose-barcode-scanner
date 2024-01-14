@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 interface QRCodeEntityDAO {
 
     @Insert(onConflict = androidx.room.OnConflictStrategy.REPLACE)
-    suspend fun insertQRCodeEntity(qrCodeEntity: QRCodeEntity)
+    suspend fun insertQRCodeEntity(qrCodeEntity: QRCodeEntity): Long
 
     @Query("SELECT * FROM QRCodeEntity ORDER BY scan_date_time_millis DESC")
     suspend fun getAllQRCodeEntity(): List<QRCodeEntity>
@@ -27,7 +27,7 @@ interface QRCodeEntityDAO {
     fun getAllQRCodeEntityFlow(): Flow<List<QRCodeEntity>>
 
     @Query("SELECT * FROM QRCodeEntity WHERE id = :id")
-    suspend fun getQRCodeEntityById(id: Int): QRCodeEntity
+    suspend fun getQRCodeEntityById(id: Int): QRCodeEntity?
 
     // Query to get all QRCodeEntity that is not favorite
     @Query("SELECT * FROM QRCodeEntity WHERE is_favorite = 0 ORDER BY scan_date_time_millis DESC")

@@ -18,4 +18,12 @@ class HistoryRepoImpl(private val qrCodeEntityDAO: QRCodeEntityDAO) : HistoryRep
     override fun getQRCOdeHistoryFlow(): Flow<List<QRCodeEntity>> {
         return qrCodeEntityDAO.getAllQRCodeEntityFlow()
     }
+
+    override suspend fun insertQRCodeEntity(qrCodeEntity: QRCodeEntity): Long {
+        return qrCodeEntityDAO.insertQRCodeEntity(qrCodeEntity)
+    }
+
+    override suspend fun getQRCodeEntityById(id: Int): QRCodeEntity? {
+        return qrCodeEntityDAO.getQRCodeEntityById(id)
+    }
 }

@@ -12,4 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface HistoryRepo {
     suspend fun getQRCodeHistory(): List<QRCodeEntity>
     fun getQRCOdeHistoryFlow(): Flow<List<QRCodeEntity>>
+    suspend fun insertQRCodeEntity(qrCodeEntity: QRCodeEntity): Long
+
+    suspend fun getQRCodeEntityById(id: Int): QRCodeEntity?
 }

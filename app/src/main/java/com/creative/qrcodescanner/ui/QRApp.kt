@@ -8,13 +8,10 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.withResumed
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -31,7 +28,6 @@ import com.creative.qrcodescanner.ui.setting.SettingScreenLayout
 @Composable
 fun QRApp(vm: LauncherViewModel = hiltViewModel(),
           appNavHost: NavHostController = rememberNavController()) {
-    val qrCodeResult by vm.qrCodeResultState.collectAsStateWithLifecycle(null)
 
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -103,18 +99,20 @@ fun QRApp(vm: LauncherViewModel = hiltViewModel(),
         composable(route = AppScreen.MAIN.value) {
             MainScreenLayout(vm, appNavHost)
         }
-        composable(route = AppScreen.RESULT.value) {
-            QRCodeResultLayout(qrCodeResult, appNavHost, {
-                vm.resetScanQR()
-            }, { barCode ->
-                barCode?.let { vm.handleBarcodeResult(it) }
-            }, {
-                // handle copy
-               vm.handleCopyText(it)
-            }, {
-                // handle share
-                vm.handleShareText(it)
-            })
+        composable(route = AppScreen.RESULT.value) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("id")?.toInt() ?: 0
+            QRCodeResultLayout(id, appNavHost, hiltViewModel(),
+                {
+                    vm.resetScanQR()
+                }, { barCode ->
+                    barCode?.let { vm.handleBarcodeResult(it) }
+                }, {
+                    // handle copy
+                    vm.handleCopyText(it)
+                }, {
+                    // handle share
+                    vm.handleShareText(it)
+                })
         }
         composable(route = AppScreen.SETTING.value) {
             SettingScreenLayout()
@@ -133,5 +131,5 @@ enum class AppScreen(val value: String) {
     SETTING("setting"),
     PREMIUM("premium"),
     HISTORY("history"),
-    RESULT("result")
+    RESULT("result/{id}")
 }
