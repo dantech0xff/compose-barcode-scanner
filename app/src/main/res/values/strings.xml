@@ -39,4 +39,5 @@
     <string name="qr_code_history">QR Code History</string>
     <string name="failed_to_scan_qr_code">Failed to scan QR code</string>
     <string name="no_qr_code_detected">No QR Code detected!</string>
+    <string name="no_qr_code_history">No QR Code History!</string>
 </resources>

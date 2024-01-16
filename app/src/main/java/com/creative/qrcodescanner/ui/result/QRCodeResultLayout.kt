@@ -2,6 +2,7 @@ package com.creative.qrcodescanner.ui.result
 
 import android.graphics.Bitmap
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -16,10 +17,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -28,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,6 +51,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.data.entity.QRCodeEntity
+import com.creative.qrcodescanner.ui.AppScreen
 import com.creative.qrcodescanner.ui.theme.fontSize
 import com.google.mlkit.vision.barcode.common.Barcode
 import java.util.Date
@@ -67,8 +72,8 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
     }
 
     BackHandler {
-        appNav.popBackStack()
         dismiss.invoke()
+        appNav.popBackStack()
     }
 
     Scaffold(
@@ -80,41 +85,60 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
             ) {
                 Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
 
-                Text(text = stringResource(R.string.qr_code_result),
+                Row(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(12.dp),
-                    color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.bodyLarge)
+                        .fillMaxWidth()
+                        .wrapContentHeight().padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.arrow_back_ios_new),
+                        contentDescription = stringResource(id = R.string.qr_code_history),
+                        modifier = Modifier.size(28.dp).clickable {
+                            dismiss.invoke()
+                            appNav.popBackStack()
+                        }
+                    )
+                    Spacer(modifier = Modifier.size(12.dp))
+                    Text(
+                        text = stringResource(R.string.qr_code_history),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
             }
         },
         bottomBar = {
-            Box(
+            Column(
                 modifier = Modifier
-                    .safeContentPadding()
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
-                    .clickable {
-                        appNav.popBackStack()
-                        dismiss.invoke()
-                    }
-                    .padding(12.dp)
+                    .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)),
+                verticalArrangement = Arrangement.Bottom
             ) {
                 Row(
                     modifier = Modifier
-                        .wrapContentWidth()
+                        .padding(vertical = 12.dp, horizontal = 16.dp)
+                        .fillMaxWidth()
                         .wrapContentHeight()
-                        .align(Alignment.Center),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+                        .clickable {
+                            dismiss.invoke()
+                            appNav.popBackStack(AppScreen.MAIN.value, false)
+                        }
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.icon_qr_white),
                         contentDescription = stringResource(id = R.string.continue_to_scan),
-                        modifier = Modifier.size(28.dp))
+                        modifier = Modifier.size(28.dp)
+                    )
                     Text(text = stringResource(R.string.continue_to_scan), color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.titleLarge)
                 }
+
+                Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
             }
         }
     ) { paddingValues ->
