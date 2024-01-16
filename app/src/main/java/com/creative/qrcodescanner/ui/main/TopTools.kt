@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -40,6 +41,7 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
             contentScale = ContentScale.Inside,
             modifier = Modifier
                 .background(color = Color.Transparent, shape = CircleShape)
+                .clip(CircleShape)
                 .clickable(!isFrontCamera.value) {
                     if (isFrontCamera.value) {
                         return@clickable
@@ -57,6 +59,7 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
             contentScale = ContentScale.Inside,
             modifier = Modifier
                 .background(color = Color.Transparent, shape = CircleShape)
+                .clip(CircleShape)
                 .clickable {
                     vm.toggleCamera()
                 }
@@ -70,6 +73,7 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
             contentScale = ContentScale.Inside,
             modifier = Modifier
                 .background(color = Color.Transparent, shape = CircleShape)
+                .clip(CircleShape)
                 .clickable {
                     appNav.navigate(AppScreen.SETTING.value)
                 }

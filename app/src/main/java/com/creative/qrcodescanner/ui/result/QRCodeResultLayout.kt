@@ -54,7 +54,9 @@ import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.ui.AppScreen
 import com.creative.qrcodescanner.ui.theme.fontSize
 import com.google.mlkit.vision.barcode.common.Barcode
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @Composable
 fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
@@ -300,7 +302,7 @@ fun QRCodeEntity.toQRCodeRawData(): QRCodeRawData {
             Barcode.TYPE_UNKNOWN -> R.string.text
             else -> R.string.text
         },
-        scanDate = Date(scanDateTimeMillis).toString(),
+        scanDate = SimpleDateFormat("HH:mm, E dd MMM, yyyy", Locale.getDefault()).format(Date(scanDateTimeMillis)).toString(),
         rawData = rawData.orEmpty(),
         ctaHandleStringRes = when (qrType) {
             Barcode.TYPE_URL -> R.string.open_in_browser

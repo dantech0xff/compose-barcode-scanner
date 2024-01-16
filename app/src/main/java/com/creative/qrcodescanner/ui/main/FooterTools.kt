@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -28,12 +29,12 @@ fun BoxScope.FooterTools(appNav: NavHostController, pickGallery: () -> Unit) {
             .align(Alignment.BottomStart)
             .padding(16.dp)
             .size(64.dp)
+            .background(color = Color(0x901c1c1c), shape = CircleShape)
+            .clip(CircleShape)
             .clickable {
                 pickGallery.invoke()
             }
-            .background(color = Color(0x901c1c1c), shape = CircleShape)
             .padding(18.dp)
-
     )
 
     Image(
@@ -45,6 +46,7 @@ fun BoxScope.FooterTools(appNav: NavHostController, pickGallery: () -> Unit) {
             .padding(16.dp)
             .size(64.dp)
             .background(color = Color(0x901c1c1c), shape = CircleShape)
+            .clip(CircleShape)
             .clickable {
                 appNav.navigate(AppScreen.HISTORY.value)
             }
