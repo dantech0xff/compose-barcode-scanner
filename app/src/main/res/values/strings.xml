@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">QR Code Scanner</string>
+    <string name="app_name" translatable="false">Panda Scanner</string>
     <string name="camera_permission_is_not_granted">Camera Permission Is Not Granted</string>
     <string name="click_to_grant_camera_permission">Click To Grant Camera Permission</string>
     <string name="qr_code_result">QR Code Result</string>
