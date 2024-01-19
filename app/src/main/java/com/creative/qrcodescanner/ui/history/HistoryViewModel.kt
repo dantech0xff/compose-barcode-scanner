@@ -22,7 +22,7 @@ class HistoryViewModel @Inject constructor(
 ) : ViewModel() {
     val qrCodeHistoryUIState: StateFlow<QRCodeHistoryUIState> = getQRCodeHistoryUseCase.execute(Unit).stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
+        started = SharingStarted.Lazily,
         initialValue = QRCodeHistoryUIState.Loading
     )
 }

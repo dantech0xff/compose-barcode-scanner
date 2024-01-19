@@ -41,4 +41,12 @@
     <string name="no_qr_code_detected">No QR Code detected!</string>
     <string name="no_qr_code_history">No QR Code History!</string>
     <string name="panda_scanner_setting">Panda Scanner Setting</string>
+    <string name="main_setting">Main Setting</string>
+    <string name="sound">Sound</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="about_panda_scanner">About Panda Scanner</string>
+    <string name="app_version">App version</string>
+    <string name="about_us">About us</string>
+    <string name="rate_us">Rate us</string>
+    <string name="manage_subscription">Manage Subscription</string>
 </resources>
