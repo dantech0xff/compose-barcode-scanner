@@ -23,7 +23,7 @@ Feel free to use it in your project.
 - [x] SharedFlow
 - [x] StateFlow
 - [x] Hilt
-- [x] Coroutines
+- [x] Coroutines, Flow
 - [ ] Coil
 - [ ] Unit Test
 - [ ] UI Test
