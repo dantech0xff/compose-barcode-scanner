@@ -3,7 +3,7 @@ package com.creative.qrcodescanner.ui.result
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.data.entity.QRCodeEntity
-import com.creative.qrcodescanner.usecase.GetQRCodeByRowIdUseCase
+import com.creative.qrcodescanner.usecase.GetQRCodeByRowIdFlowUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QRCodeResultViewModel @Inject constructor(
-    private val getQRCodeByRowIdUseCase: GetQRCodeByRowIdUseCase
+    private val getQRCodeByRowIdUseCase: GetQRCodeByRowIdFlowUseCase
 ) : ViewModel() {
 
     private val _qrCodeResultUIState: MutableStateFlow<QRCodeResultUIState> =

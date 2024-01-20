@@ -2,6 +2,7 @@ package com.creative.qrcodescanner.repo.user
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import com.creative.qrcodescanner.data.entity.SettingPreferencesKey
 import com.creative.qrcodescanner.data.entity.UserSettingData
 import kotlinx.coroutines.flow.Flow
@@ -16,10 +17,21 @@ import kotlinx.coroutines.flow.map
 class UserDataRepoImpl(
     private val userSettingDataStore: DataStore<Preferences>
 ) : UserDataRepo {
-    override val userSettingData: Flow<UserSettingData>
-        get() = userSettingDataStore.data.map {
+    override val userSettingData: Flow<UserSettingData> = userSettingDataStore.data.map {
             val isEnableVibrate = it[SettingPreferencesKey.IS_ENABLE_VIBRATE] ?: false
             val isEnableSound = it[SettingPreferencesKey.IS_ENABLE_SOUND] ?: false
             UserSettingData(isEnableVibrate = isEnableVibrate, isEnableSound = isEnableSound)
         }
+
+    override suspend fun updateSoundSetting(isEnableSound: Boolean) {
+        userSettingDataStore.edit {
+            it[SettingPreferencesKey.IS_ENABLE_SOUND] = isEnableSound
+        }
+    }
+
+    override suspend fun updateVibrateSetting(isEnableVibrate: Boolean) {
+        userSettingDataStore.edit {
+            it[SettingPreferencesKey.IS_ENABLE_VIBRATE] = isEnableVibrate
+        }
+    }
 }

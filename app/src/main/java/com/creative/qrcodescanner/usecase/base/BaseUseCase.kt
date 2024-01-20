@@ -1,13 +1,11 @@
 package com.creative.qrcodescanner.usecase.base
 
-import kotlinx.coroutines.flow.Flow
-
 /**
- * Created by dan on 11/01/2024
+ * Created by dan on 20/01/2024
  *
  * Copyright © 2024 1010 Creative. All rights reserved.
  */
 
 abstract class BaseUseCase<In,Out> {
-    abstract fun execute(input: In): Flow<Out>
+    abstract suspend fun execute(input: In): Out
 }

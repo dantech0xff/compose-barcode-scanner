@@ -2,7 +2,7 @@ package com.creative.qrcodescanner.ui.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.creative.qrcodescanner.usecase.GetQRCodeHistoryUseCase
+import com.creative.qrcodescanner.usecase.GetQRCodeHistoryFlowUseCase
 import com.creative.qrcodescanner.usecase.QRCodeHistoryUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    getQRCodeHistoryUseCase: GetQRCodeHistoryUseCase
+    getQRCodeHistoryUseCase: GetQRCodeHistoryFlowUseCase
 ) : ViewModel() {
     val qrCodeHistoryUIState: StateFlow<QRCodeHistoryUIState> = getQRCodeHistoryUseCase.execute(Unit).stateIn(
         scope = viewModelScope,

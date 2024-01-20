@@ -5,14 +5,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.data.entity.QRCodeContact
-import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.data.entity.QRCodePhone
 import com.creative.qrcodescanner.data.entity.QRCodeSMS
 import com.creative.qrcodescanner.data.entity.QRCodeURL
 import com.creative.qrcodescanner.data.entity.QRCodeWifi
 import com.creative.qrcodescanner.data.entity.toQRCodeEntity
 import com.creative.qrcodescanner.ui.result.QRCodeRawData
-import com.creative.qrcodescanner.usecase.InsertQRCodeHistoryUseCase
+import com.creative.qrcodescanner.usecase.InsertQRCodeHistoryFlowUseCase
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,12 +21,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class LauncherViewModel @Inject constructor(
-    private val insertQRCodeHistoryUseCase: InsertQRCodeHistoryUseCase,
+    private val insertQRCodeHistoryUseCase: InsertQRCodeHistoryFlowUseCase,
     private val moshi: Moshi
 ) : ViewModel() {
 

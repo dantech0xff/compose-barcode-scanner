@@ -1,7 +1,7 @@
 package com.creative.qrcodescanner.usecase
 
 import com.creative.qrcodescanner.repo.HistoryRepo
-import com.creative.qrcodescanner.usecase.base.BaseUseCase
+import com.creative.qrcodescanner.usecase.base.BaseFlowUseCase
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -18,8 +18,8 @@ import javax.inject.Inject
  */
 
 @ViewModelScoped
-class GetQRCodeHistoryUseCase @Inject
-    constructor(private val historyRepo: HistoryRepo) : BaseUseCase<Unit, QRCodeHistoryUIState>() {
+class GetQRCodeHistoryFlowUseCase @Inject
+    constructor(private val historyRepo: HistoryRepo) : BaseFlowUseCase<Unit, QRCodeHistoryUIState>() {
     override fun execute(input: Unit): Flow<QRCodeHistoryUIState> {
         return historyRepo.getQRCOdeHistoryFlow().map {
             if (it.isEmpty()) {

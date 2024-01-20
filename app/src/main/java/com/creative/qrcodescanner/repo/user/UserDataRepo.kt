@@ -11,4 +11,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserDataRepo {
     val userSettingData: Flow<UserSettingData>
+
+    suspend fun updateSoundSetting(isEnableSound: Boolean)
+
+    suspend fun updateVibrateSetting(isEnableVibrate: Boolean)
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,9 +23,9 @@ import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.AppScreen
 
-val topIconSize = 38.dp
+val topIconSize = 42.dp
 val topIconPadding = 4.dp
-
+val roundCorner = 4.dp
 @Composable
 fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewModel) {
 
@@ -40,8 +41,8 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
             contentDescription = "Flash Light Button",
             contentScale = ContentScale.Inside,
             modifier = Modifier
-                .background(color = Color.Transparent, shape = CircleShape)
-                .clip(CircleShape)
+                .background(color = Color.Transparent)
+                .clip(RoundedCornerShape(roundCorner))
                 .clickable(!isFrontCamera.value) {
                     if (isFrontCamera.value) {
                         return@clickable
@@ -50,36 +51,32 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewMode
                 }
                 .size(topIconSize)
                 .padding(topIconPadding),
-            alpha = if (isFrontCamera.value) 0.5f else 1f
-        )
+            alpha = if (isFrontCamera.value) 0.5f else 1f)
 
         Image(
             painter = painterResource(id = R.drawable.cameraswitch),
             contentDescription = "Switch Button",
             contentScale = ContentScale.Inside,
             modifier = Modifier
-                .background(color = Color.Transparent, shape = CircleShape)
-                .clip(CircleShape)
+                .background(color = Color.Transparent)
+                .clip(RoundedCornerShape(roundCorner))
                 .clickable {
                     vm.toggleCamera()
                 }
                 .size(topIconSize)
-                .padding(topIconPadding)
-        )
+                .padding(topIconPadding))
 
         Image(
             painter = painterResource(id = R.drawable.widgets),
             contentDescription = "Setting Button",
             contentScale = ContentScale.Inside,
             modifier = Modifier
-                .background(color = Color.Transparent, shape = CircleShape)
-                .clip(CircleShape)
+                .background(color = Color.Transparent)
+                .clip(RoundedCornerShape(roundCorner))
                 .clickable {
                     appNav.navigate(AppScreen.SETTING.value)
                 }
                 .size(topIconSize)
-                .padding(topIconPadding)
-
-        )
+                .padding(topIconPadding))
     }
 }
