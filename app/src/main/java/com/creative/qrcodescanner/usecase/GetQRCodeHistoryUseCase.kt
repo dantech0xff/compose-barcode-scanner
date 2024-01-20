@@ -1,7 +1,5 @@
 package com.creative.qrcodescanner.usecase
 
-import android.os.Parcelable
-import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.repo.HistoryRepo
 import com.creative.qrcodescanner.usecase.base.BaseUseCase
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -11,7 +9,6 @@ import kotlinx.coroutines.flow.map
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.logging.SimpleFormatter
 import javax.inject.Inject
 
 /**
@@ -34,7 +31,7 @@ class GetQRCodeHistoryUseCase @Inject
                             id = qrCodeEntity.id,
                             rawData = qrCodeEntity.rawData.orEmpty(),
                             type = qrCodeEntity.qrType,
-                            dateString = SimpleDateFormat("HH:mm, E dd MMM, yyyy", Locale.getDefault()).format(Date(qrCodeEntity.scanDateTimeMillis)).toString() ,
+                            dateString = SimpleDateFormat("HH:mm, E dd MMM, yyyy", Locale.getDefault()).format(Date(qrCodeEntity.scanDateTimeMillis)).toString(),
                             isFavorite = qrCodeEntity.isFavorite,
                             isScanned = qrCodeEntity.isScanned
                         )
@@ -42,7 +39,7 @@ class GetQRCodeHistoryUseCase @Inject
                 )
             }
         }.catch {
-            QRCodeHistoryUIState.Error(it)
+            emit(QRCodeHistoryUIState.Error(it))
         }
     }
 }

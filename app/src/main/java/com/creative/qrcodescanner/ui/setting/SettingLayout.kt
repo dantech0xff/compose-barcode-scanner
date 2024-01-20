@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
@@ -27,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -34,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
 
@@ -80,162 +84,80 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                 )
             }
         }
-    },
-        bottomBar = {}) { paddingValues ->
+    }, bottomBar = {}
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(paddingValues)
         ) {
-            Column(
+            val listSetting by viewModel.listSettingUIState.collectAsStateWithLifecycle()
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
             ) {
-                Text(
-                    text = stringResource(R.string.main_setting), modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 0.dp)
-                        .padding(top = 20.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 48.dp)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.sound), modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.CenterStart),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Switch(
-                        checked = false, onCheckedChange = {}, modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.CenterEnd)
-                    )
-                }
-                Divider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 48.dp)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.vibrate), modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.CenterStart),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Switch(
-                        checked = false, onCheckedChange = {},
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.CenterEnd),
-                    )
-                }
-                Divider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp)
-                Text(
-                    text = stringResource(R.string.about_panda_scanner), modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 0.dp)
-                        .padding(top = 20.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 48.dp)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.manage_subscription), modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.CenterStart),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.icon_calendar_event),
-                        contentDescription = "Setting Back Button",
-                        modifier = Modifier
-                            .size(28.dp)
-                            .align(Alignment.CenterEnd)
-                    )
-                }
-                Divider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 48.dp)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.rate_us), modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.CenterStart),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.icon_sms),
-                        contentDescription = "Setting Back Button",
-                        modifier = Modifier
-                            .size(28.dp)
-                            .align(Alignment.CenterEnd)
-                    )
-                }
-                Divider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 48.dp)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.about_us), modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.CenterStart),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.icon_link),
-                        contentDescription = "Setting Back Button",
-                        modifier = Modifier
-                            .size(28.dp)
-                            .align(Alignment.CenterEnd)
-                    )
-                }
-                Divider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 48.dp)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.app_version), modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.CenterStart),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "1.0.0", modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.CenterEnd),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                items(listSetting.data) {
+                    when (it) {
+                        is SettingItemUIState.SettingHeaderUIState -> {
+                            Text(
+                                text = it.title, modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 0.dp)
+                                    .padding(top = 20.dp),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        is SettingItemUIState.TextUIState -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 48.dp)
+                                    .padding(horizontal = 16.dp)
+                            ) {
+                                Text(
+                                    text = it.title, modifier = Modifier
+                                        .wrapContentWidth()
+                                        .wrapContentHeight()
+                                        .align(Alignment.CenterStart),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Image(
+                                    painter = painterResource(id = it.iconRes),
+                                    contentDescription = "Setting Back Button",
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                        .align(Alignment.CenterEnd)
+                                )
+                            }
+                            Divider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp)
+                        }
+
+                        is SettingItemUIState.SwitchUIState -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 48.dp)
+                                    .padding(horizontal = 16.dp)
+                            ) {
+                                Text(
+                                    text = it.title, modifier = Modifier
+                                        .wrapContentWidth()
+                                        .wrapContentHeight()
+                                        .align(Alignment.CenterStart),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Switch(
+                                    checked = it.isEnable, onCheckedChange = {}, modifier = Modifier
+                                        .wrapContentWidth()
+                                        .wrapContentHeight()
+                                        .align(Alignment.CenterEnd)
+                                )
+                            }
+                            Divider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp)
+                        }
+                    }
                 }
             }
         }

@@ -16,6 +16,7 @@ room_version = "2.6.1"
 hilt_version = "2.48.1"
 hilt_nav_compose_version = "1.1.0"
 moshi_version = "1.14.0"
+datastore_version = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -61,6 +62,9 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 
 squareup-moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi_version" }
 squareup-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi_version" }
+
+androidx-datastore-preferences-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "datastore_version" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore_version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

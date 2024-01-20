@@ -90,6 +90,9 @@ dependencies {
     implementation(libs.squareup.moshi)
     ksp(libs.squareup.moshi.kotlin.codegen)
 
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.datastore.preferences)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
