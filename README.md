@@ -29,6 +29,12 @@ Feel free to use it in your project.
 - [ ] UI Test
 - [ ] Idk, I will add more later
 
+## Improvement
+- [ ] Reduce numbers of Flow in MainViewModel
+- [ ] Update better UI
+- [ ] Animation
+
+
 ### Download, Clone, or do anything for your own purpose, I don't care!
 
 ### Love it? Give me a star, I will be happy!
