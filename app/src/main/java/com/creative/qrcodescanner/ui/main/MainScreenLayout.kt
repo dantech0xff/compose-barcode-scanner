@@ -2,10 +2,10 @@ package com.creative.qrcodescanner.ui.main
 
 import android.Manifest
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -32,6 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.AppScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -63,7 +63,7 @@ import kotlinx.coroutines.flow.collectLatest
 @androidx.annotation.OptIn(ExperimentalGetImage::class)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
+fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
 
     val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
@@ -75,6 +75,8 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
     val galleryPicker = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia(), onResult = {
         vm.handleGalleryUri(it)
     })
+
+    val appSettingState by vm.appSettingState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = Unit) {
         vm.galleryUriState.collectLatest { uri ->
@@ -119,9 +121,12 @@ fun MainScreenLayout(vm: LauncherViewModel, appNavHost: NavHostController) {
 
     LaunchedEffect(key1 = Unit) {
         vm.databaseIdOfQRCodeState.collectLatest {
-            if (it != LauncherViewModel.INVALID_DB_ROW_ID) {
-                if (vm.isEnableVibrate()) {
+            if (it != MainViewModel.INVALID_DB_ROW_ID) {
+                if (appSettingState?.isEnableVibrate == true) {
                     context.vibrate(200L)
+                }
+                if (appSettingState?.isEnableSound == true) {
+                    context.playPiplingSound()
                 }
                 appNavHost.navigate(
                     AppScreen.RESULT.value.replace(
@@ -239,4 +244,14 @@ fun Context.vibrate(milliseconds: Long) {
     } else {
         v?.vibrate(milliseconds)
     }
+}
+
+fun Context.playPiplingSound() {
+    val mediaPlayer = MediaPlayer.create(this, R.raw.ping).apply {
+        setOnCompletionListener {
+            it.release()
+        }
+        setVolume(0.5f, 0.5f)
+    }
+    mediaPlayer.start()
 }

@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.edit
 import com.creative.qrcodescanner.data.entity.SettingPreferencesKey
 import com.creative.qrcodescanner.data.entity.UserSettingData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 
 /**
@@ -29,9 +31,17 @@ class UserDataRepoImpl(
         }
     }
 
+    override suspend fun isEnableSound(): Boolean {
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_ENABLE_SOUND] ?: false }.last()
+    }
+
     override suspend fun updateVibrateSetting(isEnableVibrate: Boolean) {
         userSettingDataStore.edit {
             it[SettingPreferencesKey.IS_ENABLE_VIBRATE] = isEnableVibrate
         }
+    }
+
+    override suspend fun isEnableVibrate(): Boolean {
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_ENABLE_VIBRATE] ?: false }.last()
     }
 }

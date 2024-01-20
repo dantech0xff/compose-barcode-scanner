@@ -14,5 +14,9 @@ interface UserDataRepo {
 
     suspend fun updateSoundSetting(isEnableSound: Boolean)
 
+    suspend fun isEnableSound(): Boolean
+
     suspend fun updateVibrateSetting(isEnableVibrate: Boolean)
+
+    suspend fun isEnableVibrate(): Boolean
 }

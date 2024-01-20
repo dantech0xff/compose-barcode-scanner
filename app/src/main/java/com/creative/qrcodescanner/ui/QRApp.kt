@@ -17,7 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.creative.qrcodescanner.LauncherViewModel
+import com.creative.qrcodescanner.ui.main.MainViewModel
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.history.HistoryScreenLayout
 import com.creative.qrcodescanner.ui.main.MainScreenLayout
@@ -26,7 +26,7 @@ import com.creative.qrcodescanner.ui.result.QRCodeResultLayout
 import com.creative.qrcodescanner.ui.setting.SettingScreenLayout
 
 @Composable
-fun QRApp(vm: LauncherViewModel = hiltViewModel(),
+fun QRApp(vm: MainViewModel = hiltViewModel(),
           appNavHost: NavHostController = rememberNavController()) {
 
     val context = LocalContext.current

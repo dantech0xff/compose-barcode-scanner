@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.creative.qrcodescanner.LauncherViewModel
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.AppScreen
 
@@ -27,7 +25,7 @@ val topIconSize = 42.dp
 val topIconPadding = 4.dp
 val roundCorner = 4.dp
 @Composable
-fun TopTools(modifier: Modifier, appNav: NavHostController, vm: LauncherViewModel) {
+fun TopTools(modifier: Modifier, appNav: NavHostController, vm: MainViewModel) {
 
     val isFrontCamera = vm.isFrontCameraState.collectAsStateWithLifecycle()
 
