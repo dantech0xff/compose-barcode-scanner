@@ -37,7 +37,7 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: MainViewModel) {
         horizontalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Image(
-            painter = painterResource(id = if(isFlashOn.value) R.drawable.flash_on else R.drawable.flash_off),
+            painter = painterResource(id = if (isFlashOn.value) R.drawable.flash_on else R.drawable.flash_off),
             contentDescription = "Flash Light Button",
             contentScale = ContentScale.Inside,
             modifier = Modifier
@@ -78,5 +78,21 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: MainViewModel) {
                 }
                 .size(topIconSize)
                 .padding(topIconPadding))
+
+        if (vm.appSettingState.collectAsStateWithLifecycle().value?.isPremium != true) {
+            Image(
+                painter = painterResource(id = R.drawable.verified),
+                contentDescription = "Setting Button",
+                contentScale = ContentScale.Inside,
+                modifier = Modifier
+                    .background(color = Color.Transparent)
+                    .clip(RoundedCornerShape(roundCorner))
+                    .clickable {
+                        appNav.navigate(AppScreen.PREMIUM.value)
+                    }
+                    .size(topIconSize)
+                    .padding(topIconPadding)
+            )
+        }
     }
 }

@@ -20,10 +20,11 @@ class UserDataRepoImpl(
     private val userSettingDataStore: DataStore<Preferences>
 ) : UserDataRepo {
     override val userSettingData: Flow<UserSettingData> = userSettingDataStore.data.map {
-            val isEnableVibrate = it[SettingPreferencesKey.IS_ENABLE_VIBRATE] ?: false
-            val isEnableSound = it[SettingPreferencesKey.IS_ENABLE_SOUND] ?: false
-            UserSettingData(isEnableVibrate = isEnableVibrate, isEnableSound = isEnableSound)
-        }
+        val isEnableVibrate = it[SettingPreferencesKey.IS_ENABLE_VIBRATE] ?: false
+        val isEnableSound = it[SettingPreferencesKey.IS_ENABLE_SOUND] ?: false
+        val isPremium = it[SettingPreferencesKey.IS_PREMIUM] ?: false
+        UserSettingData(isEnableVibrate = isEnableVibrate, isEnableSound = isEnableSound, isPremium)
+    }
 
     override suspend fun updateSoundSetting(isEnableSound: Boolean) {
         userSettingDataStore.edit {

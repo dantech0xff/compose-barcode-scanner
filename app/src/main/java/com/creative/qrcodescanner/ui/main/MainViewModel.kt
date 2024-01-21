@@ -33,7 +33,7 @@ data class MainUIState(
     val isFrontCamera: Boolean = false,
     val isEnableTorch: Boolean = false,
     val isLoading: Boolean = false,
-    val isQRCodeFound: Boolean = false
+    val isQRCodeFound: Boolean = false,
 )
 
 sealed class QRCodeAction {
