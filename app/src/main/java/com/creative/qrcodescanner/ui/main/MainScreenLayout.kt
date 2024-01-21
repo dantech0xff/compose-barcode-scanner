@@ -52,6 +52,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 
 
 /**
@@ -77,6 +78,8 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
     })
 
     val appSettingState by vm.appSettingState.collectAsStateWithLifecycle()
+
+    val isLoadingState by vm.mainUiState.map { it.isLoading }.collectAsStateWithLifecycle(initialValue = false)
 
     LaunchedEffect(key1 = Unit) {
         vm.galleryUriState.collectLatest { uri ->
@@ -104,43 +107,16 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
     }
 
     LaunchedEffect(key1 = Unit) {
-        vm.isFrontCameraState.collectLatest {
-            cameraController.cameraSelector = if (it) {
+        vm.mainUiState.collectLatest {
+            cameraController.cameraSelector = if (it.isFrontCamera) {
                 CameraSelector.DEFAULT_FRONT_CAMERA
             } else {
                 CameraSelector.DEFAULT_BACK_CAMERA
             }
-        }
-    }
 
-    LaunchedEffect(key1 = Unit) {
-        vm.enableTorchState.collectLatest {
-            cameraController.enableTorch(it)
-        }
-    }
+            cameraController.enableTorch(it.isEnableTorch)
 
-    LaunchedEffect(key1 = Unit) {
-        vm.databaseIdOfQRCodeState.collectLatest {
-            if (it != MainViewModel.INVALID_DB_ROW_ID) {
-                if (appSettingState?.isEnableVibrate == true) {
-                    context.vibrate(200L)
-                }
-                if (appSettingState?.isEnableSound == true) {
-                    context.playPiplingSound()
-                }
-                appNavHost.navigate(
-                    AppScreen.RESULT.value.replace(
-                        "{id}",
-                        it.toString()
-                    )
-                )
-            }
-        }
-    }
-
-    LaunchedEffect(key1 = Unit) {
-        vm.qrCodeResultFoundState.collectLatest { qrCodeResult ->
-            if (qrCodeResult) {
+            if (it.isQRCodeFound) {
                 cameraController.clearImageAnalysisAnalyzer()
             } else {
                 cameraController.setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
@@ -168,6 +144,25 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
                             }
                     }
                 }
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.databaseIdOfQRCodeState.collectLatest {
+            if (it != MainViewModel.INVALID_DB_ROW_ID) {
+                if (appSettingState?.isEnableVibrate == true) {
+                    context.vibrate(200L)
+                }
+                if (appSettingState?.isEnableSound == true) {
+                    context.playPiplingSound()
+                }
+                appNavHost.navigate(
+                    AppScreen.RESULT.value.replace(
+                        "{id}",
+                        it.toString()
+                    )
+                )
             }
         }
     }
@@ -222,7 +217,7 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
             })
         }
 
-        AnimatedVisibility(visible = vm.loadingState.collectAsStateWithLifecycle().value, enter = fadeIn(), exit = fadeOut()) {
+        AnimatedVisibility(visible = isLoadingState, enter = fadeIn(), exit = fadeOut()) {
             Box(modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0x901c1c1c))

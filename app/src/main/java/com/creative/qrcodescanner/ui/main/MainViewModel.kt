@@ -12,7 +12,6 @@ import com.creative.qrcodescanner.data.entity.QRCodeWifi
 import com.creative.qrcodescanner.data.entity.toQRCodeEntity
 import com.creative.qrcodescanner.repo.user.UserDataRepo
 import com.creative.qrcodescanner.ui.result.QRCodeRawData
-import com.creative.qrcodescanner.usecase.GetAppSettingFlowUseCase
 import com.creative.qrcodescanner.usecase.InsertQRCodeHistoryFlowUseCase
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.squareup.moshi.Moshi
@@ -20,12 +19,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class MainUIState(
+    val isFrontCamera: Boolean = false,
+    val isEnableTorch: Boolean = false,
+    val isLoading: Boolean = false,
+    val isQRCodeFound: Boolean = false
+)
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -42,20 +49,11 @@ class MainViewModel @Inject constructor(
         started = SharingStarted.Lazily,
         initialValue = null)
 
-    private val _enableTorchState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val enableTorchState = _enableTorchState.asStateFlow()
+    private val _mainUiState: MutableStateFlow<MainUIState> = MutableStateFlow(MainUIState())
+    val mainUiState: StateFlow<MainUIState> = _mainUiState.asStateFlow()
 
-    private val _isFrontCameraState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isFrontCameraState = _isFrontCameraState.asStateFlow()
-
-    private val _qrCodeResultFoundState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val qrCodeResultFoundState = _qrCodeResultFoundState.asStateFlow()
-
-    private val _databaseIdOfQRCodeState: MutableStateFlow<Int> = MutableStateFlow(INVALID_DB_ROW_ID)
-    val databaseIdOfQRCodeState = _databaseIdOfQRCodeState.asStateFlow()
-
-    private val _loadingState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val loadingState = _loadingState.asStateFlow()
+    private val _databaseIdOfQRCodeState: MutableSharedFlow<Int> = MutableSharedFlow(INVALID_DB_ROW_ID)
+    val databaseIdOfQRCodeState = _databaseIdOfQRCodeState.asSharedFlow()
 
     private val _openUrlSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
     val openUrlState = _openUrlSharedFlow.asSharedFlow()
@@ -82,30 +80,35 @@ class MainViewModel @Inject constructor(
     val galleryUriState = _galleryUriSharedFlow.asSharedFlow()
 
     fun toggleTorch() {
-        _enableTorchState.value = !_enableTorchState.value
+        _mainUiState.value = _mainUiState.value.let {
+            it.copy(isEnableTorch = !it.isEnableTorch)
+        }
     }
 
     fun scanQRSuccess(result: Barcode) {
-        if(_qrCodeResultFoundState.value) {
+        if(mainUiState.value.isQRCodeFound){
             return
         }
-        _qrCodeResultFoundState.value = true
+        _mainUiState.value = _mainUiState.value.copy(isQRCodeFound = true)
+
         viewModelScope.launch {
             insertQRCodeHistoryUseCase.execute(
                 input = result.toQRCodeEntity()
             ).collectLatest {
-                _databaseIdOfQRCodeState.value = it.toInt()
+                _databaseIdOfQRCodeState.tryEmit(it.toInt())
             }
         }
     }
 
     fun resetScanQR() {
-        _qrCodeResultFoundState.value = false
-        _databaseIdOfQRCodeState.value = INVALID_DB_ROW_ID
+        _mainUiState.value = _mainUiState.value.copy(isQRCodeFound = false)
+        _databaseIdOfQRCodeState.tryEmit(INVALID_DB_ROW_ID)
     }
 
     fun toggleCamera() {
-        _isFrontCameraState.value = !_isFrontCameraState.value
+        _mainUiState.value = _mainUiState.value.let {
+            it.copy(isFrontCamera = !it.isFrontCamera)
+        }
     }
 
     fun handleBarcodeResult(barcode: QRCodeRawData) {
@@ -207,9 +210,9 @@ class MainViewModel @Inject constructor(
     }
 
     fun showLoading() {
-        _loadingState.value = true
+        _mainUiState.value = _mainUiState.value.copy(isLoading = true)
     }
     fun hideLoading() {
-        _loadingState.value = false
+        _mainUiState.value = _mainUiState.value.copy(isLoading = false)
     }
 }

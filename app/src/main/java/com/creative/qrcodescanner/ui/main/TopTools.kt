@@ -15,12 +15,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.AppScreen
+import kotlinx.coroutines.flow.map
 
 val topIconSize = 42.dp
 val topIconPadding = 4.dp
@@ -28,7 +28,8 @@ val roundCorner = 4.dp
 @Composable
 fun TopTools(modifier: Modifier, appNav: NavHostController, vm: MainViewModel) {
 
-    val isFrontCamera = vm.isFrontCameraState.collectAsStateWithLifecycle()
+    val isFrontCamera = vm.mainUiState.map { it.isFrontCamera }.collectAsStateWithLifecycle(false)
+    val isFlashOn = vm.mainUiState.map { it.isEnableTorch }.collectAsStateWithLifecycle(false)
 
     Row(
         modifier = modifier,
@@ -36,7 +37,7 @@ fun TopTools(modifier: Modifier, appNav: NavHostController, vm: MainViewModel) {
         horizontalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.flash_off),
+            painter = painterResource(id = if(isFlashOn.value) R.drawable.flash_on else R.drawable.flash_off),
             contentDescription = "Flash Light Button",
             contentScale = ContentScale.Inside,
             modifier = Modifier
