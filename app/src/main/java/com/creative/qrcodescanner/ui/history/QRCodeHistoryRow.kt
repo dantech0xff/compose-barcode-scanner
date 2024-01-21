@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,37 +32,71 @@ import com.creative.qrcodescanner.usecase.QRCodeItemUIState
  */
  
 @Composable
-fun QRCodeHistoryItemUI(itemUiState: QRCodeItemUIState, onClick: (() -> Unit)? = null) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .background(MaterialTheme.colorScheme.inversePrimary, shape = RoundedCornerShape(8.dp))
-            .clip(RoundedCornerShape(8.dp))
-            .clickable {
-                onClick?.invoke()
-            }
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.icon_qr_white),
-            contentDescription = stringResource(id = R.string.qr_code_history),
-            modifier = Modifier
-                .size(56.dp)
-                .align(Alignment.CenterVertically)
-        )
-        Spacer(modifier = Modifier.size(8.dp))
-        Column(
+fun QRCodeHistoryItemUI(
+    modifier: Modifier,
+    itemUiState: QRCodeItemUIState,
+                        onDelete: ((item: QRCodeItemUIState) -> Unit)? = null,
+                        onClick: (() -> Unit)? = null) {
+    Box(modifier = modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 16.dp, vertical = 8.dp)
+        .background(MaterialTheme.colorScheme.inversePrimary, shape = RoundedCornerShape(8.dp))
+        .clip(RoundedCornerShape(8.dp))
+        .clickable {
+            onClick?.invoke()
+        }
+        .padding(12.dp)) {
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
-            Text(text = itemUiState.rawData, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleMedium)
-            Text(text = itemUiState.dateString, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium)
+            Image(
+                painter = painterResource(id = R.drawable.icon_qr_white),
+                contentDescription = stringResource(id = R.string.qr_code_history),
+                modifier = Modifier
+                    .size(56.dp)
+                    .align(Alignment.CenterVertically)
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(text = itemUiState.rawData, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleMedium)
+                Text(text = itemUiState.dateString, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium)
+            }
         }
+
+        /*Image(
+            painter = painterResource(
+                id = if (itemUiState.isFavorite) {
+                    R.drawable.round_favorite_24
+                } else {
+                    R.drawable.outline_favorite_border_24
+                }
+            ),
+            contentDescription = stringResource(id = R.string.qr_code_history),
+            modifier = Modifier
+                .size(24.dp)
+                .align(Alignment.TopEnd).clickable {
+
+                }
+        )*/
+
+        Image(
+            painter = painterResource(
+                R.drawable.delete
+            ),
+            contentDescription = stringResource(id = R.string.qr_code_history),
+            modifier = Modifier
+                .size(24.dp)
+                .align(Alignment.CenterEnd).clickable {
+                    onDelete?.invoke(itemUiState)
+                }
+        )
     }
 }

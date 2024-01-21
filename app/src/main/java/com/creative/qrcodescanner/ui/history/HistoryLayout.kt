@@ -1,6 +1,11 @@
 package com.creative.qrcodescanner.ui.history
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.EaseInOutBack
+import androidx.compose.animation.core.EaseInOutBounce
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -64,6 +69,7 @@ import java.util.Date
  * Copyright © 2024 1010 Creative. All rights reserved.
  */
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                         appNav: NavHostController) {
@@ -85,7 +91,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .wrapContentHeight()
                 .padding(paddingValues)
         ) {
             when (qrCodeHistoryUIState) {
@@ -115,15 +121,20 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
 
                 is QRCodeHistoryUIState.Success -> {
                     val data = (qrCodeHistoryUIState as QRCodeHistoryUIState.Success).data
-                    LazyColumn(modifier = Modifier, state = rememberLazyListState()) {
+                    LazyColumn(modifier = Modifier.fillMaxHeight(), state = rememberLazyListState()) {
                         items(data, key = {
                             it.id
                         }, contentType = {
                             it.type
                         }) { item ->
-                            QRCodeHistoryItemUI(itemUiState = item) {
-                                appNav.navigate("result/${item.id}")
-                            }
+                            QRCodeHistoryItemUI(Modifier.animateItemPlacement(
+                                animationSpec = tween(500, easing = EaseInOutBack)
+                            ),
+                                itemUiState = item, onDelete = {
+                                    viewModel.deleteQRCodeHistory(it.id)
+                                }, onClick = {
+                                    appNav.navigate("result/${item.id}")
+                                })
                         }
                     }
                 }
