@@ -162,7 +162,7 @@ fun QRApp(vm: MainViewModel = hiltViewModel(),
             HistoryScreenLayout(appNav = appNavHost)
         }
         composable(route = AppScreen.PREMIUM.value) {
-            PremiumScreenLayout()
+            PremiumScreenLayout(appNav = appNavHost)
         }
     }
 }
