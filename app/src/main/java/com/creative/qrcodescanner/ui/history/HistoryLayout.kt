@@ -121,37 +121,8 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                         }, contentType = {
                             it.type
                         }) { item ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight()
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                                    .background(MaterialTheme.colorScheme.inversePrimary, shape = RoundedCornerShape(8.dp))
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable {
-                                        appNav.navigate("result/${item.id}")
-                                    }
-                                    .padding(12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.icon_qr_white),
-                                    contentDescription = stringResource(id = R.string.qr_code_history),
-                                    modifier = Modifier
-                                        .size(56.dp)
-                                        .align(Alignment.CenterVertically)
-                                )
-                                Spacer(modifier = Modifier.size(8.dp))
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentHeight(),
-                                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Text(text = item.rawData, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleMedium)
-                                    Text(text = item.dateString, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium)
-                                }
+                            QRCodeHistoryItemUI(itemUiState = item) {
+                                appNav.navigate("result/${item.id}")
                             }
                         }
                     }
