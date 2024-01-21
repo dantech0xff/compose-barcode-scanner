@@ -42,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.nav.TopNavBar
 
 /**
  * Created by dan on 07/01/2024
@@ -56,35 +57,8 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
     }
 
     Scaffold(topBar = {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary, shape = RectangleShape)
-        ) {
-            Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.arrow_back_ios_new),
-                    contentDescription = "Setting Back Button",
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clickable {
-                            appNav.popBackStack()
-                        }
-                )
-                Spacer(modifier = Modifier.size(12.dp))
-                Text(
-                    text = stringResource(R.string.panda_scanner_setting),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
+        TopNavBar(titleResId = R.string.panda_scanner_setting) {
+            appNav.popBackStack()
         }
     }, bottomBar = {}
     ) { paddingValues ->

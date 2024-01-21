@@ -53,6 +53,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.nav.TopNavBar
 import com.creative.qrcodescanner.ui.theme.fontSize
 import com.creative.qrcodescanner.usecase.QRCodeHistoryUIState
 import java.util.Date
@@ -75,35 +76,8 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
 
     Scaffold(
         topBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primary, shape = RectangleShape)
-            ) {
-                Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.arrow_back_ios_new),
-                        contentDescription = stringResource(id = R.string.qr_code_history),
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clickable {
-                                appNav.popBackStack()
-                            }
-                    )
-                    Spacer(modifier = Modifier.size(12.dp))
-                    Text(
-                        text = stringResource(R.string.qr_code_history),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                }
+            TopNavBar(titleResId = R.string.qr_code_history) {
+                appNav.popBackStack()
             }
         },
         bottomBar = {}

@@ -52,6 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.ui.AppScreen
+import com.creative.qrcodescanner.ui.nav.TopNavBar
 import com.creative.qrcodescanner.ui.theme.fontSize
 import com.google.mlkit.vision.barcode.common.Barcode
 import java.text.SimpleDateFormat
@@ -80,34 +81,9 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
 
     Scaffold(
         topBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primary, shape = RectangleShape)
-            ) {
-                Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight().padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.arrow_back_ios_new),
-                        contentDescription = stringResource(id = R.string.qr_code_history),
-                        modifier = Modifier.size(28.dp).clickable {
-                            dismiss.invoke()
-                            appNav.popBackStack()
-                        }
-                    )
-                    Spacer(modifier = Modifier.size(12.dp))
-                    Text(
-                        text = stringResource(R.string.qr_code_history),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                }
+            TopNavBar(titleResId = R.string.qr_code_result) {
+                dismiss.invoke()
+                appNav.popBackStack()
             }
         },
         bottomBar = {
