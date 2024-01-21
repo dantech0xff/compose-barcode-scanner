@@ -82,31 +82,6 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
     val isLoadingState by vm.mainUiState.map { it.isLoading }.collectAsStateWithLifecycle(initialValue = false)
 
     LaunchedEffect(key1 = Unit) {
-        vm.galleryUriState.collectLatest { uri ->
-            if (uri != null) {
-                vm.showLoading()
-                BarcodeScanning.getClient().process(InputImage.fromFilePath(context, uri))
-                    .addOnSuccessListener { barcodes ->
-                        vm.hideLoading()
-                        if (barcodes.isEmpty()) {
-                            Toast.makeText(context, context.getString(R.string.no_qr_code_detected), Toast.LENGTH_SHORT).show()
-                            return@addOnSuccessListener
-                        }
-                        barcodes.forEach { barcode ->
-                            if (barcode.rawValue != null) {
-                                vm.scanQRSuccess(barcode)
-                            }
-                        }
-                    }
-                    .addOnFailureListener {
-                        vm.hideLoading()
-                        Toast.makeText(context, context.getString(R.string.failed_to_scan_qr_code), Toast.LENGTH_SHORT).show()
-                    }
-            }
-        }
-    }
-
-    LaunchedEffect(key1 = Unit) {
         vm.mainUiState.collectLatest {
             cameraController.cameraSelector = if (it.isFrontCamera) {
                 CameraSelector.DEFAULT_FRONT_CAMERA
@@ -117,6 +92,12 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
             cameraController.enableTorch(it.isEnableTorch)
 
             if (it.isQRCodeFound) {
+                if (appSettingState?.isEnableVibrate == true) {
+                    context.vibrate(200L)
+                }
+                if (appSettingState?.isEnableSound == true) {
+                    context.playPiplingSound()
+                }
                 cameraController.clearImageAnalysisAnalyzer()
             } else {
                 cameraController.setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
@@ -147,26 +128,6 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
             }
         }
     }
-
-    LaunchedEffect(key1 = Unit) {
-        vm.databaseIdOfQRCodeState.collectLatest {
-            if (it != MainViewModel.INVALID_DB_ROW_ID) {
-                if (appSettingState?.isEnableVibrate == true) {
-                    context.vibrate(200L)
-                }
-                if (appSettingState?.isEnableSound == true) {
-                    context.playPiplingSound()
-                }
-                appNavHost.navigate(
-                    AppScreen.RESULT.value.replace(
-                        "{id}",
-                        it.toString()
-                    )
-                )
-            }
-        }
-    }
-
 
     Box(modifier = Modifier.fillMaxSize()) {
         Box(

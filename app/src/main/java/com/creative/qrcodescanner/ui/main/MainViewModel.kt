@@ -2,6 +2,7 @@ package com.creative.qrcodescanner.ui.main
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.data.entity.QRCodeContact
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,6 +35,19 @@ data class MainUIState(
     val isLoading: Boolean = false,
     val isQRCodeFound: Boolean = false
 )
+
+sealed class QRCodeAction {
+    data object None : QRCodeAction()
+    data class OpenUrl(val url: String) : QRCodeAction()
+    data class CopyText(val text: String) : QRCodeAction()
+    data class ContactInfo(val contact: QRCodeContact) : QRCodeAction()
+    data class TextSearchGoogle(val text: String) : QRCodeAction()
+    data class TextShareAction(val text: String) : QRCodeAction()
+    data class SendSMSAction(val sms: QRCodeSMS) : QRCodeAction()
+    data class CallPhoneAction(val phone: String) : QRCodeAction()
+    data class OpenQRCodeResult(val id: Int) : QRCodeAction()
+    data class PickGalleryImage(val uri: Uri) : QRCodeAction()
+}
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -52,32 +67,8 @@ class MainViewModel @Inject constructor(
     private val _mainUiState: MutableStateFlow<MainUIState> = MutableStateFlow(MainUIState())
     val mainUiState: StateFlow<MainUIState> = _mainUiState.asStateFlow()
 
-    private val _databaseIdOfQRCodeState: MutableSharedFlow<Int> = MutableSharedFlow(INVALID_DB_ROW_ID)
-    val databaseIdOfQRCodeState = _databaseIdOfQRCodeState.asSharedFlow()
-
-    private val _openUrlSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
-    val openUrlState = _openUrlSharedFlow.asSharedFlow()
-
-    private val _copyTextSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
-    val copyTextState = _copyTextSharedFlow.asSharedFlow()
-
-    private val _contactInfoSharedFlow: MutableSharedFlow<QRCodeContact> = MutableSharedFlow(extraBufferCapacity = 1)
-    val contactInfoState = _contactInfoSharedFlow.asSharedFlow()
-
-    private val _textSearchGoogleSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
-    val textSearchGoogleState = _textSearchGoogleSharedFlow.asSharedFlow()
-
-    private val _textShareActionSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
-    val textShareActionState = _textShareActionSharedFlow.asSharedFlow()
-
-    private val _sendSMSActionSharedFlow: MutableSharedFlow<QRCodeSMS> = MutableSharedFlow(extraBufferCapacity = 1)
-    val sendSMSActionState = _sendSMSActionSharedFlow.asSharedFlow()
-
-    private val _callPhoneActionSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
-    val callPhoneActionState = _callPhoneActionSharedFlow.asSharedFlow()
-
-    private val _galleryUriSharedFlow: MutableSharedFlow<Uri?> = MutableSharedFlow(extraBufferCapacity = 1)
-    val galleryUriState = _galleryUriSharedFlow.asSharedFlow()
+    private val _qrCodeActionState: MutableSharedFlow<QRCodeAction> = MutableSharedFlow(extraBufferCapacity = 1)
+    val qrCodeActionState = _qrCodeActionState.asSharedFlow()
 
     fun toggleTorch() {
         _mainUiState.value = _mainUiState.value.let {
@@ -95,14 +86,14 @@ class MainViewModel @Inject constructor(
             insertQRCodeHistoryUseCase.execute(
                 input = result.toQRCodeEntity()
             ).collectLatest {
-                _databaseIdOfQRCodeState.tryEmit(it.toInt())
+                _qrCodeActionState.tryEmit(QRCodeAction.OpenQRCodeResult(it.toInt()))
             }
         }
     }
 
     fun resetScanQR() {
         _mainUiState.value = _mainUiState.value.copy(isQRCodeFound = false)
-        _databaseIdOfQRCodeState.tryEmit(INVALID_DB_ROW_ID)
+        _qrCodeActionState.tryEmit(QRCodeAction.None)
     }
 
     fun toggleCamera() {
@@ -117,14 +108,13 @@ class MainViewModel @Inject constructor(
                 barcode.jsonDetails?.let {
                     runCatching {
                         moshi.adapter(QRCodeURL::class.java).fromJson(it)?.let {
-                            val tryEmit = _openUrlSharedFlow.tryEmit(it.url.orEmpty())
-                            Log.d("QRApp", "openUrlState: tryEmit $tryEmit")
+                            _qrCodeActionState.tryEmit(QRCodeAction.OpenUrl(it.url.orEmpty()))
                         } ?: throw Exception("QRCodeURL is null")
                     }.onFailure {
-                        _copyTextSharedFlow.tryEmit(barcode.rawData)
+                        _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                     }
                 } ?: run {
-                    _copyTextSharedFlow.tryEmit(barcode.rawData)
+                    _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                 }
             }
 
@@ -132,14 +122,13 @@ class MainViewModel @Inject constructor(
                 barcode.jsonDetails?.let {
                     runCatching {
                         moshi.adapter(QRCodeWifi::class.java).fromJson(it)?.let {
-                            val tryEmit = _openUrlSharedFlow.tryEmit(it.pass.orEmpty())
-                            Log.d("QRApp", "openUrlState: tryEmit $tryEmit")
+                            _qrCodeActionState.tryEmit(QRCodeAction.CopyText(it.pass.orEmpty()))
                         }
                     }.onFailure {
-                        _copyTextSharedFlow.tryEmit(barcode.rawData)
+                        _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                     }
                 } ?: run {
-                    _copyTextSharedFlow.tryEmit(barcode.rawData)
+                    _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                 }
             }
 
@@ -147,14 +136,13 @@ class MainViewModel @Inject constructor(
                 barcode.jsonDetails?.let {
                     runCatching {
                         moshi.adapter(QRCodeContact::class.java).fromJson(it)?.let {
-                            val tryEmit = _contactInfoSharedFlow.tryEmit(it)
-                            Log.d("QRApp", "contactInfoState: tryEmit $tryEmit")
+                            _qrCodeActionState.tryEmit(QRCodeAction.ContactInfo(it))
                         }
                     }.onFailure {
-                        _copyTextSharedFlow.tryEmit(barcode.rawData)
+                        _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                     }
                 } ?: run {
-                    _copyTextSharedFlow.tryEmit(barcode.rawData)
+                    _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                 }
             }
 
@@ -162,14 +150,13 @@ class MainViewModel @Inject constructor(
                 barcode.jsonDetails?.let {
                     runCatching {
                         moshi.adapter(QRCodePhone::class.java).fromJson(it)?.let {
-                            val tryEmit = _callPhoneActionSharedFlow.tryEmit(it.number.orEmpty())
-                            Log.d("QRApp", "openUrlState: tryEmit $tryEmit")
+                            _qrCodeActionState.tryEmit(QRCodeAction.CallPhoneAction(it.number.orEmpty()))
                         }
                     }.onFailure {
-                        _copyTextSharedFlow.tryEmit(barcode.rawData)
+                        _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                     }
                 } ?: run {
-                    _copyTextSharedFlow.tryEmit(barcode.rawData)
+                    _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                 }
             }
 
@@ -177,36 +164,32 @@ class MainViewModel @Inject constructor(
                 barcode.jsonDetails?.let {
                     runCatching {
                         moshi.adapter(QRCodeSMS::class.java).fromJson(it)?.let {
-                            val tryEmit = _sendSMSActionSharedFlow.tryEmit(it)
-                            Log.d("QRApp", "openUrlState: tryEmit $tryEmit")
+                            _qrCodeActionState.tryEmit(QRCodeAction.SendSMSAction(it))
                         }
                     }.onFailure {
-                        _copyTextSharedFlow.tryEmit(barcode.rawData)
+                        _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                     }
                 } ?: run {
-                    _copyTextSharedFlow.tryEmit(barcode.rawData)
+                    _qrCodeActionState.tryEmit(QRCodeAction.CopyText(barcode.rawData))
                 }
             }
 
             else -> {
-                _textSearchGoogleSharedFlow.tryEmit(barcode.rawData)
+                _qrCodeActionState.tryEmit(QRCodeAction.TextSearchGoogle(barcode.rawData))
             }
         }
     }
 
     fun handleCopyText(text: String) {
-        val tryEmit = _copyTextSharedFlow.tryEmit(text)
-        Log.d("QRApp", "copyTextState: tryEmit $tryEmit")
+        _qrCodeActionState.tryEmit(QRCodeAction.CopyText(text))
     }
 
     fun handleShareText(text: String) {
-        val tryEmit = _textShareActionSharedFlow.tryEmit(text)
-        Log.d("QRApp", "_textShareActionSharedFlow: tryEmit $tryEmit")
+        _qrCodeActionState.tryEmit(QRCodeAction.TextShareAction(text))
     }
 
     fun handleGalleryUri(uri: Uri?) {
-        val tryEmit = _galleryUriSharedFlow.tryEmit(uri)
-        Log.d("QRApp", "_galleryUriSharedFlow: tryEmit $tryEmit")
+        _qrCodeActionState.tryEmit(QRCodeAction.PickGalleryImage(uri ?: return))
     }
 
     fun showLoading() {
