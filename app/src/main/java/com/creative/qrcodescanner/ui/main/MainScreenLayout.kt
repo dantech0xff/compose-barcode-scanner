@@ -180,7 +180,7 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
                 .background(Color.Black)
         ) {
             if (cameraPermissionState.status.isGranted) {
-                CameraView(cameraController)
+                QRCameraView(cameraController)
             } else {
                 Column(
                     modifier = Modifier.align(Alignment.Center),

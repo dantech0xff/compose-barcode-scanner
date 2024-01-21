@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 
 @Composable
-fun CameraView(lifecycleCameraController: LifecycleCameraController) {
+fun QRCameraView(lifecycleCameraController: LifecycleCameraController) {
     AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx ->
         PreviewView(ctx).apply {
             layoutParams = ViewGroup.LayoutParams(
