@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
-import com.creative.qrcodescanner.ui.nav.TopNavBar
 
 /**
  * Created by dan on 07/01/2024

@@ -4,6 +4,8 @@ This project is built with Jetpack Compose, CameraX, ML Kit and my handsome atti
 This is for my learning purpose in order to get familiar with Jetpack Compose, MLKit and CameraX.
 Feel free to use it in your project.
 
+![Example GIF](demo-feature.gif)
+
 ![High Level Design](high-level-design-qr-app.png)
 
 ## Features
@@ -24,6 +26,7 @@ Feel free to use it in your project.
 - [x] StateFlow
 - [x] Hilt
 - [x] Coroutines, Flow
+- [ ] ZXing
 - [ ] Coil
 - [ ] Unit Test
 - [ ] UI Test
