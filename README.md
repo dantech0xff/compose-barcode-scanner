@@ -33,7 +33,7 @@ Feel free to use it in your project.
 - [ ] Idk, I will add more later
 
 ## Improvement
-- [ ] Reduce numbers of Flow in MainViewModel
+- [x] Reduce numbers of Flow in MainViewModel
 - [ ] Update better UI
 - [ ] Animation
 

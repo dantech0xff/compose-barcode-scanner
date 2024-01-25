@@ -6,7 +6,6 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,7 +13,6 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -23,11 +21,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,7 +39,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
-import com.creative.qrcodescanner.ui.AppScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -160,15 +153,10 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
                 .background(Color.Transparent)
         ) {
             TopTools(
-                Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight()
-                    .align(Alignment.TopCenter)
-                    .padding(16.dp)
-                    .background(color = Color(0x901c1c1c), shape = RoundedCornerShape(32.dp))
-                    .padding(24.dp, 6.dp)
-                    .animateContentSize(),
-                appNavHost, vm
+                Modifier.align(Alignment.TopCenter)                 ,
+                vm.mainUiState.collectAsStateWithLifecycle().value,
+                vm.appSettingState.collectAsStateWithLifecycle().value,
+                appNavHost, vm as ICameraController
             )
 
             FooterTools(appNavHost, pickGallery = {

@@ -49,12 +49,17 @@ sealed class QRCodeAction {
     data class PickGalleryImage(val uri: Uri) : QRCodeAction()
 }
 
+interface ICameraController {
+    fun toggleTorch()
+    fun toggleCamera()
+}
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val insertQRCodeHistoryUseCase: InsertQRCodeHistoryFlowUseCase,
     private val moshi: Moshi,
     userDataRepo: UserDataRepo
-) : ViewModel() {
+) : ViewModel(), ICameraController {
 
     companion object {
         const val INVALID_DB_ROW_ID = 0
@@ -70,7 +75,7 @@ class MainViewModel @Inject constructor(
     private val _qrCodeActionState: MutableSharedFlow<QRCodeAction> = MutableSharedFlow(extraBufferCapacity = 1)
     val qrCodeActionState = _qrCodeActionState.asSharedFlow()
 
-    fun toggleTorch() {
+    override fun toggleTorch() {
         _mainUiState.value = _mainUiState.value.let {
             it.copy(isEnableTorch = !it.isEnableTorch)
         }
@@ -96,7 +101,7 @@ class MainViewModel @Inject constructor(
         _qrCodeActionState.tryEmit(QRCodeAction.None)
     }
 
-    fun toggleCamera() {
+    override fun toggleCamera() {
         _mainUiState.value = _mainUiState.value.let {
             it.copy(isFrontCamera = !it.isFrontCamera)
         }
