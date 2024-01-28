@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.data.entity.UserSettingData
 import com.creative.qrcodescanner.ui.AppScreen
+import com.creative.qrcodescanner.ui.shadow
 
 val topIconSize = 42.dp
 val topIconPadding = 4.dp
@@ -36,9 +37,10 @@ fun TopTools(modifier: Modifier, mainUIState: MainUIState,
 
     Row(
         modifier = modifier
+            .padding(16.dp)
+            .shadow(Color(0x901c1c1c).copy(alpha = 0.5f), blurRadius = 10.dp, borderRadius = 32.dp, spread = 0.dp, offsetY = 1.dp, offsetX = 1.dp)
             .wrapContentWidth()
             .wrapContentHeight()
-            .padding(16.dp)
             .background(color = Color(0x901c1c1c), shape = RoundedCornerShape(32.dp))
             .padding(24.dp, 6.dp)
             .animateContentSize(),

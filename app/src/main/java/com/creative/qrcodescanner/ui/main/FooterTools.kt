@@ -3,7 +3,9 @@ package com.creative.qrcodescanner.ui.main
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -14,10 +16,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.AppScreen
+import com.creative.qrcodescanner.ui.shadow
 
 @Composable
 fun BoxScope.FooterTools(appNav: NavHostController, pickGallery: () -> Unit) {
@@ -26,8 +31,9 @@ fun BoxScope.FooterTools(appNav: NavHostController, pickGallery: () -> Unit) {
         contentDescription = "Gallery Picker",
         contentScale = ContentScale.Inside,
         modifier = Modifier
-            .align(Alignment.BottomStart)
             .padding(16.dp)
+            .shadow(Color(0x901c1c1c).copy(alpha = 0.5f), blurRadius = 12.dp, borderRadius = 32.dp, spread = 0.dp, offsetY = 1.dp, offsetX = 1.dp)
+            .align(Alignment.BottomStart)
             .size(64.dp)
             .background(color = Color(0x901c1c1c), shape = CircleShape)
             .clip(CircleShape)
@@ -44,6 +50,8 @@ fun BoxScope.FooterTools(appNav: NavHostController, pickGallery: () -> Unit) {
         modifier = Modifier
             .align(Alignment.BottomEnd)
             .padding(16.dp)
+            .shadow(Color(0x901c1c1c).copy(alpha = 0.5f), blurRadius = 12.dp, borderRadius = 32.dp, spread = 0.dp, offsetY = 1.dp, offsetX = 1.dp)
+
             .size(64.dp)
             .background(color = Color(0x901c1c1c), shape = CircleShape)
             .clip(CircleShape)
@@ -53,4 +61,12 @@ fun BoxScope.FooterTools(appNav: NavHostController, pickGallery: () -> Unit) {
             .padding(18.dp)
 
     )
+}
+
+@Preview
+@Composable
+fun FooterToolsPreview() {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        FooterTools(appNav = rememberNavController(), pickGallery = {})
+    }
 }
