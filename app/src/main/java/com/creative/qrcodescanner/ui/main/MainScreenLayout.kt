@@ -44,8 +44,11 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
+import java.util.Calendar
+import kotlin.random.Random
 
 
 /**
@@ -93,9 +96,10 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
                 }
                 cameraController.clearImageAnalysisAnalyzer()
             } else {
+                delay(Random(Calendar.getInstance().timeInMillis).nextLong(1000))
                 cameraController.setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
-                    imageProxy.image?.let {
-                        InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
+                    imageProxy.image?.let { img ->
+                        InputImage.fromMediaImage(img, imageProxy.imageInfo.rotationDegrees)
                             .let { image ->
                                 val scanner = BarcodeScanning.getClient()
                                 scanner.process(image)

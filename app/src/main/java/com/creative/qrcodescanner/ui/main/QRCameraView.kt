@@ -15,13 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
+import com.creative.qrcodescanner.ui.theme.seed
+import kotlinx.coroutines.delay
 
-const val cornerStrokeWidth = 6f
-val cornerColor = Color.Blue
+val cornerColor = seed
 val centerColor = Color.Red
-const val cornerStrokeLength = 62f
+const val cornerStrokeLength = 120f
+const val cornerStrokeWidth = 20f
+val dimmingColor = Color.Black.copy(alpha = 0.3f)
 
 @Composable
 fun QRCameraView(lifecycleCameraController: LifecycleCameraController) {
@@ -29,9 +33,21 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController) {
     var centerLineAlpha by remember { androidx.compose.runtime.mutableStateOf(1f) }
 
     LaunchedEffect(key1 = Unit) {
+        var isIncreasing = false
         while (true) {
-            centerLineAlpha = if (centerLineAlpha == 1f) 0f else 1f
-            kotlinx.coroutines.delay(500)
+            if (centerLineAlpha <= 0f) {
+                isIncreasing = true
+                centerLineAlpha = 0f
+            } else if (centerLineAlpha >= 1f) {
+                isIncreasing = false
+                centerLineAlpha = 1f
+            }
+            if (isIncreasing) {
+                centerLineAlpha += 0.1f
+            } else {
+                centerLineAlpha -= 0.1f
+            }
+            delay(50)
         }
     }
 
@@ -55,75 +71,85 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController) {
             val w = size.width
             val h = size.height
             val squareSize = w.coerceAtMost(h) * 0.75f
-            val color = Color.Black.copy(alpha = 0.5f)
             val shiftTop = w / 8
-            drawRect(color = color, size = Size(w, (h - squareSize) / 2 - shiftTop), topLeft = Offset(x = 0f, y = 0f))
-            drawRect(color = color, size = Size(w, (h - squareSize) / 2 + shiftTop), topLeft = Offset(x = 0f, y = h - (h - squareSize) / 2 - shiftTop))
 
-            drawRect(color = color, size = Size((w - squareSize) / 2, squareSize), topLeft = Offset(x = 0f, y = (h - squareSize) / 2 - shiftTop))
-            drawRect(color = color, size = Size((w - squareSize) / 2, squareSize), topLeft = Offset(x = w - (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop))
+            drawRect(color = dimmingColor, size = Size(w, (h - squareSize) / 2 - shiftTop), topLeft = Offset(x = 0f, y = 0f))
+            drawRect(color = dimmingColor, size = Size(w, (h - squareSize) / 2 + shiftTop), topLeft = Offset(x = 0f, y = h - (h - squareSize) / 2 - shiftTop))
+
+            drawRect(color = dimmingColor, size = Size((w - squareSize) / 2, squareSize), topLeft = Offset(x = 0f, y = (h - squareSize) / 2 - shiftTop))
+            drawRect(color = dimmingColor, size = Size((w - squareSize) / 2, squareSize), topLeft = Offset(x = w - (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop))
 
             drawLine(
                 color = cornerColor,
-                start = Offset(x = (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop),
+                start = Offset(x = (w - squareSize) / 2 , y = (h - squareSize) / 2 - shiftTop),
                 end = Offset(x = (w - squareSize) / 2 + cornerStrokeLength, y = (h - squareSize) / 2 - shiftTop),
-                strokeWidth = cornerStrokeWidth
+                strokeWidth = cornerStrokeWidth,
+                cap = StrokeCap.Round
             )
             drawLine(
                 color = cornerColor,
                 start = Offset(x = (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop),
                 end = Offset(x = (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop + cornerStrokeLength),
-                strokeWidth = cornerStrokeWidth
+                strokeWidth = cornerStrokeWidth,
+                cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColor,
                 start = Offset(x = w - (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop),
                 end = Offset(x = w - (w - squareSize) / 2 - cornerStrokeLength, y = (h - squareSize) / 2 - shiftTop),
-                strokeWidth = cornerStrokeWidth
+                strokeWidth = cornerStrokeWidth,
+                cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColor,
                 start = Offset(x = w - (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop),
                 end = Offset(x = w - (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop + cornerStrokeLength),
-                strokeWidth = cornerStrokeWidth
+                strokeWidth = cornerStrokeWidth,
+                cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColor,
                 start = Offset(x = (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop),
                 end = Offset(x = (w - squareSize) / 2 + cornerStrokeLength, y = h - (h - squareSize) / 2 - shiftTop),
-                strokeWidth = cornerStrokeWidth
+                strokeWidth = cornerStrokeWidth,
+                cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColor,
                 start = Offset(x = (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop),
                 end = Offset(x = (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop - cornerStrokeLength),
-                strokeWidth = cornerStrokeWidth
+                strokeWidth = cornerStrokeWidth,
+                cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColor,
                 start = Offset(x = w - (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop),
                 end = Offset(x = w - (w - squareSize) / 2 - cornerStrokeLength, y = h - (h - squareSize) / 2 - shiftTop),
-                strokeWidth = cornerStrokeWidth
+                strokeWidth = cornerStrokeWidth,
+                cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColor,
                 start = Offset(x = w - (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop),
                 end = Offset(x = w - (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop - cornerStrokeLength),
-                strokeWidth = 4f
+                strokeWidth = cornerStrokeWidth,
+                cap = StrokeCap.Round
             )
 
             // draw center line of the square, in horizontal
             drawLine(
-                color = centerColor.copy(alpha = centerLineAlpha),
-                start = Offset(x = (w - squareSize) / 2, y = h / 2 - shiftTop),
-                end = Offset(x = w - (w - squareSize) / 2 , y = h / 2- shiftTop),
-                strokeWidth = 4f
+                color = centerColor,
+                start = Offset(x = (w - squareSize) / 2 + 10f, y = h / 2 - shiftTop),
+                end = Offset(x = w - (w - squareSize) / 2 - 10f, y = h / 2 - shiftTop),
+                strokeWidth = 10f,
+                alpha = centerLineAlpha.coerceAtLeast(0f).coerceAtMost(1f),
+                cap = StrokeCap.Round
             )
         })
     }

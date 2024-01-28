@@ -72,7 +72,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
     ) { paddingValues ->
         AnimatedVisibility(visible = qrCodeHistoryUIState is QRCodeHistoryUIState.Empty, enter = fadeIn(), exit = fadeOut()) {
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Empty) return@AnimatedVisibility
-            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize().padding(bottom = 200.dp)) {
                 Column(
                     modifier = Modifier
                         .padding(32.dp)
@@ -101,7 +101,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
 
         AnimatedVisibility(visible = qrCodeHistoryUIState is QRCodeHistoryUIState.Loading, enter = fadeIn(), exit = fadeOut()) {
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Loading) return@AnimatedVisibility
-            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize().padding(bottom = 200.dp)) {
                 Column(
                     modifier = Modifier
                         .padding(32.dp)
@@ -174,7 +174,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
         AnimatedVisibility(visible = qrCodeHistoryUIState is QRCodeHistoryUIState.Error, enter = fadeIn(), exit = fadeOut()) {
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Error) return@AnimatedVisibility
 
-            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize().padding(bottom = 200.dp)) {
                 Column(
                     modifier = Modifier
                         .padding(32.dp)
