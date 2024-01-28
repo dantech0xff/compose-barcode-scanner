@@ -59,7 +59,7 @@ fun TopNavBar(@StringRes titleResId: Int, backNavClick: () -> Unit) {
                     .padding(12.dp)
                     .size(28.dp)
             )
-            Spacer(modifier = Modifier.size(12.dp))
+            Spacer(modifier = Modifier.size(6.dp))
             Text(
                 text = stringResource(titleResId),
                 color = MaterialTheme.colorScheme.onPrimary,

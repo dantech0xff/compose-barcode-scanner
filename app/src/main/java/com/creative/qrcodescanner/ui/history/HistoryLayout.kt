@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -146,10 +147,10 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                 LazyColumn(
                     modifier = Modifier,
                     state = rememberLazyListState(),
-                    verticalArrangement = Arrangement.spacedBy(18.dp),
+                    verticalArrangement = Arrangement.spacedBy(1.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    item { Spacer(modifier = Modifier) }
+                    item { Spacer(modifier = Modifier.size(8.dp)) }
                     items(data, key = {
                         it.id
                     }, contentType = {
@@ -166,7 +167,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                                 appNav.navigate("result/${item.id}")
                             })
                     }
-                    item { Spacer(modifier = Modifier) }
+                    item { Spacer(modifier = Modifier.size(8.dp)) }
                 }
             }
         }

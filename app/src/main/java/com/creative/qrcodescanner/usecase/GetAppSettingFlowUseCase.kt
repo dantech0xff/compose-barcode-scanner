@@ -35,14 +35,16 @@ class GetAppSettingFlowUseCase @Inject constructor(
                 add(SettingItemUIState.SwitchUIState(SettingId.SOUND.value, title = context.getString(R.string.sound), isEnable = it.isEnableSound))
                 add(SettingItemUIState.SwitchUIState(SettingId.VIBRATE.value, title = context.getString(R.string.vibrate), isEnable = it.isEnableVibrate))
 
+                add(SettingItemUIState.DividerUIState(SettingId.NONE.value))
+
                 add(SettingItemUIState.SettingHeaderUIState(SettingId.NONE.value, title = context.getString(R.string.panda_scanner_setting)))
-                add(SettingItemUIState.TextUIState(SettingId.ABOUT_US.value, title = context.getString(R.string.about_us), iconRes = R.drawable.icon_calendar_event))
-                add(SettingItemUIState.TextUIState(SettingId.RATE_US.value, title = context.getString(R.string.rate_us), iconRes = R.drawable.icon_calendar_event))
+                add(SettingItemUIState.TextUIState(SettingId.ABOUT_US.value, title = context.getString(R.string.about_us), iconRes = R.drawable.ic_information_circle))
+                add(SettingItemUIState.TextUIState(SettingId.RATE_US.value, title = context.getString(R.string.rate_us), iconRes = R.drawable.ic_heart))
                 add(
                     SettingItemUIState.TextUIState(
                         SettingId.MANAGE_SUBSCRIPTION.value,
                         title = context.getString(R.string.manage_subscription),
-                        iconRes = R.drawable.icon_calendar_event
+                        iconRes = R.drawable.ic_gift
                     )
                 )
             })

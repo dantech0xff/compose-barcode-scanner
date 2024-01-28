@@ -72,9 +72,7 @@ class SettingViewModel @Inject constructor(
     }
 }
 
-data class ListSettingUIState(
-    val data: List<SettingItemUIState>
-)
+data class ListSettingUIState(val data: List<SettingItemUIState>)
 
 sealed class SettingItemUIState(open val id: Int) {
 
@@ -95,6 +93,10 @@ sealed class SettingItemUIState(open val id: Int) {
         override val id: Int,
         val title: String,
         val isEnable: Boolean = false,
+    ) : SettingItemUIState(id)
+
+    data class DividerUIState(
+        override val id: Int,
     ) : SettingItemUIState(id)
 }
 
