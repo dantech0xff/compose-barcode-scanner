@@ -19,10 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.shadow
 import com.creative.qrcodescanner.usecase.QRCodeItemUIState
 
 /**
@@ -37,13 +40,19 @@ fun QRCodeHistoryItemUI(
     itemUiState: QRCodeItemUIState,
                         onDelete: ((item: QRCodeItemUIState) -> Unit)? = null,
                         onClick: (() -> Unit)? = null) {
-    Box(modifier = modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 16.dp, vertical = 8.dp)
+    Box(modifier = modifier.fillMaxWidth().wrapContentHeight()
+        .padding(horizontal = 16.dp)
+        .shadow(
+            Color(0x901c1c1c).copy(alpha = 0.2f), blurRadius = 12.dp,
+            borderRadius = 8.dp, spread = 0.dp, offsetY = 0.dp, offsetX = 0.dp
+        )
         .background(MaterialTheme.colorScheme.inversePrimary, shape = RoundedCornerShape(8.dp))
         .clip(RoundedCornerShape(8.dp))
         .clickable {
             onClick?.invoke()
         }
-        .padding(12.dp)) {
+        .padding(12.dp)
+    ) {
 
         Row(
             modifier = Modifier
@@ -99,4 +108,19 @@ fun QRCodeHistoryItemUI(
                 }
         )
     }
+}
+
+@Preview
+@Composable
+fun QRCodeHistoryItemUIPreview() {
+    QRCodeHistoryItemUI(
+        Modifier, QRCodeItemUIState(
+            id = 1,
+            rawData = "https://www.google.com",
+            type = 1,
+            dateString = "2021-01-01 12:00:00",
+            isFavorite = false,
+            isScanned = true
+        )
+    )
 }

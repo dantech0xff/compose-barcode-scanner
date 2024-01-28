@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -44,9 +45,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -121,7 +124,13 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
 
                 is QRCodeHistoryUIState.Success -> {
                     val data = (qrCodeHistoryUIState as QRCodeHistoryUIState.Success).data
-                    LazyColumn(modifier = Modifier.fillMaxHeight(), state = rememberLazyListState()) {
+                    LazyColumn(
+                        modifier = Modifier.wrapContentHeight().fillMaxWidth(),
+                        state = rememberLazyListState(),
+                        verticalArrangement = Arrangement.spacedBy(18.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        item { Spacer(modifier = Modifier) }
                         items(data, key = {
                             it.id
                         }, contentType = {
@@ -136,6 +145,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                                     appNav.navigate("result/${item.id}")
                                 })
                         }
+                        item { Spacer(modifier = Modifier) }
                     }
                 }
 

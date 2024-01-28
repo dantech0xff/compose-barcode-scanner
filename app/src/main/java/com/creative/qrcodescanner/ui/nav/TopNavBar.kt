@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.shadow
 
 /**
  * Created by dan on 21/01/2024
@@ -35,6 +36,9 @@ import com.creative.qrcodescanner.R
 fun TopNavBar(@StringRes titleResId: Int, backNavClick: () -> Unit) {
     Column(
         modifier = Modifier
+            .shadow(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                blurRadius = 12.dp, borderRadius = 0.dp, spread = 0.dp,
+                offsetY = 1.dp, offsetX = 0.dp)
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary, shape = RectangleShape)
     ) {
