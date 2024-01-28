@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
@@ -42,6 +43,7 @@ import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.ui.AppScreen
 import com.creative.qrcodescanner.ui.nav.TopNavBar
+import com.creative.qrcodescanner.ui.shadow
 import com.creative.qrcodescanner.ui.theme.fontSize
 import com.google.mlkit.vision.barcode.common.Barcode
 import java.text.SimpleDateFormat
@@ -86,9 +88,14 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
                 Row(
                     modifier = Modifier
                         .padding(vertical = 12.dp, horizontal = 16.dp)
+                        .shadow(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                            blurRadius = 8.dp, borderRadius = 8.dp, spread = 0.dp, offsetY = 0.dp, offsetX = 0.dp
+                        )
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(8.dp))
                         .clickable {
                             dismiss.invoke()
                             appNav.popBackStack(AppScreen.MAIN.value, false)
@@ -113,6 +120,12 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
         Column(
             modifier = Modifier
                 .padding(paddingValues)
+                .padding(18.dp)
+                .shadow(
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                    blurRadius = 8.dp, borderRadius = 8.dp, spread = 0.dp, offsetY = 0.dp, offsetX = 0.dp
+                )
+                .background(color = Color.White, shape = RoundedCornerShape(8.dp))
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(12.dp),
@@ -126,14 +139,21 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = qrCodeRawData?.typeIcon ?: R.drawable.icon_qr),
-                    contentDescription = stringResource(R.string.qr_code_type),
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .padding(6.dp)
-                )
+                Box (modifier = Modifier
+                    .size(52.dp)
+                    .shadow(
+                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                        blurRadius = 8.dp, borderRadius = 4.dp, spread = 0.dp, offsetY = 0.dp, offsetX = 0.dp
+                    )
+                    .background(MaterialTheme.colorScheme.inverseOnSurface, shape = RoundedCornerShape(4.dp))
+                    .padding(8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = qrCodeRawData?.typeIcon ?: R.drawable.icon_qr),
+                        contentDescription = stringResource(R.string.qr_code_type),
+                        modifier = Modifier.fillMaxSize())
+                }
+
 
                 Column(
                     modifier = Modifier
@@ -153,19 +173,28 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
                     .align(Alignment.Start)
                     .fillMaxWidth()
                     .heightIn(64.dp, Dp.Unspecified)
-                    .background(Color.LightGray, shape = RoundedCornerShape(4.dp))
-                    .padding(4.dp)
+                    .shadow(
+                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                        blurRadius = 8.dp, borderRadius = 4.dp, spread = 0.dp, offsetY = 0.dp, offsetX = 0.dp
+                    )
+                    .background(MaterialTheme.colorScheme.inverseOnSurface, shape = RoundedCornerShape(4.dp))
+                    .padding(8.dp)
             )
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .shadow(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                        blurRadius = 8.dp, borderRadius = 8.dp, spread = 0.dp, offsetY = 0.dp, offsetX = 0.dp
+                    )
                     .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp))
                     .clickable {
                         callbackHandleQR.invoke(qrCodeRawData)
                     }
-                    .padding(12.dp)
                     .align(Alignment.CenterHorizontally)
+                    .padding(12.dp)
             ) {
                 Text(
                     text = stringResource(id = qrCodeRawData?.ctaHandleStringRes ?: R.string.copy).uppercase(), modifier = Modifier.align(Alignment.Center),
@@ -182,6 +211,11 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
                 Box(
                     modifier = Modifier
                         .wrapContentHeight()
+                        .shadow(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                            blurRadius = 8.dp, borderRadius = 8.dp, spread = 0.dp, offsetY = 0.dp, offsetX = 0.dp
+                        )
+                        .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                         .clickable {
                             callbackCopyRawValue.invoke(qrCodeRawData?.rawData.orEmpty())
@@ -197,7 +231,13 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
                 Box(
                     modifier = Modifier
                         .wrapContentHeight()
+                        .shadow(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                            blurRadius = 8.dp, borderRadius = 8.dp, spread = 0.dp, offsetY = 0.dp, offsetX = 0.dp
+                        )
+                        .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(8.dp))
                         .clickable {
                             callbackShareRawValue.invoke(qrCodeRawData?.rawData.orEmpty())
                         }
