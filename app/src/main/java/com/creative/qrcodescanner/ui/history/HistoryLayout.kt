@@ -72,11 +72,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
     ) { paddingValues ->
         AnimatedVisibility(visible = qrCodeHistoryUIState is QRCodeHistoryUIState.Empty, enter = fadeIn(), exit = fadeOut()) {
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Empty) return@AnimatedVisibility
-            Surface(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            ) {
+            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
                 Column(
                     modifier = Modifier
                         .padding(32.dp)
@@ -105,11 +101,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
 
         AnimatedVisibility(visible = qrCodeHistoryUIState is QRCodeHistoryUIState.Loading, enter = fadeIn(), exit = fadeOut()) {
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Loading) return@AnimatedVisibility
-            Surface(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            ) {
+            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
                 Column(
                     modifier = Modifier
                         .padding(32.dp)
@@ -150,11 +142,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Success) return@AnimatedVisibility
 
             val data = (qrCodeHistoryUIState as QRCodeHistoryUIState.Success).data
-            Surface(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            ) {
+            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
                 LazyColumn(
                     modifier = Modifier,
                     state = rememberLazyListState(),
@@ -186,11 +174,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
         AnimatedVisibility(visible = qrCodeHistoryUIState is QRCodeHistoryUIState.Error, enter = fadeIn(), exit = fadeOut()) {
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Error) return@AnimatedVisibility
 
-            Surface(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            ) {
+            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
                 Column(
                     modifier = Modifier
                         .padding(32.dp)

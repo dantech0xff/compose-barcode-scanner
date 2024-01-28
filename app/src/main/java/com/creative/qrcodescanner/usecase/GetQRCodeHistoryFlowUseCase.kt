@@ -28,7 +28,7 @@ class GetQRCodeHistoryFlowUseCase @Inject
         return historyRepo.getQRCOdeHistoryFlow().map {
             if(isFirstLoad) {
                 isFirstLoad = false
-                delay(Random(Calendar.getInstance().timeInMillis).nextLong(1200))
+                delay(Random(Calendar.getInstance().timeInMillis).nextLong(600))
             }
             if (it.isEmpty()) {
                 QRCodeHistoryUIState.Empty
