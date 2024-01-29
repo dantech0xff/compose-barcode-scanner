@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.creative.qrcodescanner.R
@@ -113,7 +114,8 @@ fun SettingHeaderItem(settingItem: SettingItemUIState.SettingHeaderUIState) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 0.dp)
             .padding(top = 20.dp),
-        style = MaterialTheme.typography.titleMedium
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold
     )
 }
 

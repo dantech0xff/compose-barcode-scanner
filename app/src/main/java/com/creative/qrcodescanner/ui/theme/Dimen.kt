@@ -23,17 +23,6 @@ val spaceDp = SpaceDp(
     spaceXXXLarge = 48.dp,
 )
 
-val fontSize = FontSizeSp(
-    heading1 = 96.sp,
-    heading2 = 60.sp,
-    heading3 = 48.sp,
-    heading4 = 34.sp,
-    heading5 = 24.sp,
-    heading6 = 20.sp,
-    heading7 = 16.sp,
-    heading8 = 14.sp,
-)
-
 val borderRadius = BorderRadiusDp(
     borderRadiusNone = 0.dp,
     borderRadiusSmall = 2.dp,

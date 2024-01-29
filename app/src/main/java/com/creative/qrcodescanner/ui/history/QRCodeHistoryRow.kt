@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,10 +25,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.shadow
+import com.creative.qrcodescanner.ui.theme.QRCodeScannerTheme
 import com.creative.qrcodescanner.usecase.QRCodeItemUIState
 
 /**
@@ -42,7 +45,9 @@ fun QRCodeHistoryItemUI(
     itemUiState: QRCodeItemUIState,
                         onDelete: ((item: QRCodeItemUIState) -> Unit)? = null,
                         onClick: (() -> Unit)? = null) {
-    Box(modifier = modifier.fillMaxWidth().wrapContentHeight()
+    Box(modifier = modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
         .padding(horizontal = 16.dp, vertical = 8.dp)
         .shadow(
             Color(0x901c1c1c).copy(alpha = 0.2f), blurRadius = 5.dp,
@@ -74,38 +79,24 @@ fun QRCodeHistoryItemUI(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight(),
+                    .wrapContentHeight().padding(end = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(text = itemUiState.rawData, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleMedium)
-                Text(text = itemUiState.dateString, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium)
+                Text(text = itemUiState.rawData, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = itemUiState.dateString, color = MaterialTheme.colorScheme.inverseSurface,
+                    style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Light
+                )
             }
         }
-
-        /*Image(
-            painter = painterResource(
-                id = if (itemUiState.isFavorite) {
-                    R.drawable.round_favorite_24
-                } else {
-                    R.drawable.outline_favorite_border_24
-                }
-            ),
-            contentDescription = stringResource(id = R.string.qr_code_history),
-            modifier = Modifier
-                .size(24.dp)
-                .align(Alignment.TopEnd).clickable {
-
-                }
-        )*/
-
         Image(
-            painter = painterResource(
-                R.drawable.delete
-            ),
+            painter = painterResource(R.drawable.delete),
             contentDescription = stringResource(id = R.string.qr_code_history),
             modifier = Modifier
                 .size(24.dp)
-                .align(Alignment.CenterEnd).clickable {
+                .align(Alignment.CenterEnd)
+                .clip(CircleShape)
+                .clickable {
                     onDelete?.invoke(itemUiState)
                 }
         )
@@ -115,14 +106,16 @@ fun QRCodeHistoryItemUI(
 @Preview
 @Composable
 fun QRCodeHistoryItemUIPreview() {
-    QRCodeHistoryItemUI(
-        Modifier, QRCodeItemUIState(
-            id = 1,
-            rawData = "https://www.google.com",
-            type = 1,
-            dateString = "2021-01-01 12:00:00",
-            isFavorite = false,
-            isScanned = true
+    QRCodeScannerTheme {
+        QRCodeHistoryItemUI(
+            Modifier, QRCodeItemUIState(
+                id = 1,
+                rawData = "https://www.google.comhttps://www.google.comhttps://www.google.comhttps://www.google.comhttps://www.google.com",
+                type = 1,
+                dateString = "2021-01-01 12:00:00",
+                isFavorite = false,
+                isScanned = true
+            )
         )
-    )
+    }
 }

@@ -44,7 +44,6 @@ import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.ui.AppScreen
 import com.creative.qrcodescanner.ui.nav.TopNavBar
 import com.creative.qrcodescanner.ui.shadow
-import com.creative.qrcodescanner.ui.theme.fontSize
 import com.google.mlkit.vision.barcode.common.Barcode
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -163,7 +162,7 @@ fun QRCodeResultLayout(dbRowId: Int, appNav: NavHostController,
                     verticalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
                     Text(text = qrCodeRawData?.typeStringRes?.let { stringResource(it) }.orEmpty(), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
-                    Text(text = qrCodeRawData?.scanDate.orEmpty(), fontSize = fontSize.heading8, color = Color.Gray)
+                    Text(text = qrCodeRawData?.scanDate.orEmpty(), style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                 }
             }
 

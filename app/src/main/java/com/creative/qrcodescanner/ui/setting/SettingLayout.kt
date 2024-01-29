@@ -91,7 +91,7 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                         }
                     }
                     item {
-                        Spacer(modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.size(12.dp))
                     }
                 }
             }
