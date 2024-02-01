@@ -1,5 +1,6 @@
 package com.creative.qrcodescanner.ui.setting
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,9 +18,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,6 +30,7 @@ import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.nav.TopNavBar
 import com.creative.qrcodescanner.ui.shadow
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Created by dan on 07/01/2024
@@ -38,8 +42,16 @@ import com.creative.qrcodescanner.ui.shadow
 fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: NavHostController) {
     val listSetting by viewModel.listSettingUIState.collectAsStateWithLifecycle()
 
+    val localContext = LocalContext.current
+
     BackHandler {
         appNav.popBackStack()
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.toastSharedFlow.collectLatest {
+            Toast.makeText(localContext, it, Toast.LENGTH_SHORT).show()
+        }
     }
 
     Scaffold(topBar = {

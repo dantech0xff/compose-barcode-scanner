@@ -8,6 +8,8 @@ import com.creative.qrcodescanner.usecase.GetAppSettingFlowUseCase
 import com.creative.qrcodescanner.usecase.UpdateSoundSettingUseCase
 import com.creative.qrcodescanner.usecase.UpdateVibrateSettingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -29,11 +31,13 @@ class SettingViewModel @Inject constructor(
 
     val listSettingUIState: StateFlow<ListSettingUIState> =
         getAppSettingUseCase.execute(Unit).stateIn(viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.WhileSubscribed(5000),
             initialValue = ListSettingUIState(emptyList()))
 
+    private val _toastSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
+    val toastSharedFlow: SharedFlow<String> = _toastSharedFlow
+
     fun handleSetting(settingItem: SettingItemUIState) {
-        Log.d("SettingViewModel", "handleSetting: $settingItem")
         when (settingItem) {
             is SettingItemUIState.SwitchUIState -> {
                 when (settingItem.id) {
@@ -54,15 +58,15 @@ class SettingViewModel @Inject constructor(
             is SettingItemUIState.TextUIState -> {
                 when (settingItem.id) {
                     SettingId.ABOUT_US.value -> {
-
+                        _toastSharedFlow.tryEmit(settingItem.title)
                     }
 
                     SettingId.RATE_US.value -> {
-
+                        _toastSharedFlow.tryEmit(settingItem.title)
                     }
 
                     SettingId.MANAGE_SUBSCRIPTION.value -> {
-
+                        _toastSharedFlow.tryEmit(settingItem.title)
                     }
                 }
             }
