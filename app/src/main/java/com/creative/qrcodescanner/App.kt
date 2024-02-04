@@ -23,11 +23,5 @@ class App : Application() {
             .penaltyLog()
             .penaltyDialog()
             .build())
-
-        StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
-            .detectAll()
-            .penaltyLog()
-            .penaltyDeath()
-            .build())
     }
 }

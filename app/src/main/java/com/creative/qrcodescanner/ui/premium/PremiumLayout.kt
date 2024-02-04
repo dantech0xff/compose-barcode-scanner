@@ -2,6 +2,11 @@ package com.creative.qrcodescanner.ui.premium
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,15 +15,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.shadow
+import com.creative.qrcodescanner.ui.theme.QRCodeScannerTheme
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 /**
  * Created by dan on 07/01/2024
@@ -35,9 +56,26 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
 
     Scaffold(
         topBar = {
-//            TopNavBar(titleResId = R.string.qr_code_history) {
-//                appNav.popBackStack()
-//            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(16.dp)
+                        .shadow(Color.Black.copy(alpha = 0.05f))
+                        .clickable {
+
+                        }
+                ) {
+                    Image(
+                        modifier = Modifier.size(32.dp),
+                        painter = painterResource(id = R.drawable.icon_close), contentDescription = null
+                    )
+                }
+            }
         },
         bottomBar = {}
     ) { paddingValues ->
@@ -46,69 +84,67 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(paddingValues)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            Image(painter = painterResource(id = R.drawable.icon_qr), contentDescription = null, modifier = Modifier.size(100.dp))
-
-            Row {
-                Image(painter = painterResource(id = R.drawable.icon_email), contentDescription = null, modifier = Modifier.size(24.dp))
-                Text(text = "No Advertising", modifier = Modifier.padding(start = 8.dp))
-            }
-
-            Row {
-                Image(painter = painterResource(id = R.drawable.icon_email), contentDescription = null, modifier = Modifier.size(24.dp))
-                Text(text = "Remove Duplicate in History", modifier = Modifier.padding(start = 8.dp))
-            }
-
-            Row {
-                Image(painter = painterResource(id = R.drawable.icon_email), contentDescription = null, modifier = Modifier.size(24.dp))
-                Text(text = "Continuous Scanning", modifier = Modifier.padding(start = 8.dp))
-            }
-
-            Row {
-                Image(painter = painterResource(id = R.drawable.icon_email), contentDescription = null, modifier = Modifier.size(24.dp))
-                Text(text = "Text Scan & Translate", modifier = Modifier.padding(start = 8.dp))
-            }
-
             Spacer(modifier = Modifier.padding(16.dp))
 
-            Box {
-                Column {
-                    Text(text = "3-day free trial, Paid Yearly", modifier = Modifier.padding(start = 8.dp))
-                    Text(text = "Only 15$ per year after trial", modifier = Modifier.padding(start = 8.dp))
-                }
+            Box(modifier = Modifier.shadow(Color.Black.copy(alpha = 0.1f), borderRadius = 128.dp, blurRadius = 32.dp)) {
+                Image(
+                    painter = painterResource(id = R.drawable.icon_scan),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(225.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
             }
-
-            Box {
-                Column {
-                    Text(text = "3-day free trial, Paid Monthly", modifier = Modifier.padding(start = 8.dp))
-                    Text(text = "Only 3$ per month after trial", modifier = Modifier.padding(start = 8.dp))
-                }
-            }
-
-            Spacer(modifier = Modifier.padding(4.dp))
-
-            Box {
-                Column {
-                    Text(text = "Paid Weekly", modifier = Modifier.padding(start = 8.dp))
-                    Text(text = "Only 1$ per week", modifier = Modifier.padding(start = 8.dp))
-                }
-            }
-
-            Spacer(modifier = Modifier.padding(4.dp))
-
-            Box {
-                Text(text = "CONTINUE", modifier = Modifier.padding(8.dp))
-            }
-
-            Text(text = "(CANCEL ANYTIME)", modifier = Modifier.padding(1.dp))
 
             Text(
+                text = "Panda Scanner", modifier = Modifier,
+                style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(horizontal = 32.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalAlignment = Alignment.Start,
+            ) {
+                BenefitRow(R.drawable.icon_verified, R.string.no_advertising)
+                BenefitRow(iconRes = R.drawable.icon_document, textRes = R.string.prevent_duplicate_in_history)
+                BenefitRow(iconRes = R.drawable.icon_scan, textRes = R.string.continuous_scanning)
+                BenefitRow(iconRes = R.drawable.icon_message, textRes = R.string.text_scan_translate)
+            }
+
+            CtaSubscriptionButton("7-days free trial", "Only 20.99$ per year after trial")
+            CtaSubscriptionButton("3-days free trial", "Only 2.99$ per month after trial")
+            CtaSubscriptionButton("Paid Weekly", "Only 0.99$ per week")
+
+            Text(text = "(CANCEL ANYTIME)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Light, modifier = Modifier.padding(2.dp))
+
+            Text(
+                modifier = Modifier.padding(horizontal = 24.dp),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Normal,
                 text = "You will have access to all features after purchasing the VIP Subscription. Your subscription will" +
                         "automatically renew at the same price and period. If your subscription includes a free trial, " +
                         "you'll be charged at the end of your free trial, " +
                         "you may manage or cancel subscriptions at any time in " +
-                        "Subscriptions on Google Play.", modifier = Modifier.padding(2.dp)
+                        "Subscriptions on Google Play."
             )
+            Spacer(modifier = Modifier.padding(16.dp))
         }
+    }
+}
+
+@Preview
+@Composable
+fun PremiumScreenLayoutPreview() {
+    QRCodeScannerTheme {
+        PremiumScreenLayout(PremiumViewModel(), rememberNavController())
     }
 }

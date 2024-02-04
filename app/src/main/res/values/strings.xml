@@ -49,4 +49,8 @@
     <string name="about_us">About us</string>
     <string name="rate_us">Rate us</string>
     <string name="manage_subscription">Manage Subscription</string>
+    <string name="no_advertising">No Advertising</string>
+    <string name="prevent_duplicate_in_history">Prevent Duplicate in History</string>
+    <string name="continuous_scanning">Continuous Scanning</string>
+    <string name="text_scan_translate"><![CDATA[Text Scan & Translate]]></string>
 </resources>
