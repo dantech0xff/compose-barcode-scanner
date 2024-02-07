@@ -18,10 +18,10 @@ class App : Application() {
     }
 
     private fun setupStrictMode() {
-        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
-            .detectAll()
-            .penaltyLog()
-            .penaltyDialog()
-            .build())
+//        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+//            .detectAll()
+//            .penaltyLog()
+//            .penaltyDialog()
+//            .build())
     }
 }

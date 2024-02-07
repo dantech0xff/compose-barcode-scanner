@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.creative.qrcodescanner.ui.main.roundCorner
 import com.creative.qrcodescanner.ui.shadow
 import com.creative.qrcodescanner.ui.theme.QRCodeScannerTheme
 
@@ -34,19 +35,21 @@ fun CtaSubscriptionButton(title: String, subTitle: String, onClick: (Unit) -> Un
             .wrapContentHeight()
             .padding(horizontal = 32.dp, vertical = 1.dp)
             .shadow(
-                Color.Black.copy(alpha = 0.2f)
+                Color.Cyan.copy(alpha = 0.1f),
+                borderRadius = 16.dp,
+                blurRadius = 12.dp
             )
-            .background(MaterialTheme.colorScheme.background, RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.inversePrimary, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
             .clickable {
                 onClick.invoke(Unit)
             }
-            .padding(horizontal = 32.dp, vertical = 9.dp),
+            .padding(horizontal = 32.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = title, style = MaterialTheme.typography.titleMedium)
-        Text(text = subTitle, style = MaterialTheme.typography.titleMedium)
+        Text(text = title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Text(text = subTitle, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
     }
 }
 

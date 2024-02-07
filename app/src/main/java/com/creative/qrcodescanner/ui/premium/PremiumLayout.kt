@@ -11,12 +11,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -56,22 +60,24 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
 
     Scaffold(
         topBar = {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
             ) {
+                Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
                 Box(
                     modifier = Modifier
                         .wrapContentSize()
-                        .padding(16.dp)
+                        .padding(12.dp)
                         .shadow(Color.Black.copy(alpha = 0.05f))
+                        .clip(CircleShape)
                         .clickable {
-
+                            appNav.popBackStack()
                         }
                 ) {
                     Image(
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(42.dp),
                         painter = painterResource(id = R.drawable.icon_close), contentDescription = null
                     )
                 }
@@ -88,9 +94,9 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            Spacer(modifier = Modifier.padding(16.dp))
 
-            Box(modifier = Modifier.shadow(Color.Black.copy(alpha = 0.1f), borderRadius = 128.dp, blurRadius = 32.dp)) {
+            Box(modifier = Modifier.shadow(Color.Cyan.copy(alpha = 0.05f),
+                borderRadius = 128.dp, blurRadius = 128.dp)) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_scan),
                     contentDescription = null,
@@ -109,7 +115,7 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(horizontal = 32.dp, vertical = 8.dp),
+                    .padding(horizontal = 32.dp, vertical = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 horizontalAlignment = Alignment.Start,
             ) {
@@ -120,7 +126,8 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
             }
 
             CtaSubscriptionButton("7-days free trial", "Only 20.99$ per year after trial")
-            CtaSubscriptionButton("3-days free trial", "Only 2.99$ per month after trial")
+            Spacer(modifier = Modifier.size(6.dp))
+//            CtaSubscriptionButton("3-days free trial", "Only 2.99$ per month after trial")
             CtaSubscriptionButton("Paid Weekly", "Only 0.99$ per week")
 
             Text(text = "(CANCEL ANYTIME)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Light, modifier = Modifier.padding(2.dp))
