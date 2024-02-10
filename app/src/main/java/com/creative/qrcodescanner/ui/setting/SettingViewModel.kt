@@ -1,6 +1,5 @@
 package com.creative.qrcodescanner.ui.setting
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +21,12 @@ import javax.inject.Inject
  * Copyright © 2024 1010 Creative. All rights reserved.
  */
 
+enum class SettingNavigation {
+    ABOUT_US,
+    RATE_US,
+    MANAGE_SUBSCRIPTION
+}
+
 @HiltViewModel
 class SettingViewModel @Inject constructor(
     getAppSettingUseCase: GetAppSettingFlowUseCase,
@@ -36,6 +41,10 @@ class SettingViewModel @Inject constructor(
 
     private val _toastSharedFlow: MutableSharedFlow<String> = MutableSharedFlow(extraBufferCapacity = 1)
     val toastSharedFlow: SharedFlow<String> = _toastSharedFlow
+
+    private val _navigationSharedFlow: MutableSharedFlow<SettingNavigation> = MutableSharedFlow(extraBufferCapacity = 1)
+    val navigationSharedFlow: SharedFlow<SettingNavigation> = _navigationSharedFlow
+
 
     fun handleSetting(settingItem: SettingItemUIState) {
         when (settingItem) {
@@ -59,14 +68,17 @@ class SettingViewModel @Inject constructor(
                 when (settingItem.id) {
                     SettingId.ABOUT_US.value -> {
                         _toastSharedFlow.tryEmit(settingItem.title)
+                        _navigationSharedFlow.tryEmit(SettingNavigation.ABOUT_US)
                     }
 
                     SettingId.RATE_US.value -> {
                         _toastSharedFlow.tryEmit(settingItem.title)
+                        _navigationSharedFlow.tryEmit(SettingNavigation.RATE_US)
                     }
 
                     SettingId.MANAGE_SUBSCRIPTION.value -> {
                         _toastSharedFlow.tryEmit(settingItem.title)
+                        _navigationSharedFlow.tryEmit(SettingNavigation.MANAGE_SUBSCRIPTION)
                     }
                 }
             }

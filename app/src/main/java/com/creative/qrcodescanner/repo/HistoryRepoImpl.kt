@@ -30,4 +30,8 @@ class HistoryRepoImpl(private val qrCodeEntityDAO: QRCodeEntityDAO) : HistoryRep
     override suspend fun deleteQRCodeEntity(id: Int) {
         qrCodeEntityDAO.deleteQRCodeEntity(id)
     }
+
+    override suspend fun deleteQRCodeEntity(rawData: String) {
+        qrCodeEntityDAO.deleteQRCodeEntity(rawData)
+    }
 }

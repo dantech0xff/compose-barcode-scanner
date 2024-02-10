@@ -181,35 +181,37 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
 
         val width = LocalContext.current.resources.displayMetrics.widthPixels
 
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier
-                .align(Alignment.Center)
-                .offset(y = (width / 8).dp)
-        ) {
-            Text(text = "Keep Scanning", color = Color.White, style = MaterialTheme.typography.titleMedium)
-            Switch(checked = userSettingData?.isKeepScanning ?: false, onCheckedChange = {
-                handleSwitchKeepScanning.invoke(it)
-            }, thumbContent = {
-                Image(
-                    painter = painterResource(id = R.drawable.icon_qr),
-                    contentDescription = stringResource(id = R.string.app_name),
-                    modifier = Modifier
-                        .size(28.dp)
-                        .background(
-                            color = Color.White,
-                            shape = CircleShape
-                        )
-                        .clip(CircleShape)
-                        .padding(4.dp)
+        if(userSettingData?.isPremium == true) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(y = (width / 8).dp)
+            ) {
+                Text(text = "Keep Scanning", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                Switch(checked = userSettingData?.isKeepScanning ?: false, onCheckedChange = {
+                    handleSwitchKeepScanning.invoke(it)
+                }, thumbContent = {
+                    Image(
+                        painter = painterResource(id = R.drawable.icon_qr),
+                        contentDescription = stringResource(id = R.string.app_name),
+                        modifier = Modifier
+                            .size(28.dp)
+                            .background(
+                                color = Color.White,
+                                shape = CircleShape
+                            )
+                            .clip(CircleShape)
+                            .padding(4.dp)
+                    )
+                },
+                    colors = SwitchDefaults.colors(
+                        checkedBorderColor = Color.Transparent,
+                        uncheckedBorderColor = Color.Transparent,
+                    )
                 )
-            },
-                colors = SwitchDefaults.colors(
-                    checkedBorderColor = Color.Transparent,
-                    uncheckedBorderColor = Color.Transparent,
-                )
-            )
+            }
         }
     }
 }

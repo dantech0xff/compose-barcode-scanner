@@ -15,4 +15,5 @@ interface HistoryRepo {
     suspend fun insertQRCodeEntity(qrCodeEntity: QRCodeEntity): Long
     suspend fun getQRCodeEntityById(id: Int): QRCodeEntity?
     suspend fun deleteQRCodeEntity(id: Int)
+    suspend fun deleteQRCodeEntity(rawData: String)
 }

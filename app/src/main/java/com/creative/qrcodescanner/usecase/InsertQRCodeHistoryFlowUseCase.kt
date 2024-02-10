@@ -2,6 +2,7 @@ package com.creative.qrcodescanner.usecase
 
 import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.repo.HistoryRepo
+import com.creative.qrcodescanner.repo.user.UserDataRepo
 import com.creative.qrcodescanner.usecase.base.BaseFlowUseCase
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
@@ -16,9 +17,15 @@ import javax.inject.Inject
 
 @ViewModelScoped
 class InsertQRCodeHistoryFlowUseCase @Inject
- constructor(private val historyRepo: HistoryRepo) : BaseFlowUseCase<QRCodeEntity, Long>() {
+ constructor(
+    private val historyRepo: HistoryRepo,
+    private val userDataRepo: UserDataRepo
+ ) : BaseFlowUseCase<QRCodeEntity, Long>() {
     override fun execute(input: QRCodeEntity): Flow<Long> {
         return flow {
+            if (userDataRepo.isPremium()) {
+                input.rawData?.let { historyRepo.deleteQRCodeEntity(it) }
+            }
             emit(historyRepo.insertQRCodeEntity(input))
         }
     }

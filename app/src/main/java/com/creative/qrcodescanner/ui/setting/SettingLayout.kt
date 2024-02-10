@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
+import com.creative.qrcodescanner.ui.AppScreen
 import com.creative.qrcodescanner.ui.nav.TopNavBar
 import com.creative.qrcodescanner.ui.shadow
 import kotlinx.coroutines.flow.collectLatest
@@ -51,6 +52,24 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
     LaunchedEffect(key1 = Unit) {
         viewModel.toastSharedFlow.collectLatest {
             Toast.makeText(localContext, it, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(key1 = viewModel.navigationSharedFlow) {
+        viewModel.navigationSharedFlow.collectLatest {
+            when (it) {
+                SettingNavigation.ABOUT_US -> {
+
+                }
+
+                SettingNavigation.RATE_US -> {
+
+                }
+
+                SettingNavigation.MANAGE_SUBSCRIPTION -> {
+                    appNav.navigate(AppScreen.PREMIUM.value)
+                }
+            }
         }
     }
 

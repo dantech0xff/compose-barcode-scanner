@@ -49,6 +49,9 @@ interface QRCodeEntityDAO {
     @Query("DELETE FROM QRCodeEntity WHERE id = :id")
     suspend fun deleteQRCodeEntity(id: Int)
 
+    @Query("DELETE FROM QRCodeEntity WHERE raw_data = :rawData")
+    suspend fun deleteQRCodeEntity(rawData: String)
+
     // delete 1 item QRCodeEntity
     @Delete
     suspend fun deleteQRCodeEntity(qrCodeEntity: QRCodeEntity)
