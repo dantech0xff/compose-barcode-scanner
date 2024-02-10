@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.usecase.GetAppSettingFlowUseCase
+import com.creative.qrcodescanner.usecase.UpdateKeepScanningSettingUseCase
 import com.creative.qrcodescanner.usecase.UpdateSoundSettingUseCase
 import com.creative.qrcodescanner.usecase.UpdateVibrateSettingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +32,8 @@ enum class SettingNavigation {
 class SettingViewModel @Inject constructor(
     getAppSettingUseCase: GetAppSettingFlowUseCase,
     private val updateSoundSettingUseCase: UpdateSoundSettingUseCase,
-    private val updateVibrateSettingUseCase: UpdateVibrateSettingUseCase
+    private val updateVibrateSettingUseCase: UpdateVibrateSettingUseCase,
+    private val updateKeepScanningSettingUseCase: UpdateKeepScanningSettingUseCase
 ) : ViewModel() {
 
     val listSettingUIState: StateFlow<ListSettingUIState> =
@@ -59,6 +61,12 @@ class SettingViewModel @Inject constructor(
                     SettingId.VIBRATE.value -> {
                         viewModelScope.launch {
                             updateVibrateSettingUseCase.execute(!settingItem.isEnable)
+                        }
+                    }
+
+                    SettingId.KEEP_SCANNING.value -> {
+                        viewModelScope.launch {
+                            updateKeepScanningSettingUseCase.execute(!settingItem.isEnable)
                         }
                     }
                 }
@@ -123,4 +131,5 @@ enum class SettingId(val value: Int) {
     ABOUT_US(3),
     RATE_US(4),
     MANAGE_SUBSCRIPTION(5),
+    KEEP_SCANNING(6)
 }

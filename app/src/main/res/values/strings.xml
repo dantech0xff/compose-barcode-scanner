@@ -53,4 +53,5 @@
     <string name="prevent_duplicate_in_history">Prevent Duplicate in History</string>
     <string name="continuous_scanning">Continuous Scanning</string>
     <string name="text_scan_translate"><![CDATA[Text Scan & Translate]]></string>
+    <string name="keep_scanning">Keep Scanning</string>
 </resources>

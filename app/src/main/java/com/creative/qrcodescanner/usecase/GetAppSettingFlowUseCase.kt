@@ -34,6 +34,9 @@ class GetAppSettingFlowUseCase @Inject constructor(
                 add(SettingItemUIState.SettingHeaderUIState(SettingId.NONE.value, title = context.getString(R.string.main_setting)))
                 add(SettingItemUIState.SwitchUIState(SettingId.SOUND.value, title = context.getString(R.string.sound), isEnable = it.isEnableSound))
                 add(SettingItemUIState.SwitchUIState(SettingId.VIBRATE.value, title = context.getString(R.string.vibrate), isEnable = it.isEnableVibrate))
+                if(userDataRepo.isPremium()) {
+                    add(SettingItemUIState.SwitchUIState(SettingId.KEEP_SCANNING.value, title = context.getString(R.string.keep_scanning), isEnable = it.isKeepScanning))
+                }
 
                 add(SettingItemUIState.DividerUIState(SettingId.NONE.value))
 

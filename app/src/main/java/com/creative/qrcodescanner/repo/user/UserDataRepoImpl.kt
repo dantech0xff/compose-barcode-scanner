@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.edit
 import com.creative.qrcodescanner.data.entity.SettingPreferencesKey
 import com.creative.qrcodescanner.data.entity.UserSettingData
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.map
  *
  * Copyright © 2024 1010 Creative. All rights reserved.
  */
+
+internal const val ForcePremium = false
 
 class UserDataRepoImpl(
     private val userSettingDataStore: DataStore<Preferences>
@@ -23,7 +25,8 @@ class UserDataRepoImpl(
         val isEnableSound = it[SettingPreferencesKey.IS_ENABLE_SOUND] ?: false
         val isPremium = it[SettingPreferencesKey.IS_PREMIUM] ?: false
         val isKeepScanning = it[SettingPreferencesKey.IS_KEEP_SCANNING] ?: false
-        UserSettingData(isEnableVibrate = isEnableVibrate, isEnableSound = isEnableSound, isPremium = isPremium, isKeepScanning = isKeepScanning)
+        UserSettingData(isEnableVibrate = isEnableVibrate, isEnableSound = isEnableSound,
+            isPremium = isPremium || ForcePremium, isKeepScanning = isKeepScanning)
     }
 
     override suspend fun updateSoundSetting(isEnableSound: Boolean) {
@@ -33,7 +36,7 @@ class UserDataRepoImpl(
     }
 
     override suspend fun isEnableSound(): Boolean {
-        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_ENABLE_SOUND] ?: false }.last()
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_ENABLE_SOUND] ?: false }.first()
     }
 
     override suspend fun updateVibrateSetting(isEnableVibrate: Boolean) {
@@ -43,7 +46,7 @@ class UserDataRepoImpl(
     }
 
     override suspend fun isEnableVibrate(): Boolean {
-        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_ENABLE_VIBRATE] ?: false }.last()
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_ENABLE_VIBRATE] ?: false }.first()
     }
 
     override suspend fun updatePremiumSetting(isPremium: Boolean) {
@@ -53,7 +56,7 @@ class UserDataRepoImpl(
     }
 
     override suspend fun isPremium(): Boolean {
-        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_PREMIUM] ?: false }.last()
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_PREMIUM] ?: false }.first() || ForcePremium
     }
 
     override suspend fun updateKeepScanningSetting(isKeepScanning: Boolean) {
@@ -63,6 +66,6 @@ class UserDataRepoImpl(
     }
 
     override suspend fun isKeepScanning(): Boolean {
-        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_KEEP_SCANNING] ?: false }.last()
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_KEEP_SCANNING] ?: false }.first()
     }
 }

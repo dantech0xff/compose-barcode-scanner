@@ -190,8 +190,8 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
                     .offset(y = (width / 8).dp)
             ) {
                 Text(text = "Keep Scanning", color = Color.White, style = MaterialTheme.typography.titleMedium)
-                Switch(checked = userSettingData?.isKeepScanning ?: false, onCheckedChange = {
-                    handleSwitchKeepScanning.invoke(it)
+                Switch(checked = userSettingData.isKeepScanning, onCheckedChange = {
+                    handleSwitchKeepScanning.invoke(userSettingData.isKeepScanning)
                 }, thumbContent = {
                     Image(
                         painter = painterResource(id = R.drawable.icon_qr),

@@ -37,6 +37,9 @@ fun QRApp(vm: MainViewModel = hiltViewModel(),
     LaunchedEffect(key1 = Unit) {
         vm.qrCodeActionState.collect {
             when (it) {
+                is QRCodeAction.ToastAction -> {
+                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                }
                 is QRCodeAction.OpenUrl -> {
                     val url = it.url
                     lifecycle.withResumed {

@@ -39,6 +39,7 @@ data class MainUIState(
 
 sealed class QRCodeAction {
     data object None : QRCodeAction()
+    data class ToastAction(val message: String) : QRCodeAction()
     data class OpenUrl(val url: String) : QRCodeAction()
     data class CopyText(val text: String) : QRCodeAction()
     data class ContactInfo(val contact: QRCodeContact) : QRCodeAction()
@@ -89,22 +90,22 @@ class MainViewModel @Inject constructor(
     }
 
     fun scanQRSuccess(result: Barcode) {
-        if (setQRResults.contains(result.rawValue)
-            && appSettingState.value?.isKeepScanning == true
-        ) {
+        if (mainUiState.value.isQRCodeFound || (setQRResults.contains(result.rawValue) && appSettingState.value?.isKeepScanning == true)) {
             return
         }
 
-        if (mainUiState.value.isQRCodeFound) {
-            return
-        }
         setQRResults.add(result.rawValue ?: return)
         _mainUiState.value = _mainUiState.value.copy(isQRCodeFound = true)
         viewModelScope.launch {
             insertQRCodeHistoryUseCase.execute(
                 input = result.toQRCodeEntity()
             ).collectLatest {
-                _qrCodeActionState.tryEmit(QRCodeAction.OpenQRCodeResult(it.toInt()))
+                if (appSettingState.value?.isKeepScanning != true) {
+                    _qrCodeActionState.tryEmit(QRCodeAction.OpenQRCodeResult(it.toInt()))
+                } else {
+                    _qrCodeActionState.tryEmit(QRCodeAction.ToastAction("QR Code Scanned ${result.rawValue}"))
+                    resetScanQR()
+                }
             }
         }
     }
@@ -122,9 +123,7 @@ class MainViewModel @Inject constructor(
 
     override fun toggleKeepScanning() {
         viewModelScope.launch {
-            updateKeepScanningSettingUseCase.execute(
-                !(appSettingState.value?.isKeepScanning ?: false)
-            )
+            updateKeepScanningSettingUseCase.execute(!(appSettingState.value?.isKeepScanning ?: false))
         }
     }
 
