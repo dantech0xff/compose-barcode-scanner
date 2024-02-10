@@ -19,4 +19,9 @@ interface UserDataRepo {
     suspend fun updateVibrateSetting(isEnableVibrate: Boolean)
 
     suspend fun isEnableVibrate(): Boolean
+
+    suspend fun updatePremiumSetting(isPremium: Boolean)
+    suspend fun isPremium(): Boolean
+    suspend fun updateKeepScanningSetting(isKeepScanning: Boolean)
+    suspend fun isKeepScanning(): Boolean
 }

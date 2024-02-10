@@ -14,6 +14,7 @@ import com.creative.qrcodescanner.data.entity.toQRCodeEntity
 import com.creative.qrcodescanner.repo.user.UserDataRepo
 import com.creative.qrcodescanner.ui.result.QRCodeRawData
 import com.creative.qrcodescanner.usecase.InsertQRCodeHistoryFlowUseCase
+import com.creative.qrcodescanner.usecase.UpdateKeepScanningSettingUseCase
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,22 +53,28 @@ sealed class QRCodeAction {
 interface ICameraController {
     fun toggleTorch()
     fun toggleCamera()
+    fun toggleKeepScanning()
 }
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val insertQRCodeHistoryUseCase: InsertQRCodeHistoryFlowUseCase,
     private val moshi: Moshi,
-    userDataRepo: UserDataRepo
+    userDataRepo: UserDataRepo,
+    private val updateKeepScanningSettingUseCase: UpdateKeepScanningSettingUseCase
 ) : ViewModel(), ICameraController {
 
     companion object {
         const val INVALID_DB_ROW_ID = 0
     }
 
-    val appSettingState = userDataRepo.userSettingData.stateIn(viewModelScope,
+    private val setQRResults: MutableSet<String> = mutableSetOf()
+
+    val appSettingState = userDataRepo.userSettingData.stateIn(
+        viewModelScope,
         started = SharingStarted.Lazily,
-        initialValue = null)
+        initialValue = null
+    )
 
     private val _mainUiState: MutableStateFlow<MainUIState> = MutableStateFlow(MainUIState())
     val mainUiState: StateFlow<MainUIState> = _mainUiState.asStateFlow()
@@ -82,11 +89,17 @@ class MainViewModel @Inject constructor(
     }
 
     fun scanQRSuccess(result: Barcode) {
-        if(mainUiState.value.isQRCodeFound){
+        if (setQRResults.contains(result.rawValue)
+            && appSettingState.value?.isKeepScanning == true
+        ) {
             return
         }
-        _mainUiState.value = _mainUiState.value.copy(isQRCodeFound = true)
 
+        if (mainUiState.value.isQRCodeFound) {
+            return
+        }
+        setQRResults.add(result.rawValue ?: return)
+        _mainUiState.value = _mainUiState.value.copy(isQRCodeFound = true)
         viewModelScope.launch {
             insertQRCodeHistoryUseCase.execute(
                 input = result.toQRCodeEntity()
@@ -104,6 +117,14 @@ class MainViewModel @Inject constructor(
     override fun toggleCamera() {
         _mainUiState.value = _mainUiState.value.let {
             it.copy(isFrontCamera = !it.isFrontCamera)
+        }
+    }
+
+    override fun toggleKeepScanning() {
+        viewModelScope.launch {
+            updateKeepScanningSettingUseCase.execute(
+                !(appSettingState.value?.isKeepScanning ?: false)
+            )
         }
     }
 
@@ -200,6 +221,7 @@ class MainViewModel @Inject constructor(
     fun showLoading() {
         _mainUiState.value = _mainUiState.value.copy(isLoading = true)
     }
+
     fun hideLoading() {
         _mainUiState.value = _mainUiState.value.copy(isLoading = false)
     }

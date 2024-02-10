@@ -7,7 +7,6 @@ import com.creative.qrcodescanner.data.entity.SettingPreferencesKey
 import com.creative.qrcodescanner.data.entity.UserSettingData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 
 /**
@@ -23,7 +22,8 @@ class UserDataRepoImpl(
         val isEnableVibrate = it[SettingPreferencesKey.IS_ENABLE_VIBRATE] ?: false
         val isEnableSound = it[SettingPreferencesKey.IS_ENABLE_SOUND] ?: false
         val isPremium = it[SettingPreferencesKey.IS_PREMIUM] ?: false
-        UserSettingData(isEnableVibrate = isEnableVibrate, isEnableSound = isEnableSound, isPremium)
+        val isKeepScanning = it[SettingPreferencesKey.IS_KEEP_SCANNING] ?: false
+        UserSettingData(isEnableVibrate = isEnableVibrate, isEnableSound = isEnableSound, isPremium = isPremium, isKeepScanning = isKeepScanning)
     }
 
     override suspend fun updateSoundSetting(isEnableSound: Boolean) {
@@ -44,5 +44,25 @@ class UserDataRepoImpl(
 
     override suspend fun isEnableVibrate(): Boolean {
         return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_ENABLE_VIBRATE] ?: false }.last()
+    }
+
+    override suspend fun updatePremiumSetting(isPremium: Boolean) {
+        userSettingDataStore.edit {
+            it[SettingPreferencesKey.IS_PREMIUM] = isPremium
+        }
+    }
+
+    override suspend fun isPremium(): Boolean {
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_PREMIUM] ?: false }.last()
+    }
+
+    override suspend fun updateKeepScanningSetting(isKeepScanning: Boolean) {
+        userSettingDataStore.edit {
+            it[SettingPreferencesKey.IS_KEEP_SCANNING] = isKeepScanning
+        }
+    }
+
+    override suspend fun isKeepScanning(): Boolean {
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_KEEP_SCANNING] ?: false }.last()
     }
 }

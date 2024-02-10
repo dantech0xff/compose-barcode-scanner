@@ -26,6 +26,7 @@ import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.data.entity.UserSettingData
 import com.creative.qrcodescanner.ui.AppScreen
 import com.creative.qrcodescanner.ui.shadow
+import com.creative.qrcodescanner.ui.theme.QRCodeScannerTheme
 
 val topIconSize = 42.dp
 val topIconPadding = 4.dp
@@ -34,7 +35,6 @@ val roundCorner = 4.dp
 fun TopTools(modifier: Modifier, mainUIState: MainUIState,
              userSettingData: UserSettingData? = null,
              appNav: NavHostController, cameraController: ICameraController? = null   ) {
-
     Row(
         modifier = modifier
             .padding(16.dp)
@@ -111,16 +111,18 @@ fun TopTools(modifier: Modifier, mainUIState: MainUIState,
 @Preview(showSystemUi = true)
 @Composable
 fun TopToolsPreview() {
-    TopTools(
-        Modifier, MainUIState(
-            isFrontCamera = false,
-            isEnableTorch = false,
-            isQRCodeFound = false
-        ), UserSettingData(
-            isEnableSound = true,
-            isEnableVibrate = true,
-            isPremium = false,
-        ),
-        rememberNavController(), null
-    )
+    QRCodeScannerTheme {
+        TopTools(
+            Modifier, MainUIState(
+                isFrontCamera = false,
+                isEnableTorch = false,
+                isQRCodeFound = false
+            ), UserSettingData(
+                isEnableSound = true,
+                isEnableVibrate = true,
+                isPremium = false,
+            ),
+            rememberNavController(), null
+        )
+    }
 }
