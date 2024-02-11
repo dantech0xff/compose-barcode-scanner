@@ -4,6 +4,9 @@ import android.view.ViewGroup
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.Animatable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInOutBack
+import androidx.compose.animation.core.EaseInOutBounce
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -40,14 +43,15 @@ import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.data.entity.UserSettingData
 import com.creative.qrcodescanner.ui.theme.seed
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 val cornerColorIdle = Color.White
 val cornerColorActive = seed
 val centerColor = Color.Red
-const val cornerStrokeLength = 120f
-const val cornerStrokeWidth = 20f
+const val cornerStrokeLength = 80f
+const val cornerStrokeWidth = 10f
 val dimmingColor = Color.Black.copy(alpha = 0.3f)
-
+const val animationDuration = 500
 @Composable
 fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
                  userSettingData: UserSettingData? = null,
@@ -59,11 +63,23 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
     val centerLineColorAnimate = remember {
         Animatable(centerColor)
     }
+
+    val cornerStrokeLengthAnim = remember {
+        androidx.compose.animation.core.Animatable(cornerStrokeLength)
+    }
+    val cornerStrokeWidthAnim = remember {
+        androidx.compose.animation.core.Animatable(cornerStrokeWidth)
+    }
+
     LaunchedEffect(key1 = userSettingData, block = {
-        if(userSettingData?.isKeepScanning == true) {
-            cornerColorAnimate.animateTo(cornerColorActive, tween(500))
+        if (userSettingData?.isKeepScanning == true) {
+            launch { cornerColorAnimate.animateTo(cornerColorActive, tween(animationDuration)) }
+            launch { cornerStrokeLengthAnim.animateTo(cornerStrokeLength * 1.8f, tween(animationDuration, easing = EaseInOutBack)) }
+            launch { cornerStrokeWidthAnim.animateTo(cornerStrokeWidth * 1.5f, tween(animationDuration, easing = EaseInOutBounce)) }
         } else {
-            cornerColorAnimate.animateTo(cornerColorIdle, tween(500))
+            launch { cornerColorAnimate.animateTo(cornerColorIdle, tween(animationDuration)) }
+            launch { cornerStrokeLengthAnim.animateTo(cornerStrokeLength * 1.0f, tween(animationDuration, easing = EaseInOutBack)) }
+            launch { cornerStrokeWidthAnim.animateTo(cornerStrokeWidth * 1.0f, tween(animationDuration, easing = EaseInOutBounce)) }
         }
     })
     LaunchedEffect(key1 = Unit) {
@@ -109,63 +125,63 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
             drawLine(
                 color = cornerColorAnimate.value,
                 start = Offset(x = (w - squareSize) / 2 , y = (h - squareSize) / 2 - shiftTop),
-                end = Offset(x = (w - squareSize) / 2 + cornerStrokeLength, y = (h - squareSize) / 2 - shiftTop),
-                strokeWidth = cornerStrokeWidth,
+                end = Offset(x = (w - squareSize) / 2 + cornerStrokeLengthAnim.value, y = (h - squareSize) / 2 - shiftTop),
+                strokeWidth = cornerStrokeWidthAnim.value,
                 cap = StrokeCap.Round
             )
             drawLine(
                 color = cornerColorAnimate.value,
                 start = Offset(x = (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop),
-                end = Offset(x = (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop + cornerStrokeLength),
-                strokeWidth = cornerStrokeWidth,
+                end = Offset(x = (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop + cornerStrokeLengthAnim.value),
+                strokeWidth = cornerStrokeWidthAnim.value,
                 cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColorAnimate.value,
                 start = Offset(x = w - (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop),
-                end = Offset(x = w - (w - squareSize) / 2 - cornerStrokeLength, y = (h - squareSize) / 2 - shiftTop),
-                strokeWidth = cornerStrokeWidth,
+                end = Offset(x = w - (w - squareSize) / 2 - cornerStrokeLengthAnim.value, y = (h - squareSize) / 2 - shiftTop),
+                strokeWidth = cornerStrokeWidthAnim.value,
                 cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColorAnimate.value,
                 start = Offset(x = w - (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop),
-                end = Offset(x = w - (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop + cornerStrokeLength),
-                strokeWidth = cornerStrokeWidth,
+                end = Offset(x = w - (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop + cornerStrokeLengthAnim.value),
+                strokeWidth = cornerStrokeWidthAnim.value,
                 cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColorAnimate.value,
                 start = Offset(x = (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop),
-                end = Offset(x = (w - squareSize) / 2 + cornerStrokeLength, y = h - (h - squareSize) / 2 - shiftTop),
-                strokeWidth = cornerStrokeWidth,
+                end = Offset(x = (w - squareSize) / 2 + cornerStrokeLengthAnim.value, y = h - (h - squareSize) / 2 - shiftTop),
+                strokeWidth = cornerStrokeWidthAnim.value,
                 cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColorAnimate.value,
                 start = Offset(x = (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop),
-                end = Offset(x = (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop - cornerStrokeLength),
-                strokeWidth = cornerStrokeWidth,
+                end = Offset(x = (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop - cornerStrokeLengthAnim.value),
+                strokeWidth = cornerStrokeWidthAnim.value,
                 cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColorAnimate.value,
                 start = Offset(x = w - (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop),
-                end = Offset(x = w - (w - squareSize) / 2 - cornerStrokeLength, y = h - (h - squareSize) / 2 - shiftTop),
-                strokeWidth = cornerStrokeWidth,
+                end = Offset(x = w - (w - squareSize) / 2 - cornerStrokeLengthAnim.value, y = h - (h - squareSize) / 2 - shiftTop),
+                strokeWidth = cornerStrokeWidthAnim.value,
                 cap = StrokeCap.Round
             )
 
             drawLine(
                 color = cornerColorAnimate.value,
                 start = Offset(x = w - (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop),
-                end = Offset(x = w - (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop - cornerStrokeLength),
-                strokeWidth = cornerStrokeWidth,
+                end = Offset(x = w - (w - squareSize) / 2, y = h - (h - squareSize) / 2 - shiftTop - cornerStrokeLengthAnim.value),
+                strokeWidth = cornerStrokeWidthAnim.value,
                 cap = StrokeCap.Round
             )
 
