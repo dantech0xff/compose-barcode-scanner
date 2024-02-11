@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +39,7 @@ import com.creative.qrcodescanner.usecase.history.QRCodeItemUIState
  */
  
 @Composable
+@Stable
 fun QRCodeHistoryItemUI(
     modifier: Modifier,
     itemUiState: QRCodeItemUIState,
@@ -46,7 +48,7 @@ fun QRCodeHistoryItemUI(
     Box(modifier = modifier
         .fillMaxWidth()
         .wrapContentHeight()
-        .padding(horizontal = 16.dp, vertical = 8.dp)
+        .padding(horizontal = 8.dp, vertical = 4.dp)
         .shadow(
             Color(0x901c1c1c).copy(alpha = 0.2f), blurRadius = 5.dp,
             borderRadius = 8.dp, spread = 0.dp, offsetY = 0.dp, offsetX = 0.dp

@@ -31,6 +31,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -73,7 +77,10 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
     ) { paddingValues ->
         AnimatedVisibility(visible = qrCodeHistoryUIState is QRCodeHistoryUIState.Empty, enter = fadeIn(), exit = fadeOut()) {
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Empty) return@AnimatedVisibility
-            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize().padding(bottom = 200.dp)) {
+            Surface(modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .padding(bottom = 200.dp)) {
                 Column(
                     modifier = Modifier
                         .padding(32.dp)
@@ -102,7 +109,10 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
 
         AnimatedVisibility(visible = qrCodeHistoryUIState is QRCodeHistoryUIState.Loading, enter = fadeIn(), exit = fadeOut()) {
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Loading) return@AnimatedVisibility
-            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize().padding(bottom = 200.dp)) {
+            Surface(modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .padding(bottom = 200.dp)) {
                 Column(
                     modifier = Modifier
                         .padding(32.dp)
@@ -123,10 +133,12 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                         modifier = Modifier
                             .padding(16.dp)
                             .height(4.dp)
-                            .fillMaxWidth().background(
+                            .fillMaxWidth()
+                            .background(
                                 color = MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.5f),
                                 shape = RoundedCornerShape(4.dp)
-                            ).clip(RoundedCornerShape(4.dp)),
+                            )
+                            .clip(RoundedCornerShape(4.dp)),
                         color = MaterialTheme.colorScheme.inversePrimary
                     )
                     Text(
@@ -143,7 +155,9 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Success) return@AnimatedVisibility
 
             val data = (qrCodeHistoryUIState as QRCodeHistoryUIState.Success).data
-            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+            Surface(modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()) {
                 LazyColumn(
                     modifier = Modifier,
                     state = rememberLazyListState(),
@@ -156,15 +170,24 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                     }, contentType = {
                         it.type
                     }) { item ->
+
+                        val rememberModifier = remember {
+                            Modifier.animateItemPlacement(animationSpec = tween(500, easing = EaseInOutBack)).animateContentSize()
+                        }
+                        var rememberItem by remember { mutableStateOf(item) }
+                        rememberItem = item
+
                         QRCodeHistoryItemUI(
-                            Modifier
-                                .animateItemPlacement(
-                                    animationSpec = tween(500, easing = EaseInOutBack)
-                                )
-                                .animateContentSize(), itemUiState = item, onDelete = {
-                                viewModel.deleteQRCodeHistory(it.id)
-                            }, onClick = {
-                                appNav.navigate("result/${item.id}")
+                            modifier = rememberModifier,
+                            itemUiState = item,
+                            onDelete = remember {
+                                {
+                                    viewModel.deleteQRCodeHistory(rememberItem.id)
+                                }
+                            }, onClick = remember {
+                                {
+                                    appNav.navigate("result/${rememberItem.id}")
+                                }
                             })
                     }
                     item { Spacer(modifier = Modifier.size(8.dp)) }
@@ -175,7 +198,10 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
         AnimatedVisibility(visible = qrCodeHistoryUIState is QRCodeHistoryUIState.Error, enter = fadeIn(), exit = fadeOut()) {
             if (qrCodeHistoryUIState !is QRCodeHistoryUIState.Error) return@AnimatedVisibility
 
-            Surface(modifier = Modifier.padding(paddingValues).fillMaxSize().padding(bottom = 200.dp)) {
+            Surface(modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .padding(bottom = 200.dp)) {
                 Column(
                     modifier = Modifier
                         .padding(32.dp)

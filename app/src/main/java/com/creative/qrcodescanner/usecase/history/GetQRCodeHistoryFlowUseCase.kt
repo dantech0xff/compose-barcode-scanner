@@ -1,5 +1,6 @@
 package com.creative.qrcodescanner.usecase.history
 
+import androidx.compose.runtime.Stable
 import com.creative.qrcodescanner.repo.HistoryRepo
 import com.creative.qrcodescanner.usecase.base.BaseFlowUseCase
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -52,16 +53,21 @@ class GetQRCodeHistoryFlowUseCase @Inject
     }
 }
 
+@Stable
 sealed class QRCodeHistoryUIState {
+    @Stable
     data object Loading : QRCodeHistoryUIState()
+    @Stable
     data class Success(
         val data: List<QRCodeItemUIState>
     ) : QRCodeHistoryUIState()
-
+    @Stable
     data object Empty : QRCodeHistoryUIState()
+    @Stable
     class Error(val throwable: Throwable) : QRCodeHistoryUIState()
 }
 
+@Stable
 data class QRCodeItemUIState(
     val id: Int,
     val rawData: String,
