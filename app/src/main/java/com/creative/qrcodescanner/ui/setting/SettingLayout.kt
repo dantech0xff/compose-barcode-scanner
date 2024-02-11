@@ -95,7 +95,7 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
         ) {
             Box(
                 modifier = Modifier
-                    .padding(20.dp)
+                    .padding(8.dp)
                     .shadow(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
                     .background(color = Color.White, shape = RoundedCornerShape(12.dp))
                     .wrapContentSize()

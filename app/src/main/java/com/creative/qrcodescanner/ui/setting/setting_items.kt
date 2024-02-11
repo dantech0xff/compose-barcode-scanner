@@ -1,5 +1,6 @@
 package com.creative.qrcodescanner.ui.setting
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -8,6 +8,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOutBack
 import androidx.compose.animation.core.EaseInOutBounce
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -124,7 +126,7 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
 
             drawLine(
                 color = cornerColorAnimate.value,
-                start = Offset(x = (w - squareSize) / 2 , y = (h - squareSize) / 2 - shiftTop),
+                start = Offset(x = (w - squareSize) / 2, y = (h - squareSize) / 2 - shiftTop),
                 end = Offset(x = (w - squareSize) / 2 + cornerStrokeLengthAnim.value, y = (h - squareSize) / 2 - shiftTop),
                 strokeWidth = cornerStrokeWidthAnim.value,
                 cap = StrokeCap.Round
@@ -196,17 +198,15 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
         })
 
         val width = LocalContext.current.resources.displayMetrics.widthPixels
-
-        if(userSettingData?.isPremium == true) {
+        AnimatedVisibility(modifier = Modifier
+            .align(Alignment.Center)
+            .offset(y = (width / 8).dp), visible = userSettingData?.isPremium == true, enter = fadeIn(), exit = fadeOut()) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .offset(y = (width / 8).dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(text = stringResource(id = R.string.keep_scanning), color = Color.White, style = MaterialTheme.typography.titleMedium)
-                Switch(checked = userSettingData.isKeepScanning, onCheckedChange = {
+                Switch(checked = userSettingData?.isKeepScanning == true, onCheckedChange = {
                     handleSwitchKeepScanning.invoke()
                 }, thumbContent = {
                     Image(
