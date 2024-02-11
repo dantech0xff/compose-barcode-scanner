@@ -21,12 +21,17 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        android.buildFeatures.buildConfig = true
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
+            buildConfigField("Boolean", "IS_FORCE_PREMIUM", false.toString())
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        debug {
+            buildConfigField("Boolean", "IS_FORCE_PREMIUM", true.toString())
         }
     }
     compileOptions {

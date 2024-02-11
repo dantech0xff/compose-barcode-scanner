@@ -2,6 +2,9 @@ package com.creative.qrcodescanner.ui.setting
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.EaseInOutBack
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +42,7 @@ import kotlinx.coroutines.flow.collectLatest
  * Copyright © 2024 1010 Creative. All rights reserved.
  */
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: NavHostController) {
     val listSetting by viewModel.listSettingUIState.collectAsStateWithLifecycle()
@@ -93,24 +97,42 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                     .wrapContentSize()
             ) {
                 LazyColumn(modifier = Modifier.wrapContentSize()) {
-                    items(listSetting.data) {
+                    items(listSetting.data, key = {
+                        it.hashCode()
+                    }, contentType = {
+                        it.javaClass.name
+                    }) {
                         when (it) {
                             is SettingItemUIState.SettingHeaderUIState -> {
-                                SettingHeaderItem(settingItem = it)
+                                SettingHeaderItem(
+                                    modifier = Modifier.animateItemPlacement(
+                                        animationSpec = tween(500, easing = EaseInOutBack)
+                                    ), settingItem = it
+                                )
                             }
 
                             is SettingItemUIState.TextUIState -> {
-                                SettingTextItem(settingItem = it, onClickSetting = viewModel::handleSetting)
+                                SettingTextItem(
+                                    modifier = Modifier.animateItemPlacement(
+                                        animationSpec = tween(500, easing = EaseInOutBack)
+                                    ), settingItem = it, onClickSetting = viewModel::handleSetting
+                                )
                             }
 
                             is SettingItemUIState.SwitchUIState -> {
-                                SettingSwitchItem(settingItem = it, onClickSetting = viewModel::handleSetting)
+                                SettingSwitchItem(
+                                    modifier = Modifier.animateItemPlacement(
+                                        animationSpec = tween(500, easing = EaseInOutBack)
+                                    ), settingItem = it, onClickSetting = viewModel::handleSetting
+                                )
                             }
 
                             is SettingItemUIState.DividerUIState -> {
                                 Divider(
-                                    modifier =
-                                    Modifier
+                                    modifier = Modifier
+                                        .animateItemPlacement(
+                                            animationSpec = tween(500, easing = EaseInOutBack)
+                                        )
                                         .padding(vertical = 2.dp)
                                         .fillMaxWidth()
                                         .heightIn(min = 0.5.dp)
@@ -122,7 +144,11 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                         }
                     }
                     item {
-                        Spacer(modifier = Modifier.size(12.dp))
+                        Spacer(
+                            modifier = Modifier.size(12.dp).animateItemPlacement(
+                                animationSpec = tween(500, easing = EaseInOutBack)
+                            )
+                        )
                     }
                 }
             }

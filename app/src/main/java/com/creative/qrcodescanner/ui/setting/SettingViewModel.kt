@@ -1,10 +1,12 @@
 package com.creative.qrcodescanner.ui.setting
 
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.usecase.GetAppSettingFlowUseCase
 import com.creative.qrcodescanner.usecase.UpdateKeepScanningSettingUseCase
+import com.creative.qrcodescanner.usecase.UpdatePremiumSettingUseCase
 import com.creative.qrcodescanner.usecase.UpdateSoundSettingUseCase
 import com.creative.qrcodescanner.usecase.UpdateVibrateSettingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +35,8 @@ class SettingViewModel @Inject constructor(
     getAppSettingUseCase: GetAppSettingFlowUseCase,
     private val updateSoundSettingUseCase: UpdateSoundSettingUseCase,
     private val updateVibrateSettingUseCase: UpdateVibrateSettingUseCase,
-    private val updateKeepScanningSettingUseCase: UpdateKeepScanningSettingUseCase
+    private val updateKeepScanningSettingUseCase: UpdateKeepScanningSettingUseCase,
+    private val updatePremiumSettingUseCase: UpdatePremiumSettingUseCase
 ) : ViewModel() {
 
     val listSettingUIState: StateFlow<ListSettingUIState> =
@@ -69,6 +72,12 @@ class SettingViewModel @Inject constructor(
                             updateKeepScanningSettingUseCase.execute(!settingItem.isEnable)
                         }
                     }
+
+                    SettingId.PREMIUM.value -> {
+                        viewModelScope.launch {
+                            updatePremiumSettingUseCase.execute(!settingItem.isEnable)
+                        }
+                    }
                 }
             }
 
@@ -100,12 +109,14 @@ data class ListSettingUIState(val data: List<SettingItemUIState>)
 
 sealed class SettingItemUIState(open val id: Int) {
 
+    @Stable
     data class SettingHeaderUIState(
         override val id: Int,
         val title: String,
         val description: String = "",
     ) : SettingItemUIState(id)
 
+    @Stable
     data class TextUIState(
         override val id: Int,
         val title: String,
@@ -113,12 +124,14 @@ sealed class SettingItemUIState(open val id: Int) {
         @DrawableRes val iconRes: Int,
     ) : SettingItemUIState(id)
 
+    @Stable
     data class SwitchUIState(
         override val id: Int,
         val title: String,
         val isEnable: Boolean = false,
     ) : SettingItemUIState(id)
 
+    @Stable
     data class DividerUIState(
         override val id: Int,
     ) : SettingItemUIState(id)
@@ -131,5 +144,6 @@ enum class SettingId(val value: Int) {
     ABOUT_US(3),
     RATE_US(4),
     MANAGE_SUBSCRIPTION(5),
-    KEEP_SCANNING(6)
+    KEEP_SCANNING(6),
+    PREMIUM(7)
 }

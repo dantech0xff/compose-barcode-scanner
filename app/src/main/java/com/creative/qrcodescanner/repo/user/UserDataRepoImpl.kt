@@ -15,8 +15,6 @@ import kotlinx.coroutines.flow.map
  * Copyright © 2024 1010 Creative. All rights reserved.
  */
 
-internal const val ForcePremium = false
-
 class UserDataRepoImpl(
     private val userSettingDataStore: DataStore<Preferences>
 ) : UserDataRepo {
@@ -26,7 +24,7 @@ class UserDataRepoImpl(
         val isPremium = it[SettingPreferencesKey.IS_PREMIUM] ?: false
         val isKeepScanning = it[SettingPreferencesKey.IS_KEEP_SCANNING] ?: false
         UserSettingData(isEnableVibrate = isEnableVibrate, isEnableSound = isEnableSound,
-            isPremium = isPremium || ForcePremium, isKeepScanning = isKeepScanning)
+            isPremium = isPremium, isKeepScanning = isKeepScanning)
     }
 
     override suspend fun updateSoundSetting(isEnableSound: Boolean) {
@@ -56,7 +54,7 @@ class UserDataRepoImpl(
     }
 
     override suspend fun isPremium(): Boolean {
-        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_PREMIUM] ?: false }.first() || ForcePremium
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_PREMIUM] ?: false }.first()
     }
 
     override suspend fun updateKeepScanningSetting(isKeepScanning: Boolean) {

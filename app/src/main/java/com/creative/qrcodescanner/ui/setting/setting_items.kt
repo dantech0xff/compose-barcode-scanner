@@ -10,21 +10,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,14 +37,11 @@ import com.creative.qrcodescanner.R
  */
  
 @Composable
-fun SettingSwitchItem(settingItem: SettingItemUIState.SwitchUIState, onClickSetting: (SettingItemUIState) -> Unit = {}) {
+fun SettingSwitchItem(modifier: Modifier = Modifier, settingItem: SettingItemUIState.SwitchUIState, onClickSetting: (SettingItemUIState) -> Unit = {}) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
-            .clickable {
-                onClickSetting.invoke(settingItem)
-            }
             .heightIn(min = 48.dp)
             .padding(horizontal = 16.dp)
     ) {
@@ -60,15 +54,21 @@ fun SettingSwitchItem(settingItem: SettingItemUIState.SwitchUIState, onClickSett
         )
         Switch(
             modifier = Modifier.align(Alignment.CenterEnd),
-            checked = settingItem.isEnable, onCheckedChange = null,
+            checked = settingItem.isEnable, onCheckedChange = {
+                onClickSetting.invoke(settingItem)
+            },
             thumbContent = {
                 Image(
                     painter = painterResource(id = R.drawable.icon_qr),
                     contentDescription = stringResource(id = R.string.app_name),
-                    modifier = Modifier.size(28.dp).background(
-                        color = Color.White,
-                        shape = CircleShape
-                    ).clip(CircleShape).padding(4.dp)
+                    modifier = Modifier
+                        .size(28.dp)
+                        .background(
+                            color = Color.White,
+                            shape = CircleShape
+                        )
+                        .clip(CircleShape)
+                        .padding(4.dp)
                 )
             },
             colors = SwitchDefaults.colors(
@@ -80,9 +80,9 @@ fun SettingSwitchItem(settingItem: SettingItemUIState.SwitchUIState, onClickSett
 }
 
 @Composable
-fun SettingTextItem(settingItem: SettingItemUIState.TextUIState, onClickSetting: (SettingItemUIState) -> Unit = {}) {
+fun SettingTextItem(modifier: Modifier = Modifier, settingItem: SettingItemUIState.TextUIState, onClickSetting: (SettingItemUIState) -> Unit = {}) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
             .clickable {
@@ -96,7 +96,9 @@ fun SettingTextItem(settingItem: SettingItemUIState.TextUIState, onClickSetting:
         Image(
             painter = painterResource(id = settingItem.iconRes),
             contentDescription = stringResource(id = R.string.app_name),
-            modifier = Modifier.size(28.dp).align(Alignment.CenterVertically)
+            modifier = Modifier
+                .size(28.dp)
+                .align(Alignment.CenterVertically)
         )
         Text(
             text = settingItem.title, modifier = Modifier
@@ -108,9 +110,9 @@ fun SettingTextItem(settingItem: SettingItemUIState.TextUIState, onClickSetting:
 }
 
 @Composable
-fun SettingHeaderItem(settingItem: SettingItemUIState.SettingHeaderUIState) {
+fun SettingHeaderItem(modifier: Modifier = Modifier, settingItem: SettingItemUIState.SettingHeaderUIState) {
     Text(
-        text = settingItem.title, modifier = Modifier
+        text = settingItem.title, modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 0.dp)
             .padding(top = 20.dp),

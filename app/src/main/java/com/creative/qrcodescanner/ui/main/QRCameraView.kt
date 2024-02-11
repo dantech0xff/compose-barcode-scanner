@@ -51,7 +51,7 @@ val dimmingColor = Color.Black.copy(alpha = 0.3f)
 @Composable
 fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
                  userSettingData: UserSettingData? = null,
-                 handleSwitchKeepScanning: (Boolean) -> Unit = {}) {
+                 handleSwitchKeepScanning: () -> Unit = {}) {
 
     val cornerColorAnimate = remember {
         Animatable(cornerColorIdle)
@@ -189,9 +189,9 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
                     .align(Alignment.Center)
                     .offset(y = (width / 8).dp)
             ) {
-                Text(text = "Keep Scanning", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                Text(text = stringResource(id = R.string.keep_scanning), color = Color.White, style = MaterialTheme.typography.titleMedium)
                 Switch(checked = userSettingData.isKeepScanning, onCheckedChange = {
-                    handleSwitchKeepScanning.invoke(userSettingData.isKeepScanning)
+                    handleSwitchKeepScanning.invoke()
                 }, thumbContent = {
                     Image(
                         painter = painterResource(id = R.drawable.icon_qr),
