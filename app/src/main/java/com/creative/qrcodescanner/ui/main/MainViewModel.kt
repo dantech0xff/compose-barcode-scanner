@@ -1,8 +1,6 @@
 package com.creative.qrcodescanner.ui.main
 
 import android.net.Uri
-import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.data.entity.QRCodeContact
@@ -13,8 +11,8 @@ import com.creative.qrcodescanner.data.entity.QRCodeWifi
 import com.creative.qrcodescanner.data.entity.toQRCodeEntity
 import com.creative.qrcodescanner.repo.user.UserDataRepo
 import com.creative.qrcodescanner.ui.result.QRCodeRawData
-import com.creative.qrcodescanner.usecase.InsertQRCodeHistoryFlowUseCase
-import com.creative.qrcodescanner.usecase.UpdateKeepScanningSettingUseCase
+import com.creative.qrcodescanner.usecase.history.InsertQRCodeHistoryFlowUseCase
+import com.creative.qrcodescanner.usecase.setting.UpdateKeepScanningSettingUseCase
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +23,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -20,9 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.shadow
 import com.creative.qrcodescanner.ui.theme.QRCodeScannerTheme
-import com.creative.qrcodescanner.usecase.QRCodeItemUIState
+import com.creative.qrcodescanner.usecase.history.QRCodeItemUIState
 
 /**
  * Created by dan on 21/01/2024
@@ -43,8 +41,8 @@ import com.creative.qrcodescanner.usecase.QRCodeItemUIState
 fun QRCodeHistoryItemUI(
     modifier: Modifier,
     itemUiState: QRCodeItemUIState,
-                        onDelete: ((item: QRCodeItemUIState) -> Unit)? = null,
-                        onClick: (() -> Unit)? = null) {
+    onDelete: ((item: QRCodeItemUIState) -> Unit)? = null,
+    onClick: (() -> Unit)? = null) {
     Box(modifier = modifier
         .fillMaxWidth()
         .wrapContentHeight()

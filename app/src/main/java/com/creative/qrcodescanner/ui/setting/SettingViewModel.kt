@@ -4,11 +4,11 @@ import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.creative.qrcodescanner.usecase.GetAppSettingFlowUseCase
-import com.creative.qrcodescanner.usecase.UpdateKeepScanningSettingUseCase
-import com.creative.qrcodescanner.usecase.UpdatePremiumSettingUseCase
-import com.creative.qrcodescanner.usecase.UpdateSoundSettingUseCase
-import com.creative.qrcodescanner.usecase.UpdateVibrateSettingUseCase
+import com.creative.qrcodescanner.usecase.setting.GetAppSettingFlowUseCase
+import com.creative.qrcodescanner.usecase.setting.UpdateKeepScanningSettingUseCase
+import com.creative.qrcodescanner.usecase.setting.UpdatePremiumSettingUseCase
+import com.creative.qrcodescanner.usecase.setting.UpdateSoundSettingUseCase
+import com.creative.qrcodescanner.usecase.setting.UpdateVibrateSettingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

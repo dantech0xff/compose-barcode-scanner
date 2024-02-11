@@ -2,9 +2,9 @@ package com.creative.qrcodescanner.ui.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.creative.qrcodescanner.usecase.DeleteQRCodeHistoryUseCase
-import com.creative.qrcodescanner.usecase.GetQRCodeHistoryFlowUseCase
-import com.creative.qrcodescanner.usecase.QRCodeHistoryUIState
+import com.creative.qrcodescanner.usecase.history.DeleteQRCodeHistoryUseCase
+import com.creative.qrcodescanner.usecase.history.GetQRCodeHistoryFlowUseCase
+import com.creative.qrcodescanner.usecase.history.QRCodeHistoryUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted

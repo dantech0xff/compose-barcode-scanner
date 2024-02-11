@@ -1,4 +1,4 @@
-package com.creative.qrcodescanner.usecase
+package com.creative.qrcodescanner.usecase.history
 
 import com.creative.qrcodescanner.data.entity.QRCodeEntity
 import com.creative.qrcodescanner.repo.HistoryRepo

@@ -1,4 +1,4 @@
-package com.creative.qrcodescanner.usecase
+package com.creative.qrcodescanner.usecase.setting
 
 import android.content.Context
 import com.creative.qrcodescanner.BuildConfig

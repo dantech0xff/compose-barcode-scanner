@@ -3,7 +3,7 @@ package com.creative.qrcodescanner.ui.result
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.data.entity.QRCodeEntity
-import com.creative.qrcodescanner.usecase.GetQRCodeByRowIdFlowUseCase
+import com.creative.qrcodescanner.usecase.history.GetQRCodeByRowIdFlowUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -45,7 +45,7 @@ import androidx.navigation.NavHostController
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.nav.TopNavBar
 import com.creative.qrcodescanner.ui.shadow
-import com.creative.qrcodescanner.usecase.QRCodeHistoryUIState
+import com.creative.qrcodescanner.usecase.history.QRCodeHistoryUIState
 
 /**
  * Created by dan on 07/01/2024
