@@ -19,6 +19,11 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,9 +40,10 @@ import com.creative.qrcodescanner.R
  *
  * Copyright © 2024 1010 Creative. All rights reserved.
  */
- 
+
+@Stable
 @Composable
-fun SettingSwitchItem(modifier: Modifier = Modifier, settingItem: SettingItemUIState.SwitchUIState, onClickSetting: (SettingItemUIState) -> Unit = {}) {
+fun SettingSwitchItem(modifier: Modifier = Modifier, settingItem: SettingItemUIState.SwitchUIState, onClickSetting: () -> Unit = {}) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -52,10 +58,11 @@ fun SettingSwitchItem(modifier: Modifier = Modifier, settingItem: SettingItemUIS
                 .align(Alignment.CenterStart),
             style = MaterialTheme.typography.bodyLarge
         )
+
         Switch(
             modifier = Modifier.align(Alignment.CenterEnd),
             checked = settingItem.isEnable, onCheckedChange = {
-                onClickSetting.invoke(settingItem)
+                onClickSetting()
             },
             thumbContent = {
                 Image(
@@ -80,14 +87,13 @@ fun SettingSwitchItem(modifier: Modifier = Modifier, settingItem: SettingItemUIS
 }
 
 @Composable
-fun SettingTextItem(modifier: Modifier = Modifier, settingItem: SettingItemUIState.TextUIState, onClickSetting: (SettingItemUIState) -> Unit = {}) {
+@Stable
+fun SettingTextItem(modifier: Modifier = Modifier, settingItem: SettingItemUIState.TextUIState, onClickSetting: () -> Unit = {}) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
-            .clickable {
-                onClickSetting.invoke(settingItem)
-            }
+            .clickable(onClick = onClickSetting)
             .heightIn(min = 48.dp)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -109,6 +115,7 @@ fun SettingTextItem(modifier: Modifier = Modifier, settingItem: SettingItemUISta
     }
 }
 
+@Stable
 @Composable
 fun SettingHeaderItem(modifier: Modifier = Modifier, settingItem: SettingItemUIState.SettingHeaderUIState) {
     Text(

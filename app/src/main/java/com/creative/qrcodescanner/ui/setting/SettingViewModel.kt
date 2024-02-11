@@ -105,8 +105,10 @@ class SettingViewModel @Inject constructor(
     }
 }
 
+@Stable
 data class ListSettingUIState(val data: List<SettingItemUIState>)
 
+@Stable
 sealed class SettingItemUIState(open val id: Int) {
 
     @Stable

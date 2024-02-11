@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +24,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -96,43 +100,47 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                     .background(color = Color.White, shape = RoundedCornerShape(12.dp))
                     .wrapContentSize()
             ) {
-                LazyColumn(modifier = Modifier.wrapContentSize()) {
+
+                LazyColumn(modifier = Modifier.wrapContentSize(), state = rememberLazyListState()) {
                     items(listSetting.data, key = {
                         it.hashCode()
-                    }, contentType = {
-                        it.javaClass.name
                     }) {
+                        var settingItemState by remember {
+                            mutableStateOf(it)
+                        }
+                        settingItemState = it
+                        val settingItemModifier = remember {
+                            Modifier.animateItemPlacement(animationSpec = tween(500, easing = EaseInOutBack))
+                        }
+                        val onSettingItemClick = remember {
+                            {
+                                viewModel.handleSetting(settingItemState)
+                            }
+                        }
                         when (it) {
                             is SettingItemUIState.SettingHeaderUIState -> {
                                 SettingHeaderItem(
-                                    modifier = Modifier.animateItemPlacement(
-                                        animationSpec = tween(500, easing = EaseInOutBack)
-                                    ), settingItem = it
+                                    modifier = settingItemModifier, settingItem = it
                                 )
                             }
 
                             is SettingItemUIState.TextUIState -> {
                                 SettingTextItem(
-                                    modifier = Modifier.animateItemPlacement(
-                                        animationSpec = tween(500, easing = EaseInOutBack)
-                                    ), settingItem = it, onClickSetting = viewModel::handleSetting
+                                    modifier = settingItemModifier,
+                                    settingItem = it,
+                                    onClickSetting = onSettingItemClick
                                 )
                             }
 
                             is SettingItemUIState.SwitchUIState -> {
                                 SettingSwitchItem(
-                                    modifier = Modifier.animateItemPlacement(
-                                        animationSpec = tween(500, easing = EaseInOutBack)
-                                    ), settingItem = it, onClickSetting = viewModel::handleSetting
+                                    modifier = settingItemModifier, settingItem = it, onClickSetting = onSettingItemClick
                                 )
                             }
 
                             is SettingItemUIState.DividerUIState -> {
                                 Divider(
-                                    modifier = Modifier
-                                        .animateItemPlacement(
-                                            animationSpec = tween(500, easing = EaseInOutBack)
-                                        )
+                                    modifier = settingItemModifier
                                         .padding(vertical = 2.dp)
                                         .fillMaxWidth()
                                         .heightIn(min = 0.5.dp)
@@ -144,10 +152,11 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                         }
                     }
                     item {
+                        val settingItem = remember {
+                            Modifier.animateItemPlacement(animationSpec = tween(500, easing = EaseInOutBack))
+                        }
                         Spacer(
-                            modifier = Modifier.size(12.dp).animateItemPlacement(
-                                animationSpec = tween(500, easing = EaseInOutBack)
-                            )
+                            modifier = settingItem.size(12.dp)
                         )
                     }
                 }

@@ -85,6 +85,7 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
     })
 
     val appSettingState by vm.appSettingState.collectAsStateWithLifecycle()
+    val mainUIState by vm.mainUiState.collectAsStateWithLifecycle()
 
     val isLoadingState by vm.mainUiState.map { it.isLoading }.collectAsStateWithLifecycle(initialValue = false)
 
@@ -145,7 +146,7 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
         ) {
             if (cameraPermissionState.status.isGranted) {
                 QRCameraView(cameraController,
-                    vm.appSettingState.collectAsStateWithLifecycle().value,
+                    appSettingState,
                     handleSwitchKeepScanning = {
                         vm.toggleKeepScanning()
                     })
@@ -173,8 +174,8 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
         ) {
             TopTools(
                 Modifier.align(Alignment.TopCenter)                 ,
-                vm.mainUiState.collectAsStateWithLifecycle().value,
-                vm.appSettingState.collectAsStateWithLifecycle().value,
+                mainUIState,
+                appSettingState,
                 appNavHost, vm as ICameraController
             )
 
