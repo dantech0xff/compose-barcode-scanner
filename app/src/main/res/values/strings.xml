@@ -61,4 +61,7 @@
     <string name="premium_setting_button">Premium Setting Button</string>
     <string name="history_picker">History Picker</string>
     <string name="gallery_picker">Gallery Picker</string>
+    <string name="switch_button">Switch Button</string>
+    <string name="setting_button">Setting Button</string>
+    <string name="premium_button">Premium Button</string>
 </resources>

@@ -31,7 +31,7 @@ import javax.inject.Inject
 @Stable
 data class MainUIState(
     val isFrontCamera: Boolean = false,
-    val isEnableTorch: Boolean = false,
+    val isTorchOn: Boolean = false,
     val isLoading: Boolean = false,
     val isQRCodeFound: Boolean = false,
 )
@@ -84,7 +84,7 @@ class MainViewModel @Inject constructor(
 
     override fun toggleTorch() {
         _mainUiState.value = _mainUiState.value.let {
-            it.copy(isEnableTorch = !it.isEnableTorch)
+            it.copy(isTorchOn = !it.isTorchOn)
         }
     }
 

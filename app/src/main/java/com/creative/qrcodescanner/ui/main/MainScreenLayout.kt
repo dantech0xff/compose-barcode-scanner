@@ -27,7 +27,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -74,20 +76,33 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
         vm.handleGalleryUri(it)
     })
 
-    val appSettingState by vm.appSettingState.collectAsStateWithLifecycle()
-    val mainUIState by vm.mainUiState.collectAsStateWithLifecycle()
+    var appSettingState by remember {
+        mutableStateOf(vm.appSettingState.value)
+    }
+
+    var mainUIState by remember {
+        mutableStateOf(vm.mainUiState.value)
+    }
 
     val isLoadingState by vm.mainUiState.map { it.isLoading }.collectAsStateWithLifecycle(initialValue = false)
 
     LaunchedEffect(key1 = Unit) {
+        vm.appSettingState.collectLatest {
+            appSettingState = it
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
         vm.mainUiState.collectLatest {
+            mainUIState = it
+
             cameraController.cameraSelector = if (it.isFrontCamera) {
                 CameraSelector.DEFAULT_FRONT_CAMERA
             } else {
                 CameraSelector.DEFAULT_BACK_CAMERA
             }
 
-            cameraController.enableTorch(it.isEnableTorch)
+            cameraController.enableTorch(it.isTorchOn)
 
             if (it.isQRCodeFound) {
                 if (appSettingState?.isEnableVibrate == true) {
@@ -163,10 +178,19 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
                 .background(Color.Transparent)
         ) {
             TopTools(
-                Modifier.align(Alignment.TopCenter),
                 mainUIState,
                 appSettingState,
-                appNavHost, vm as ICameraController
+                toggleTorch = remember {
+                    vm::toggleTorch
+                },
+                toggleCamera = remember {
+                    vm::toggleCamera
+                },
+                navSetting = remember {
+                    {
+                        appNavHost.navigate(AppScreen.SETTING.value)
+                    }
+                }
             )
 
             FooterTools(
