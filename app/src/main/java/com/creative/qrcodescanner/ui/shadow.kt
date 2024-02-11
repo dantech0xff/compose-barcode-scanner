@@ -28,9 +28,9 @@ fun Modifier.shadow(
     offsetY: Dp = 0.dp,
     offsetX: Dp = 0.dp,
     spread: Dp = 0.dp,
-    modifier: Modifier = Modifier
+//    modifier: Modifier = Modifier
 ) = then(
-    modifier.drawBehind {
+    this.drawBehind {
         drawIntoCanvas {
             val frameworkPaint = paint.asFrameworkPaint()
             frameworkPaint.reset()

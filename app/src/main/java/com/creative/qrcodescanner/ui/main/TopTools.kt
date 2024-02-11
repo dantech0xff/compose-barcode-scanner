@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,9 +33,11 @@ val topIconSize = 42.dp
 val topIconPadding = 4.dp
 val roundCorner = 4.dp
 @Composable
+@Stable
 fun TopTools(modifier: Modifier, mainUIState: MainUIState,
              userSettingData: UserSettingData? = null,
-             appNav: NavHostController, cameraController: ICameraController? = null   ) {
+             appNav: NavHostController,
+             cameraController: ICameraController? = null   ) {
     Row(
         modifier = modifier
             .padding(16.dp)

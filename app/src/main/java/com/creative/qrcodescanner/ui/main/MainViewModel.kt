@@ -1,6 +1,7 @@
 package com.creative.qrcodescanner.ui.main
 
 import android.net.Uri
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.data.entity.QRCodeContact
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Stable
 data class MainUIState(
     val isFrontCamera: Boolean = false,
     val isEnableTorch: Boolean = false,

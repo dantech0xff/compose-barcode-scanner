@@ -55,4 +55,10 @@
     <string name="text_scan_translate"><![CDATA[Text Scan & Translate]]></string>
     <string name="keep_scanning">Keep Scanning</string>
     <string name="force_premium">Force Premium</string>
+    <string name="flash_light_button">Flash Light Button</string>
+    <string name="switch_camera_button">Switch Camera Button</string>
+    <string name="app_setting_button">App Setting Button</string>
+    <string name="premium_setting_button">Premium Setting Button</string>
+    <string name="history_picker">History Picker</string>
+    <string name="gallery_picker">Gallery Picker</string>
 </resources>
