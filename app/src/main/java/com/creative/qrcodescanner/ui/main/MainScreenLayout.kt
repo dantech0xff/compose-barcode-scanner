@@ -190,6 +190,11 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
                     {
                         appNavHost.navigate(AppScreen.SETTING.value)
                     }
+                },
+                navPremium = remember {
+                    {
+                        appNavHost.navigate(AppScreen.PREMIUM.value)
+                    }
                 }
             )
 

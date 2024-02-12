@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.creative.qrcodescanner.repo.user.UserDataRepo
 import com.creative.qrcodescanner.usecase.setting.GetAppSettingFlowUseCase
 import com.creative.qrcodescanner.usecase.setting.UpdateKeepScanningSettingUseCase
 import com.creative.qrcodescanner.usecase.setting.UpdatePremiumSettingUseCase
@@ -27,7 +28,8 @@ import javax.inject.Inject
 enum class SettingNavigation {
     ABOUT_US,
     RATE_US,
-    MANAGE_SUBSCRIPTION
+    MANAGE_SUBSCRIPTION,
+    PURCHASE_PREMIUM
 }
 
 @HiltViewModel
@@ -36,7 +38,8 @@ class SettingViewModel @Inject constructor(
     private val updateSoundSettingUseCase: UpdateSoundSettingUseCase,
     private val updateVibrateSettingUseCase: UpdateVibrateSettingUseCase,
     private val updateKeepScanningSettingUseCase: UpdateKeepScanningSettingUseCase,
-    private val updatePremiumSettingUseCase: UpdatePremiumSettingUseCase
+    private val updatePremiumSettingUseCase: UpdatePremiumSettingUseCase,
+    private val userDataRepo: UserDataRepo
 ) : ViewModel() {
 
     val listSettingUIState: StateFlow<ListSettingUIState> =
@@ -94,8 +97,15 @@ class SettingViewModel @Inject constructor(
                     }
 
                     SettingId.MANAGE_SUBSCRIPTION.value -> {
-                        _toastSharedFlow.tryEmit(settingItem.title)
-                        _navigationSharedFlow.tryEmit(SettingNavigation.MANAGE_SUBSCRIPTION)
+                        viewModelScope.launch {
+                            _toastSharedFlow.emit(settingItem.title)
+                            _navigationSharedFlow.emit(
+                                if (userDataRepo.isPremium())
+                                    SettingNavigation.MANAGE_SUBSCRIPTION
+                                else
+                                    SettingNavigation.PURCHASE_PREMIUM
+                            )
+                        }
                     }
                 }
             }

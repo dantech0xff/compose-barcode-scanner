@@ -1,5 +1,7 @@
 package com.creative.qrcodescanner.ui.setting
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -74,10 +76,19 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                 }
 
                 SettingNavigation.RATE_US -> {
-
+                    localContext.startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=${localContext.packageName}")
+                        )
+                    )
                 }
 
                 SettingNavigation.MANAGE_SUBSCRIPTION -> {
+                    localContext.startActivity(Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/account/subscriptions")))
+                }
+                SettingNavigation.PURCHASE_PREMIUM -> {
                     appNav.navigate(AppScreen.PREMIUM.value)
                 }
             }
