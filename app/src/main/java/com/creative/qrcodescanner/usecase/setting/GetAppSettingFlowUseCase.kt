@@ -14,6 +14,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -32,20 +33,23 @@ class GetAppSettingFlowUseCase @Inject constructor(
             emit(UserSettingData(isEnableVibrate = false, isEnableSound = false))
         }.map {
             ListSettingUIState(mutableListOf<SettingItemUIState>().apply {
-                add(SettingItemUIState.SettingHeaderUIState(SettingId.NONE.value, title = context.getString(R.string.main_setting)))
+                add(SettingItemUIState.SettingHeaderUIState(context.getString(R.string.main_setting).hashCode(), title = context.getString(R.string.main_setting)))
                 add(SettingItemUIState.SwitchUIState(SettingId.SOUND.value, title = context.getString(R.string.sound), isEnable = it.isEnableSound))
                 add(SettingItemUIState.SwitchUIState(SettingId.VIBRATE.value, title = context.getString(R.string.vibrate), isEnable = it.isEnableVibrate))
-                if (userDataRepo.isPremium()) {
-                    add(SettingItemUIState.SwitchUIState(SettingId.KEEP_SCANNING.value, title = context.getString(R.string.keep_scanning), isEnable = it.isKeepScanning))
-                }
+                add(SettingItemUIState.SwitchUIState(SettingId.KEEP_SCANNING.value, title = context.getString(R.string.keep_scanning), isEnable = it.isKeepScanning))
 
                 if (BuildConfig.IS_FORCE_PREMIUM) {
                     add(SettingItemUIState.SwitchUIState(SettingId.PREMIUM.value, title = context.getString(R.string.force_premium), isEnable = it.isPremium))
                 }
 
-                add(SettingItemUIState.DividerUIState(SettingId.NONE.value))
+                add(SettingItemUIState.DividerUIState(UUID.randomUUID().hashCode()))
 
-                add(SettingItemUIState.SettingHeaderUIState(SettingId.NONE.value, title = context.getString(R.string.panda_scanner_setting)))
+                add(
+                    SettingItemUIState.SettingHeaderUIState(
+                        context.getString(R.string.panda_scanner_setting).hashCode(),
+                        title = context.getString(R.string.panda_scanner_setting)
+                    )
+                )
                 add(SettingItemUIState.TextUIState(SettingId.ABOUT_US.value, title = context.getString(R.string.about_us), iconRes = R.drawable.ic_information_circle))
                 add(SettingItemUIState.TextUIState(SettingId.RATE_US.value, title = context.getString(R.string.rate_us), iconRes = R.drawable.ic_heart))
                 add(

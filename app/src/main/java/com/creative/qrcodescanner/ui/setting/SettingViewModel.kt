@@ -140,7 +140,6 @@ sealed class SettingItemUIState(open val id: Int) {
 }
 
 enum class SettingId(val value: Int) {
-    NONE(0),
     SOUND(1),
     VIBRATE(2),
     ABOUT_US(3),

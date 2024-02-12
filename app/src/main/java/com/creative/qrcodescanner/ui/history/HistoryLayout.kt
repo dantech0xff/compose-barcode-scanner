@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.EaseInOutBack
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -172,7 +173,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
                     }) { item ->
 
                         val rememberModifier = remember {
-                            Modifier.animateItemPlacement(animationSpec = tween(500, easing = EaseInOutBack)).animateContentSize()
+                            Modifier.animateItemPlacement(animationSpec = tween(300, easing = LinearEasing))
                         }
                         var rememberItem by remember { mutableStateOf(item) }
                         rememberItem = item

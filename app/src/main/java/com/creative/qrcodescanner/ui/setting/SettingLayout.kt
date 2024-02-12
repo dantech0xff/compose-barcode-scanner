@@ -1,8 +1,11 @@
 package com.creative.qrcodescanner.ui.setting
 
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.EaseInOutBack
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -98,19 +101,20 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                     .padding(8.dp)
                     .shadow(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
                     .background(color = Color.White, shape = RoundedCornerShape(12.dp))
-                    .wrapContentSize()
+                    .wrapContentSize().animateContentSize(animationSpec = tween(300, easing = LinearEasing))
             ) {
-
-                LazyColumn(modifier = Modifier.wrapContentSize(), state = rememberLazyListState()) {
+                LazyColumn {
                     items(listSetting.data, key = {
-                        it.hashCode()
+                        it.id
+                    }, contentType =  {
+                        it.javaClass.name
                     }) {
                         var settingItemState by remember {
                             mutableStateOf(it)
                         }
                         settingItemState = it
                         val settingItemModifier = remember {
-                            Modifier.animateItemPlacement(animationSpec = tween(500, easing = EaseInOutBack))
+                            Modifier.animateItemPlacement(animationSpec = tween(300, easing = LinearEasing))
                         }
                         val onSettingItemClick = remember {
                             {
@@ -119,9 +123,7 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                         }
                         when (it) {
                             is SettingItemUIState.SettingHeaderUIState -> {
-                                SettingHeaderItem(
-                                    modifier = settingItemModifier, settingItem = it
-                                )
+                                SettingHeaderItem(modifier = settingItemModifier, settingItem = it)
                             }
 
                             is SettingItemUIState.TextUIState -> {
@@ -153,7 +155,7 @@ fun SettingScreenLayout(viewModel: SettingViewModel = hiltViewModel(), appNav: N
                     }
                     item {
                         val settingItem = remember {
-                            Modifier.animateItemPlacement(animationSpec = tween(500, easing = EaseInOutBack))
+                            Modifier.animateItemPlacement(animationSpec = tween(300, easing = LinearEasing))
                         }
                         Spacer(
                             modifier = settingItem.size(12.dp)
