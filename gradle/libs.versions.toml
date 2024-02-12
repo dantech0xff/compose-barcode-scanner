@@ -17,6 +17,7 @@ hilt_version = "2.48.1"
 hilt_nav_compose_version = "1.1.0"
 moshi_version = "1.14.0"
 datastore_version = "1.0.0"
+billing_version = "6.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -65,6 +66,8 @@ squareup-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-ko
 
 androidx-datastore-preferences-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "datastore_version" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore_version" }
+
+android-billing-client = { group = "com.android.billingclient", name = "billing", version.ref = "billing_version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
