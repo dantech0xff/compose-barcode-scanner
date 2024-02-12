@@ -1,15 +1,12 @@
 package com.creative.qrcodescanner.ui.premium
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,23 +23,32 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PurchasesUpdatedListener
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.shadow
 import com.creative.qrcodescanner.ui.theme.QRCodeScannerTheme
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 /**
  * Created by dan on 07/01/2024
@@ -52,7 +57,60 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
  */
 
 @Composable
-fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: NavHostController) {
+fun PremiumScreenLayout(appNav: NavHostController) {
+
+    val vm: PremiumViewModel = hiltViewModel()
+    val premiumUiState by vm.premiumUiStateFlow.collectAsStateWithLifecycle()
+    val currentContext = LocalContext.current
+
+    var billingStatusOk by remember {
+        mutableStateOf(false)
+    }
+
+    val purchasesUpdatedListener =
+        remember {
+            PurchasesUpdatedListener { billingResult, purchases ->
+                // To be implemented in a later section.
+            }
+        }
+
+
+    val billingClient = remember {
+        BillingClient.newBuilder(currentContext)
+            .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases()
+            .build()
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                    billingStatusOk = true
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        })
+    }
+
+    LaunchedEffect(key1 = Unit, block = {
+        vm.actionSharedFlow.collect {
+            when (it) {
+                is PremiumAction.Purchase -> {
+
+                }
+
+                is PremiumAction.MessageToast -> {
+                    Toast.makeText(currentContext, it.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    })
 
     BackHandler {
         appNav.popBackStack()
@@ -66,21 +124,6 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
                     .wrapContentHeight()
             ) {
                 Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
-                Box(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(12.dp)
-                        .shadow(Color.Black.copy(alpha = 0.05f))
-                        .clip(CircleShape)
-                        .clickable {
-                            appNav.popBackStack()
-                        }
-                ) {
-                    Image(
-                        modifier = Modifier.size(42.dp),
-                        painter = painterResource(id = R.drawable.icon_close), contentDescription = null
-                    )
-                }
             }
         },
         bottomBar = {}
@@ -94,9 +137,29 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-
-            Box(modifier = Modifier.shadow(Color.Cyan.copy(alpha = 0.05f),
-                borderRadius = 128.dp, blurRadius = 128.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(18.dp)
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .align(Alignment.CenterStart)
+                        .clickable {
+                            appNav.popBackStack()
+                        },
+                    painter = painterResource(id = R.drawable.icon_close), contentDescription = null
+                )
+            }
+            Box(
+                modifier = Modifier.shadow(
+                    Color.Cyan.copy(alpha = 0.05f),
+                    borderRadius = 128.dp, blurRadius = 128.dp
+                )
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_scan),
                     contentDescription = null,
@@ -106,8 +169,10 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
                 )
             }
 
+            val loadedPremiumInfo = (premiumUiState as? PremiumUiState.Loaded)
+
             Text(
-                text = "Panda Scanner", modifier = Modifier,
+                text = loadedPremiumInfo?.screenTitle ?: "NaN", modifier = Modifier,
                 style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold
             )
 
@@ -119,29 +184,41 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 horizontalAlignment = Alignment.Start,
             ) {
-                BenefitRow(R.drawable.icon_verified, R.string.no_advertising)
-                BenefitRow(iconRes = R.drawable.icon_document, textRes = R.string.prevent_duplicate_in_history)
-                BenefitRow(iconRes = R.drawable.icon_scan, textRes = R.string.continuous_scanning)
-                BenefitRow(iconRes = R.drawable.icon_message, textRes = R.string.text_scan_translate)
+                for (benefit in loadedPremiumInfo?.listBenefit ?: emptyList()) {
+                    BenefitRow(iconRes = benefit.iconRes, textStr = benefit.title)
+                }
             }
 
-            CtaSubscriptionButton("7-days free trial", "Only 20.99$ per year after trial")
-            Spacer(modifier = Modifier.size(6.dp))
-//            CtaSubscriptionButton("3-days free trial", "Only 2.99$ per month after trial")
-            CtaSubscriptionButton("Paid Weekly", "Only 0.99$ per week")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(horizontal = 0.dp, vertical = 0.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalAlignment = Alignment.Start,
+            ) {
+                for (premiumOption in loadedPremiumInfo?.listPremiumOptions ?: emptyList()) {
+                    CtaSubscriptionButton(
+                        title = premiumOption.title,
+                        subTitle = premiumOption.subTitle
+                    ) {
+                        vm.onPurchaseClick(premiumOption)
+                    }
+                }
+            }
 
-            Text(text = "(CANCEL ANYTIME)", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Light, modifier = Modifier.padding(2.dp))
+            Text(
+                text = loadedPremiumInfo?.cancelText ?: "NaN", style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Light, modifier = Modifier.padding(2.dp)
+            )
 
             Text(
                 modifier = Modifier.padding(horizontal = 24.dp),
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Normal,
-                text = "You will have access to all features after purchasing the VIP Subscription. Your subscription will" +
-                        "automatically renew at the same price and period. If your subscription includes a free trial, " +
-                        "you'll be charged at the end of your free trial, " +
-                        "you may manage or cancel subscriptions at any time in " +
-                        "Subscriptions on Google Play."
+                text = loadedPremiumInfo?.infoText ?: "NaN",
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.padding(16.dp))
         }
@@ -152,6 +229,6 @@ fun PremiumScreenLayout(viewModel: PremiumViewModel = hiltViewModel(), appNav: N
 @Composable
 fun PremiumScreenLayoutPreview() {
     QRCodeScannerTheme {
-        PremiumScreenLayout(PremiumViewModel(), rememberNavController())
+        PremiumScreenLayout(rememberNavController())
     }
 }

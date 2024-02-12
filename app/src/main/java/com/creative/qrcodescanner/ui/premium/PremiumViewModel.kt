@@ -1,7 +1,19 @@
 package com.creative.qrcodescanner.ui.premium
 
+import android.util.Log
+import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.creative.qrcodescanner.usecase.premium.GetPremiumUiStateFlowUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -10,6 +22,66 @@ import javax.inject.Inject
  * Copyright © 2024 1010 Creative. All rights reserved.
  */
 
+@Stable
+sealed class PremiumAction{
+    data class Purchase(val purchaseItem: PremiumPurchaseItem) : PremiumAction()
+    data class MessageToast(val message: String) : PremiumAction()
+}
+
 @HiltViewModel
-class PremiumViewModel @Inject constructor() : ViewModel() {
+class PremiumViewModel @Inject constructor(
+    getPremiumUiStateFlowUseCase: GetPremiumUiStateFlowUseCase
+) : ViewModel() {
+
+    val premiumUiStateFlow: StateFlow<PremiumUiState> = getPremiumUiStateFlowUseCase.execute(Unit).stateIn(
+        viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = PremiumUiState.Loading
+    )
+
+    private val _actionSharedFlow: MutableSharedFlow<PremiumAction> = MutableSharedFlow(extraBufferCapacity = 1)
+    val actionSharedFlow: SharedFlow<PremiumAction> = _actionSharedFlow
+
+    fun onPurchaseClick(purchaseItem: PremiumPurchaseItem) {
+        viewModelScope.launch {
+            _actionSharedFlow.emit(PremiumAction.Purchase(purchaseItem))
+        }
+    }
+}
+
+@Stable
+sealed class PremiumUiState {
+
+    data object Loading : PremiumUiState()
+
+    data class Loaded(
+        val screenTitle: String,
+        val listBenefit: List<PremiumBenefitItem>,
+        val listPremiumOptions: List<PremiumPurchaseItem>,
+        val cancelText: String,
+        val infoText: String
+    ) : PremiumUiState()
+
+    data class Error(
+        val message: String
+    ) : PremiumUiState()
+}
+
+@Stable
+data class PremiumBenefitItem(
+    val title: String,
+    @DrawableRes val iconRes: Int
+)
+
+@Stable
+data class PremiumPurchaseItem(
+    val title: String,
+    val subTitle: String,
+    val packageSku: String,
+    val purchaseType: PremiumPurchaseType
+)
+
+@Stable
+enum class PremiumPurchaseType(val value: Int) {
+    SUBSCRIPTION(0), ONE_TIME_PURCHASE(1)
 }

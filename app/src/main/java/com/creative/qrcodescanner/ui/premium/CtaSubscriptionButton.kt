@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.creative.qrcodescanner.ui.main.roundCorner
@@ -33,23 +34,24 @@ fun CtaSubscriptionButton(title: String, subTitle: String, onClick: (Unit) -> Un
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(horizontal = 32.dp, vertical = 1.dp)
-            .shadow(
-                Color.Cyan.copy(alpha = 0.1f),
-                borderRadius = 16.dp,
-                blurRadius = 12.dp
-            )
-            .background(MaterialTheme.colorScheme.inversePrimary, RoundedCornerShape(16.dp))
+            .padding(horizontal = 16.dp, vertical = 1.dp)
+            .shadow(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                blurRadius = 12.dp, borderRadius = 0.dp, spread = 0.dp,
+                offsetY = 1.dp, offsetX = 0.dp)
+            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
             .clickable {
                 onClick.invoke(Unit)
             }
-            .padding(horizontal = 32.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(0.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
-        Text(text = subTitle, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Text(text = title, style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
+        Text(text = subTitle, style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
     }
 }
 

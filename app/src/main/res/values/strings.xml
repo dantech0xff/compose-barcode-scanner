@@ -65,4 +65,10 @@
     <string name="setting_button">Setting Button</string>
     <string name="premium_button">Premium Button</string>
     <string name="this_feature_is_only_available_for_premium_user">This feature is only available for premium user</string>
+    <string name="cancel_anytime">(CANCEL ANYTIME)</string>
+    <string name="premium_notice_msg">You will have access to all features after purchasing the VIP Subscription. Your subscription will automatically renew at the same price and period. If your subscription includes a free trial, you\'ll be charged at the end of your free trial, you may manage or cancel subscriptions at any time in Subscriptions on Google Play.</string>
+    <string name="one_time_purchase">One Time Purchase</string>
+    <string name="only_9_99_forever_premium">Only 9.99$ Forever Premium</string>
+    <string name="one_day_free_trial">One Day Free Trial</string>
+    <string name="only_0_99_paid_weekly">Only 0.99$ Paid Weekly</string>
 </resources>

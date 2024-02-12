@@ -27,7 +27,7 @@ import com.creative.qrcodescanner.ui.theme.QRCodeScannerTheme
  */
  
 @Composable
-fun BenefitRow(@DrawableRes iconRes: Int,@StringRes textRes: Int) {
+fun BenefitRow(@DrawableRes iconRes: Int, textStr: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -37,8 +37,10 @@ fun BenefitRow(@DrawableRes iconRes: Int,@StringRes textRes: Int) {
             contentDescription = null, modifier = Modifier.size(20.dp)
         )
         Text(
-            text = stringResource(id = textRes), modifier = Modifier,
-            style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Normal
+            text = textStr, modifier = Modifier,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Normal,
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
@@ -47,6 +49,6 @@ fun BenefitRow(@DrawableRes iconRes: Int,@StringRes textRes: Int) {
 @Composable
 fun BenefitRowPreview() {
     QRCodeScannerTheme {
-        BenefitRow(R.drawable.icon_email, R.string.qr_code_history)
+        BenefitRow(R.drawable.icon_email, stringResource(id = R.string.qr_code_history ))
     }
 }
