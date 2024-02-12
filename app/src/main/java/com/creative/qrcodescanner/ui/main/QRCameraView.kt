@@ -200,7 +200,8 @@ fun QRCameraView(lifecycleCameraController: LifecycleCameraController,
         val width = LocalContext.current.resources.displayMetrics.widthPixels
         AnimatedVisibility(modifier = Modifier
             .align(Alignment.Center)
-            .offset(y = (width / 8).dp), visible = userSettingData?.isPremium == true, enter = fadeIn(), exit = fadeOut()) {
+            .offset(y = (width / 8).dp),
+            visible = true, enter = fadeIn(), exit = fadeOut()) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)

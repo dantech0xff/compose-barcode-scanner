@@ -24,7 +24,7 @@ class UserDataRepoImpl(
         val isPremium = it[SettingPreferencesKey.IS_PREMIUM] ?: false
         val isKeepScanning = it[SettingPreferencesKey.IS_KEEP_SCANNING] ?: false
         UserSettingData(isEnableVibrate = isEnableVibrate, isEnableSound = isEnableSound,
-            isPremium = isPremium, isKeepScanning = isKeepScanning)
+            isPremium = isPremium, isKeepScanning = isKeepScanning && isPremium)
     }
 
     override suspend fun updateSoundSetting(isEnableSound: Boolean) {
@@ -64,6 +64,6 @@ class UserDataRepoImpl(
     }
 
     override suspend fun isKeepScanning(): Boolean {
-        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_KEEP_SCANNING] ?: false }.first()
+        return userSettingDataStore.data.map { it[SettingPreferencesKey.IS_KEEP_SCANNING] ?: false }.first() && isPremium()
     }
 }

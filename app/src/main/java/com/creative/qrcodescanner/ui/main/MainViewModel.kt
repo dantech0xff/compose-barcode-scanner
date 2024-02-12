@@ -1,9 +1,12 @@
 package com.creative.qrcodescanner.ui.main
 
+import android.app.Application
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.data.entity.QRCodeContact
 import com.creative.qrcodescanner.data.entity.QRCodePhone
 import com.creative.qrcodescanner.data.entity.QRCodeSMS
@@ -17,6 +20,7 @@ import com.creative.qrcodescanner.usecase.setting.UpdateKeepScanningSettingUseCa
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -61,7 +65,8 @@ class MainViewModel @Inject constructor(
     private val insertQRCodeHistoryUseCase: InsertQRCodeHistoryFlowUseCase,
     private val moshi: Moshi,
     userDataRepo: UserDataRepo,
-    private val updateKeepScanningSettingUseCase: UpdateKeepScanningSettingUseCase
+    private val updateKeepScanningSettingUseCase: UpdateKeepScanningSettingUseCase,
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel(), ICameraController {
 
     companion object {
@@ -122,7 +127,11 @@ class MainViewModel @Inject constructor(
 
     override fun toggleKeepScanning() {
         viewModelScope.launch {
-            updateKeepScanningSettingUseCase.execute(!(appSettingState.value?.isKeepScanning ?: false))
+            if (appSettingState.value?.isPremium != true) {
+                _qrCodeActionState.tryEmit(QRCodeAction.ToastAction(applicationContext.getString(R.string.this_feature_is_only_available_for_premium_user)))
+            } else {
+                updateKeepScanningSettingUseCase.execute(!(appSettingState.value?.isKeepScanning ?: false))
+            }
         }
     }
 
