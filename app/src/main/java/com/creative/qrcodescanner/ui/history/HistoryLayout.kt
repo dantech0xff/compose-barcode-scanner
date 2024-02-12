@@ -180,7 +180,7 @@ fun HistoryScreenLayout(viewModel: HistoryViewModel = hiltViewModel(),
 
                         QRCodeHistoryItemUI(
                             modifier = rememberModifier,
-                            itemUiState = item,
+                            itemUiState = rememberItem,
                             onDelete = remember {
                                 {
                                     viewModel.deleteQRCodeHistory(rememberItem.id)
