@@ -1,5 +1,7 @@
 package com.creative.qrcodescanner.ui.premium
 
+import android.app.Activity
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -25,7 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,11 +46,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
 import com.creative.qrcodescanner.R
 import com.creative.qrcodescanner.ui.shadow
 import com.creative.qrcodescanner.ui.theme.QRCodeScannerTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Created by dan on 07/01/2024
@@ -63,48 +68,17 @@ fun PremiumScreenLayout(appNav: NavHostController) {
     val premiumUiState by vm.premiumUiStateFlow.collectAsStateWithLifecycle()
     val currentContext = LocalContext.current
 
-    var billingStatusOk by remember {
-        mutableStateOf(false)
-    }
-
-    val purchasesUpdatedListener =
-        remember {
-            PurchasesUpdatedListener { billingResult, purchases ->
-                // To be implemented in a later section.
-            }
-        }
-
-
-    val billingClient = remember {
-        BillingClient.newBuilder(currentContext)
-            .setListener(purchasesUpdatedListener)
-            .enablePendingPurchases()
-            .build()
+    val pandaBillingService = remember {
+        PandaBillingServiceImpl(currentContext as Activity)
     }
 
     LaunchedEffect(key1 = Unit) {
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    // The BillingClient is ready. You can query purchases here.
-                    billingStatusOk = true
-                }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                // Try to restart the connection on the next request to
-                // Google Play by calling the startConnection() method.
-            }
-        })
+        pandaBillingService.startBillingService()
     }
 
     LaunchedEffect(key1 = Unit, block = {
         vm.actionSharedFlow.collect {
             when (it) {
-                is PremiumAction.Purchase -> {
-
-                }
-
                 is PremiumAction.MessageToast -> {
                     Toast.makeText(currentContext, it.message, Toast.LENGTH_SHORT).show()
                 }
@@ -202,7 +176,9 @@ fun PremiumScreenLayout(appNav: NavHostController) {
                         title = premiumOption.title,
                         subTitle = premiumOption.subTitle
                     ) {
-                        vm.onPurchaseClick(premiumOption)
+                        pandaBillingService.purchaseProduct(
+                            premiumOption.productId,
+                            premiumOption.purchaseType)
                     }
                 }
             }

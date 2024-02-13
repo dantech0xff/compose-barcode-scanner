@@ -38,11 +38,12 @@ class GetPremiumUiStateFlowUseCase @Inject constructor(
                     listOf(
                         PremiumPurchaseItem(
                             applicationContext.getString(R.string.one_time_purchase), applicationContext.getString(R.string.only_9_99_forever_premium),
-                            "com.qrcode.onetime", PremiumPurchaseType.ONE_TIME_PURCHASE
+                                    "com.creative.qrcodescanner.onetime", PremiumPurchaseType.ONE_TIME_PURCHASE
                         ),
                         PremiumPurchaseItem(
-                            applicationContext.getString(R.string.one_day_free_trial), applicationContext.getString(R.string.only_0_99_paid_weekly),
-                            "com.qrcode.weekly", PremiumPurchaseType.SUBSCRIPTION
+                            applicationContext.getString(R.string.three_day_free_trial),
+                            applicationContext.getString(R.string.only_2_99_first_3_months),
+                            "com.creative.qrcodescanner.subscription", PremiumPurchaseType.SUBSCRIPTION
                         ),
                     ),
                     applicationContext.getString(R.string.cancel_anytime),

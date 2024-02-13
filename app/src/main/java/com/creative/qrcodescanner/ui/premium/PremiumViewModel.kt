@@ -1,19 +1,16 @@
 package com.creative.qrcodescanner.ui.premium
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.usecase.premium.GetPremiumUiStateFlowUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -24,7 +21,6 @@ import javax.inject.Inject
 
 @Stable
 sealed class PremiumAction{
-    data class Purchase(val purchaseItem: PremiumPurchaseItem) : PremiumAction()
     data class MessageToast(val message: String) : PremiumAction()
 }
 
@@ -41,12 +37,6 @@ class PremiumViewModel @Inject constructor(
 
     private val _actionSharedFlow: MutableSharedFlow<PremiumAction> = MutableSharedFlow(extraBufferCapacity = 1)
     val actionSharedFlow: SharedFlow<PremiumAction> = _actionSharedFlow
-
-    fun onPurchaseClick(purchaseItem: PremiumPurchaseItem) {
-        viewModelScope.launch {
-            _actionSharedFlow.emit(PremiumAction.Purchase(purchaseItem))
-        }
-    }
 }
 
 @Stable
@@ -77,7 +67,7 @@ data class PremiumBenefitItem(
 data class PremiumPurchaseItem(
     val title: String,
     val subTitle: String,
-    val packageSku: String,
+    val productId: String,
     val purchaseType: PremiumPurchaseType
 )
 
