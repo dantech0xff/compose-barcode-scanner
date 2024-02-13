@@ -68,7 +68,9 @@
     <string name="cancel_anytime">(CANCEL ANYTIME)</string>
     <string name="premium_notice_msg">You will have access to all features after purchasing the VIP Subscription. Your subscription will automatically renew at the same price and period. If your subscription includes a free trial, you\'ll be charged at the end of your free trial, you may manage or cancel subscriptions at any time in Subscriptions on Google Play.</string>
     <string name="one_time_purchase">One Time Purchase</string>
-    <string name="only_9_99_forever_premium">Only 9.99$ Forever Premium</string>
-    <string name="one_day_free_trial">One Day Free Trial</string>
-    <string name="only_0_99_paid_weekly">Only 0.99$ Paid Weekly</string>
+    <string name="only_9_99_forever_premium">9.99$ Forever Premium</string>
+    <string name="three_day_free_trial">3 Days Free Trial</string>
+    <string name="only_2_99_first_3_months">2.99$ First 3 Months</string>
+    <string name="processing_purchase">Processing purchase...</string>
+    <string name="billing_service_is_not_available_please_check_your_network_connection_and_try_again">Billing Service is not available, please check your network connection and try again.</string>
 </resources>

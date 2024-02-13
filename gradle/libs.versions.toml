@@ -18,6 +18,7 @@ hilt_nav_compose_version = "1.1.0"
 moshi_version = "1.15.1"
 datastore_version = "1.0.0"
 billing_version = "6.1.0"
+firebaseCrashlyticsBuildtools = "2.9.9"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -68,6 +69,7 @@ androidx-datastore-preferences-core = { group = "androidx.datastore", name = "da
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore_version" }
 
 android-billing-client = { group = "com.android.billingclient", name = "billing", version.ref = "billing_version" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
