@@ -14,8 +14,8 @@ android {
         applicationId = "com.creative.qrcodescanner"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.0.0-alpha-02"
+        versionCode = 3
+        versionName = "1.0.0-alpha-03"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -26,7 +26,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             buildConfigField("Boolean", "IS_FORCE_PREMIUM", false.toString())
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
