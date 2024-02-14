@@ -4,7 +4,8 @@ This project is built with Jetpack Compose, CameraX, ML Kit and my handsome atti
 This is for my learning purpose in order to get familiar with Jetpack Compose, MLKit and CameraX.
 Feel free to use it in your project.
 
-![Example GIF](demo-feature.gif)
+| ![Scanner Frame](ss/8ed6b0b708eaa5b4fcfb.webp) | ![QR Result](ss/68f978e5c2b86fe636a9.webp) | ![Premium Page](ss/159c7bbce7e14abf13f0.webp) | ![QR History](ss/ac321a4fa2120f4c5603.webp) |
+|------------------------------------------------|--------------------------------------------|-----------------------------------------------|---------------------------------------------|
 
 ![High Level Design](high-level-design-qr-app.png)
 
@@ -34,8 +35,8 @@ Feel free to use it in your project.
 
 ## Improvement
 - [x] Reduce numbers of Flow in MainViewModel
-- [ ] Update better UI
-- [ ] Animation
+- [X] Update better UI
+- [X] Animation
 
 
 ### Download, Clone, or do anything for your own purpose, I don't care!
