@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,7 +53,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import java.util.Calendar
 import kotlin.random.Random
-
 
 /**
  * Created by dan on 07/01/2024
@@ -161,11 +161,11 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(text = stringResource(R.string.camera_permission_is_not_granted))
+                    Text(text = stringResource(R.string.camera_permission_is_not_granted), color = MaterialTheme.colorScheme.onPrimary)
                     Button(onClick = {
                         cameraPermissionState.launchPermissionRequest()
                     }) {
-                        Text(text = stringResource(R.string.click_to_grant_camera_permission))
+                        Text(text = stringResource(R.string.click_to_grant_camera_permission), color = MaterialTheme.colorScheme.onPrimary)
                     }
                 }
             }
