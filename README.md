@@ -5,7 +5,7 @@ This is for my learning purpose in order to get familiar with Jetpack Compose, M
 Feel free to use it in your project.
 
 | ![Scanner Frame](ss/8ed6b0b708eaa5b4fcfb.webp) | ![QR Result](ss/68f978e5c2b86fe636a9.webp) | ![Premium Page](ss/159c7bbce7e14abf13f0.webp) | ![QR History](ss/ac321a4fa2120f4c5603.webp) |
-|------------------------------------------------|--------------------------------------------|-----------------------------------------------|---------------------------------------------|
+| ---------------------------------------------- | ------------------------------------------ | --------------------------------------------- | ------------------------------------------- |
 
 ![High Level Design](high-level-design-qr-app.png)
 
@@ -34,10 +34,10 @@ Feel free to use it in your project.
 - [ ] Idk, I will add more later
 
 ## Improvement
-- [x] Reduce numbers of Flow in MainViewModel
-- [X] Update better UI
-- [X] Animation
 
+- [x] Reduce numbers of Flow in MainViewModel
+- [x] Update better UI
+- [x] Animation
 
 ### Download, Clone, or do anything for your own purpose, I don't care!
 
