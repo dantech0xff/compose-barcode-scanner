@@ -1,5 +1,13 @@
 # Android QR Code Scanner by Dan Tech
 
+![](https://img.shields.io/badge/Kotlin-Compose-green)
+![](https://img.shields.io/badge/Google--Billing-blue)
+![](https://img.shields.io/badge/Camera--X-red)
+![](https://img.shields.io/badge/MLKit-white)
+![](https://img.shields.io/badge/Hilt-gray)
+![](https://img.shields.io/badge/Flow-yellow)
+![](https://img.shields.io/badge/Room--Database-black)
+
 This project is built with Jetpack Compose, CameraX, ML Kit and my handsome attitude.
 This is for my learning purpose in order to get familiar with Jetpack Compose, MLKit and CameraX.
 Feel free to use it in your project.
