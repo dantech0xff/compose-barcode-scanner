@@ -96,7 +96,7 @@ fun MainScreenLayout(vm: MainViewModel, appNavHost: NavHostController) {
         vm.mainUiState.collectLatest {
             mainUIState = it
 
-            cameraController.cameraSelector = if (it.isFrontCamera) {
+            cameraController.cameraSelector = if (it.isFrontCamera && cameraController.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)) {
                 CameraSelector.DEFAULT_FRONT_CAMERA
             } else {
                 CameraSelector.DEFAULT_BACK_CAMERA
