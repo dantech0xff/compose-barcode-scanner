@@ -14,8 +14,8 @@ android {
         applicationId = "com.creative.qrcodescanner"
         minSdk = 24
         targetSdk = 34
-        versionCode = 34
-        versionName = "1.0.0-alpha-04"
+        versionCode = 35
+        versionName = "1.0.0-alpha-05"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
