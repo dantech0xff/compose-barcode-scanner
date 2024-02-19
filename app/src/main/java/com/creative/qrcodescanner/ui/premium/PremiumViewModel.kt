@@ -5,12 +5,14 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.creative.qrcodescanner.usecase.premium.GetPremiumUiStateFlowUseCase
+import com.creative.qrcodescanner.usecase.setting.UpdatePremiumSettingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -26,7 +28,8 @@ sealed class PremiumAction{
 
 @HiltViewModel
 class PremiumViewModel @Inject constructor(
-    getPremiumUiStateFlowUseCase: GetPremiumUiStateFlowUseCase
+    getPremiumUiStateFlowUseCase: GetPremiumUiStateFlowUseCase,
+    private val updatePremiumSettingUseCase: UpdatePremiumSettingUseCase
 ) : ViewModel() {
 
     val premiumUiStateFlow: StateFlow<PremiumUiState> = getPremiumUiStateFlowUseCase.execute(Unit).stateIn(
@@ -37,6 +40,15 @@ class PremiumViewModel @Inject constructor(
 
     private val _actionSharedFlow: MutableSharedFlow<PremiumAction> = MutableSharedFlow(extraBufferCapacity = 1)
     val actionSharedFlow: SharedFlow<PremiumAction> = _actionSharedFlow
+
+    fun updatePremiumSetting(isPremium: Boolean) {
+        viewModelScope.launch {
+            if (isPremium) {
+                _actionSharedFlow.emit(PremiumAction.MessageToast("Thank you for purchasing premium"))
+                updatePremiumSettingUseCase.execute(true)
+            }
+        }
+    }
 }
 
 @Stable

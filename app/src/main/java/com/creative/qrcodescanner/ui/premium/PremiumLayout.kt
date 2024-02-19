@@ -69,7 +69,11 @@ fun PremiumScreenLayout(appNav: NavHostController) {
     val currentContext = LocalContext.current
 
     val pandaBillingService = remember {
-        PandaBillingServiceImpl(currentContext as Activity)
+        PandaBillingServiceImpl(currentContext as Activity) {
+            if (it) {
+                vm.updatePremiumSetting(true)
+            }
+        }
     }
 
     LaunchedEffect(key1 = Unit) {

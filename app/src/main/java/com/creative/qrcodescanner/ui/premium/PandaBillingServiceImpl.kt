@@ -14,7 +14,7 @@ import com.android.billingclient.api.QueryProductDetailsParams
  * Copyright © 2024 1010 Creative. All rights reserved.
  */
 
-class PandaBillingServiceImpl(private val activity: Activity) : PandaBillingService {
+class PandaBillingServiceImpl(private val activity: Activity, private val onPurchaseSuccess: (Boolean) -> Unit = {}) : PandaBillingService {
 
     private var billingAvailableStatus: BillingAvailableStatus = BillingAvailableStatus.UNAVAILABLE
 
@@ -23,6 +23,9 @@ class PandaBillingServiceImpl(private val activity: Activity) : PandaBillingServ
             .setListener { billingResult, purchases ->
                 // To be implemented in a later section.
                 Log.d("PandaBillingServiceImpl", "billingResult: $billingResult, purchases: $purchases")
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    onPurchaseSuccess(true)
+                }
             }
             .enablePendingPurchases()
             .build()
